@@ -1,4 +1,4 @@
-name: OpenWRT-EA8500
+name: 23.05-NSS-EA8500
 
 on:
    workflow_dispatch:
@@ -75,7 +75,7 @@ jobs:
       uses: actions/checkout@main
       with:
          repository: thinkcyy/OpenWRT-23.05.0-NSS
-         ref: master 
+         #ref: master 
          path: ./openwrt
          
     - name: tree
@@ -87,13 +87,13 @@ jobs:
     - name: prepare
       #working-directory: ./EA8500-OpenWrt    
       run: |
-         chmod +x ./LeanWRT/scripts/*.sh
-         bash ./LeanWRT/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
+         chmod +x ./23.05-NSS/scripts/*.sh
+         bash ./23.05-NSS/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
       
     - name: compile
       #working-directory: ./EA8500-OpenWrt
       run: |   
-        bash ./LeanWRT/scripts/compile.sh
+        bash ./23.05-NSS/scripts/compile.sh
         
     - name: generate tag
       run: |
