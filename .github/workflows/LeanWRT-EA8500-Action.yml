@@ -111,6 +111,7 @@ jobs:
         mkdir -p ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*sysupgrade*") ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*.buildinfo") ./artifact/
+        cp ./openwrt/.config ./artifact/defconfig.config
         cd ./artifact/
         rename 's/sysupgrade.bin/sysupgrade-${{ env.CONFIG_FILES }}_${{ env.tag_name }}.bin/' *
         echo "当前工作目录"
