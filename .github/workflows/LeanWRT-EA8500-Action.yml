@@ -16,6 +16,7 @@ jobs:
         cat /proc/cpuinfo | grep 'model name'
         ulimit -a
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
+        echo "CONFIG_FILES=public" >> $GITHUB_ENV
 
     - name: Init build dependencies
       env:
@@ -111,7 +112,7 @@ jobs:
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*sysupgrade*") ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*.buildinfo") ./artifact/
         cd ./artifact/
-        rename 's/sysupgrade.bin/sysupgrade-sayh_${{ env.tag_name }}.bin/' *
+        rename 's/sysupgrade.bin/sysupgrade-${{ env.CONFIG_FILES }}_${{ env.tag_name }}.bin/' *
         echo "当前工作目录"
         pwd
         #tree -L 2  ../
@@ -121,5 +122,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt-${{ env.ROUTER_MODEL }}-${{ env.tag_name }}
+        name: OpenWrt-${{ env.ROUTER_MODEL }}-${{ env.CONFIG_FILES }}-${{ env.tag_name }}
         path: ./artifact/
