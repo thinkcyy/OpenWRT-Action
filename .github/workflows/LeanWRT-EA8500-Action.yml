@@ -74,10 +74,10 @@ jobs:
     - name: Clone Firmware repository
       uses: actions/checkout@main
       with:
-         repository: thinkcyy/OpenWRT-23.05.0-NSS
-         #ref: master 
-         path: ./openwrt
-         
+         repository: thinkcyy/LeanWRT
+         ref: master 
+         path: ./openwrt         
+       
     - name: tree
       run: |
          echo "当前工作目录"
@@ -87,13 +87,13 @@ jobs:
     - name: prepare
       #working-directory: ./EA8500-OpenWrt    
       run: |
-         chmod +x ./23.05-NSS/scripts/*.sh
-         bash ./23.05-NSS/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
+         chmod +x ./LeanWRT/scripts/*.sh
+         bash ./LeanWRT/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
       
     - name: compile
       #working-directory: ./EA8500-OpenWrt
       run: |   
-        bash ./23.05-NSS/scripts/compile.sh
+        bash ./LeanWRT/scripts/compile.sh
         
     - name: generate tag
       run: |
@@ -121,5 +121,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt-${{ env.ROUTER_MODEL }}_${{ env.tag_name }}
+        name: OpenWrt-${{ env.ROUTER_MODEL }}-${{ env.tag_name }}
         path: ./artifact/
