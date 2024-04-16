@@ -1,4 +1,4 @@
-name: 23.05-NSS-EA8500
+name: LeanWRT-EA8500
 
 on:
    workflow_dispatch:
