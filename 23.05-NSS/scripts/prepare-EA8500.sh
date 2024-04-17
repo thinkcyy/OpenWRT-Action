@@ -6,5 +6,5 @@ chmod +x ../23.05-NSS/scripts/*.sh
 
 
 echo "导入编译配置"
-cp -v ../LeanWRT/config/config-EA8500.config .config
+cp -v ../23.05-NSS/config/config-EA8500.config .config
 make defconfig
