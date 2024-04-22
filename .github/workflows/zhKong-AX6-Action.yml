@@ -47,6 +47,7 @@ jobs:
         remove-android: 'true'
         remove-haskell: 'true'
         remove-codeql: 'true'
+        
     - name: Checkout
       uses: actions/checkout@main
 
@@ -54,7 +55,7 @@ jobs:
       uses: actions/checkout@main
       with:
          repository: AgustinLorenzo/openwrt
-         ref: master 
+         #ref: master 
          path: ./openwrt
     
     - name: prepare  
