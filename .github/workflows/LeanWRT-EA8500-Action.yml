@@ -16,7 +16,7 @@ jobs:
         cat /proc/cpuinfo | grep 'model name'
         ulimit -a
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        echo "CONFIG_FILES=NOFILES" >> $GITHUB_ENV
+        echo "ROUTER_CONFIG=public" >> $GITHUB_ENV
 
     - name: Init build dependencies
       env:
@@ -104,5 +104,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt-${{ env.ROUTER_MODEL }}-${{ env.CONFIG_FILES }}-${{ env.tag_name }}
+        name: OpenWrt-${{ env.ROUTER_MODEL }}-${{ env.ROUTER_CONFIG }}-${{ env.tag_name }}
         path: ./artifact/
