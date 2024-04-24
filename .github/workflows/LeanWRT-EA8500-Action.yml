@@ -16,7 +16,7 @@ jobs:
         cat /proc/cpuinfo | grep 'model name'
         ulimit -a
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        echo "CONFIG_FILES=public" >> $GITHUB_ENV
+        echo "CONFIG_FILES=NOFILES" >> $GITHUB_ENV
 
     - name: Init build dependencies
       env:
