@@ -94,7 +94,7 @@ jobs:
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*.buildinfo") ./artifact/
         cp ./openwrt/.config ./artifact/defconfig.config
         cd ./artifact/
-        rename 's/sysupgrade.bin/sysupgrade-${{ env.CONFIG_FILES }}_${{ env.tag_name }}.bin/' *
+        rename 's/sysupgrade.bin/sysupgrade-${{ env.ROUTER_CONFIG }}_${{ env.tag_name }}.bin/' *
         echo "当前工作目录"
         pwd
         #tree -L 2  ../
