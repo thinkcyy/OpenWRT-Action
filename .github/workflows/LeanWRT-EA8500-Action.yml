@@ -16,7 +16,7 @@ jobs:
         cat /proc/cpuinfo | grep 'model name'
         ulimit -a
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        echo "ROUTER_CONFIG=public" >> $GITHUB_ENV
+        echo "ROUTER_CONFIG=public_20240424_remove_igmpproxy" >> $GITHUB_ENV
 
     - name: Init build dependencies
       env:
