@@ -58,8 +58,8 @@ jobs:
     - name: Clone Firmware repository
       uses: actions/checkout@main
       with:
-         repository: thinkcyy/zhKong
-         ref: master 
+         repository: AgustinLorenzo/openwrt
+         #ref: master 
          path: ./openwrt         
        
     - name: tree
@@ -76,19 +76,15 @@ jobs:
          bash ./zhKong/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
       
     - name: compile
-      #working-directory: ./AX6-OpenWrt
       run: |   
         bash ./zhKong/scripts/compile.sh
         
     - name: generate tag
-      run: |
-        #LAST_COMMIT_HASH=$(curl -s "https://api.github.com/repos/thinkcyy/openwrt-config/commits/main" | grep -m 1 '"sha":' | cut -d '"' -f 4 | cut -c 1-7)
-        #echo "LAST_COMMIT_HASH=${LAST_COMMIT_HASH}" >> $GITHUB_ENV
+      run: |        
         tag_name=$(date +%Y%m%d-%H%M)
         echo "tag_name=${tag_name}" >>$GITHUB_ENV
         
     - name: Organize files
-      #working-directory: ./lede
       id: organize
       run: |
         rm -rf ./artifact/
