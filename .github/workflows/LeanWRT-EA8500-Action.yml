@@ -16,8 +16,10 @@ jobs:
         cat /proc/cpuinfo | grep 'model name'
         ulimit -a
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        echo "ROUTER_CONFIG=public_20240424_remove_igmpproxy" >> $GITHUB_ENV
-
+        echo "FILES_CONFIG=public" >> $GITHUB_ENV
+        echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
+        
+        
     - name: Init build dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -70,6 +72,7 @@ jobs:
       #working-directory: ./EA8500-OpenWrt    
       run: |
          chmod +x ./LeanWRT/scripts/*.sh
+         cp ./LeanWRT/config/${{ env.COMPILE_CONFIG }}.config ./.config
          bash ./LeanWRT/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
       
     - name: compile
@@ -92,9 +95,9 @@ jobs:
         mkdir -p ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*sysupgrade*") ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*.buildinfo") ./artifact/
-        cp ./openwrt/.config ./artifact/defconfig-${{ env.ROUTER_CONFIG }}_${{ env.tag_name }}.config
+        cp ./openwrt/.config ./artifact/defconfig-${{ env.COMPILE_CONFIG }}.config
         cd ./artifact/
-        rename 's/sysupgrade.bin/sysupgrade-${{ env.ROUTER_CONFIG }}_${{ env.tag_name }}.bin/' *
+        rename 's/sysupgrade.bin/sysupgrade-${{ env.COMPILE_CONFIG }}_${{ env.tag_name }}.bin/' *
         echo "当前工作目录"
         pwd
         #tree -L 2  ../
@@ -104,5 +107,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt-${{ env.ROUTER_MODEL }}-${{ env.ROUTER_CONFIG }}-${{ env.tag_name }}
+        name: OpenWrt-${{ env.COMPILE_CONFIG }}-${{ env.tag_name }}
         path: ./artifact/
