@@ -72,7 +72,7 @@ jobs:
       #working-directory: ./AX6-OpenWrt    
       run: |
          chmod +x ./zhKong/scripts/*.sh
-         cp ./zhKong/config/${{ env.COMPILE_CONFIG }}.config ./openwrt/.config
+         cp -v ./zhKong/config/${{ env.COMPILE_CONFIG }}.config ./zhKong/config/config-${{ env.ROUTER_MODEL }}.config
          bash ./zhKong/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
       
     - name: compile
