@@ -59,7 +59,7 @@ jobs:
       uses: actions/checkout@main
       with:
          repository: AgustinLorenzo/openwrt
-         #ref: master 
+         ref: main 
          path: ./openwrt         
        
     - name: tree
