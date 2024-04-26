@@ -72,7 +72,7 @@ jobs:
       #working-directory: ./EA8500-OpenWrt    
       run: |
          chmod +x ./LeanWRT/scripts/*.sh
-         cp ./LeanWRT/config/${{ env.COMPILE_CONFIG }}.config ./LeanWRT/config/.config
+         cp ./LeanWRT/config/${{ env.COMPILE_CONFIG }}.config ./openwrt/.config
          bash ./LeanWRT/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
       
     - name: compile
