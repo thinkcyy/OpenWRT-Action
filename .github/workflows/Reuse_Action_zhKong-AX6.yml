@@ -1,0 +1,15 @@
+name: Reuse_Template_zhKong-AX6
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Show system
+      uses: thinkcyy/Action_zhKong_1-checkout-and-config@main
+      with:
+           ROUTER_MODEL: AX6
+           COMPILE_CONFIG: AX6-20240325-avahi 
