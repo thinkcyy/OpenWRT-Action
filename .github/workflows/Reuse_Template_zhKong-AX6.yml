@@ -1,0 +1,16 @@
+name: Reuse_Template_zhKong-AX6
+
+on:
+   workflow_dispatch:
+
+jobs:
+  Checkout:
+    uses: ./.github/workflows/Action_Template_zhKong_1-checkout-and-config.yml
+    with:
+           ROUTER_MODEL: AX6
+           COMPILE_CONFIG: AX6-20240325-avahi
+  Compile:
+    uses: ./.github/workflows/Action_Template_zhKong_2-compile.yml
+    with:
+           ROUTER_MODEL: AX6
+           COMPILE_CONFIG: AX6-20240325-avahi  
