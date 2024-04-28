@@ -7,7 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-
     steps:
 
     - name: Show system
@@ -73,7 +72,7 @@ jobs:
       run: |
          chmod +x ./zhKong/scripts/*.sh
          cp -v ./zhKong/config/${{ env.COMPILE_CONFIG }}.config ./zhKong/config/config-${{ env.ROUTER_MODEL }}.config
-         bash ./zhKong/scripts/prepare-AX6.sh
+         bash ./zhKong/scripts/prepare.sh
       
     - name: compile
       run: |   
