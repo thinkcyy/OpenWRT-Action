@@ -1,3 +1,4 @@
+echo '当前执行步骤：自定义软件包'
 echo 'src-git cus_lean_luci https://github.com/coolsnowwolf/luci' >>feeds.conf.default
 echo 'src-git cus_lean_packages https://github.com/coolsnowwolf/packages' >>feeds.conf.default
 echo 'src-git cus_lean_prouting https://github.com/coolsnowwolf/routing' >>feeds.conf.default
