@@ -1,7 +1,6 @@
 name: Action_Template_zhKong_2-compile
 
 on:
-   workflow_dispatch:
    workflow_call:
     inputs:
         ROUTER_MODEL:
@@ -14,11 +13,15 @@ on:
 jobs:
   compile:
     runs-on: ubuntu-latest
-    
+     
     steps:
-    - name: compile
+    - name: compile      
+      #working-directory: ./AX6-OpenWrt
       run: |   
-        bash ./zhKong/scripts/compile.sh
+         echo "当前工作目录"
+         pwd
+         tree -L 3 echo 
+         bash ./zhKong/scripts/compile.sh
         
     - name: generate tag
       run: |        
