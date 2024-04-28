@@ -32,13 +32,13 @@ jobs:
         mkdir -p ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*sysupgrade*") ./artifact/
         cp -rf $(find ./openwrt/bin/targets/ -type f -name "*.buildinfo") ./artifact/
-        cp ./openwrt/.config ./artifact/defconfig-${{ input.COMPILE_CONFIG }}.config
+        cp ./openwrt/.config ./artifact/defconfig-${{ inputs.COMPILE_CONFIG }}.config
         cd ./artifact/
-        rename 's/sysupgrade.bin/sysupgrade-${{ input.COMPILE_CONFIG }}_${{ env.tag_name }}.bin/' *
+        rename 's/sysupgrade.bin/sysupgrade-${{ inputs.COMPILE_CONFIG }}_${{ env.tag_name }}.bin/' *
 
         
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt-${{ input.COMPILE_CONFIG }}-${{ env.tag_name }}
+        name: OpenWrt-${{ inputs.COMPILE_CONFIG }}-${{ env.tag_name }}
         path: ./artifact/
