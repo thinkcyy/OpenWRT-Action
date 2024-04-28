@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
      
     steps:
+    - name: print-env
+      run: env
     - name: compile      
       #working-directory: ./AX6-OpenWrt
       run: |   
