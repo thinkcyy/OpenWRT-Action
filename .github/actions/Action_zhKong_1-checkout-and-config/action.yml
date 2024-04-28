@@ -2,7 +2,11 @@
 name: 'Action_zhKong_1-checkout-and-config'
 description: 'Greet someone and record the time'
 inputs:
-  who-to-greet:  # id of input
+  ROUTER_MODEL:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+  COMPILE_CONFIG:  # id of input
     description: 'Who to greet'
     required: true
     default: 'World'
@@ -13,4 +17,5 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.who-to-greet }}
+    - ${{ inputs.ROUTER_MODEL }}
+    - ${{ inputs.COMPILE_CONFIG }}
