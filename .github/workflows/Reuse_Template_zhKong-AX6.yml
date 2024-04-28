@@ -10,6 +10,7 @@ jobs:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AX6-20240325-avahi
   Compile:
+    needs: Checkout
     uses: ./.github/workflows/Action_Template_zhKong_2-compile.yml
     with:
            ROUTER_MODEL: AX6
