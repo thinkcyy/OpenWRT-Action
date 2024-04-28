@@ -1,0 +1,44 @@
+name: Action_Template_zhKong_2-compile
+
+on:
+   workflow_dispatch:
+   workflow_call:
+    inputs:
+        ROUTER_MODEL:
+          required: true
+          type: string
+        COMPILE_CONFIG:
+          required: true
+          type: string
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: compile
+      run: |   
+        bash ./zhKong/scripts/compile.sh
+        
+    - name: generate tag
+      run: |        
+        tag_name=$(date +%Y%m%d-%H%M)
+        echo "tag_name=${tag_name}" >>$GITHUB_ENV
+        
+    - name: Organize files
+      id: organize
+      run: |
+        rm -rf ./artifact/
+        mkdir -p ./artifact/
+        cp -rf $(find ./openwrt/bin/targets/ -type f -name "*sysupgrade*") ./artifact/
+        cp -rf $(find ./openwrt/bin/targets/ -type f -name "*.buildinfo") ./artifact/
+        cp ./openwrt/.config ./artifact/defconfig-${{ input.COMPILE_CONFIG }}.config
+        cd ./artifact/
+        rename 's/sysupgrade.bin/sysupgrade-${{ input.COMPILE_CONFIG }}_${{ env.tag_name }}.bin/' *
+
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: OpenWrt-${{ input.COMPILE_CONFIG }}-${{ env.tag_name }}
+        path: ./artifact/
