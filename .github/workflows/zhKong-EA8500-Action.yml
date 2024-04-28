@@ -37,9 +37,7 @@ jobs:
         sudo -E git config --global core.abbrev auto
         sudo timedatectl set-timezone "Asia/Shanghai"
         df -h
-                
-
-
+        
     - name: Maximize build space
       uses: easimon/maximize-build-space@master
       with:
