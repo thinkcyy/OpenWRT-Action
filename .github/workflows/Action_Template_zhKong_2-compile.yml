@@ -20,7 +20,7 @@ jobs:
       run: |   
          echo "当前工作目录"
          pwd
-         tree -L 3 echo 
+         tree -L 4 
          bash ./zhKong/scripts/compile.sh
         
     - name: generate tag
