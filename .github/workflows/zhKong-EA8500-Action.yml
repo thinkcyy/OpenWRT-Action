@@ -1,4 +1,4 @@
-name: zhKong-AX6
+name: zhKong-EA8500
 
 on:
    workflow_dispatch:
@@ -15,9 +15,9 @@ jobs:
         echo -e "Total CPU cores\t: $(nproc)"
         cat /proc/cpuinfo | grep 'model name'
         ulimit -a
-        echo "ROUTER_MODEL=AX6" >> $GITHUB_ENV
+        echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
         echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        echo "COMPILE_CONFIG=AX6-20240325-avahi" >> $GITHUB_ENV
+        echo "COMPILE_CONFIG=EA8500-zhKong-20240428" >> $GITHUB_ENV
         
         
     - name: Init build dependencies
@@ -69,11 +69,11 @@ jobs:
          tree -L 3      
          
     - name: prepare
-      #working-directory: ./AX6-OpenWrt    
+      #working-directory: ./EA8500-OpenWrt    
       run: |
          chmod +x ./zhKong/scripts/*.sh
          cp -v ./zhKong/config/${{ env.COMPILE_CONFIG }}.config ./zhKong/config/config-${{ env.ROUTER_MODEL }}.config
-         bash ./zhKong/scripts/prepare-${{ env.ROUTER_MODEL }}.sh
+         bash ./zhKong/scripts/prepare-AX6.sh
       
     - name: compile
       run: |   
