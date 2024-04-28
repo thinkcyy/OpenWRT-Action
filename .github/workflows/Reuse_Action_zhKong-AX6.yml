@@ -1,4 +1,4 @@
-name: Reuse_Template_zhKong-AX6
+name: Reuse_Action_zhKong-AX6
 
 on:
    workflow_dispatch:
