@@ -8,13 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Show system
+      run: |
+        echo -e "Total CPU cores\t: $(nproc)"
+        cat /proc/cpuinfo | grep 'model name'
+        ulimit -a
+        echo "ROUTER_MODEL=AX6" >> $GITHUB_ENV
+        echo "FILES_CONFIG=public" >> $GITHUB_ENV
+        echo "COMPILE_CONFIG=AX6-20240325-avahi" >> $GITHUB_ENV    
+
     - name: Prepare Firmware Repo
       uses: thinkcyy/Action_zhKong_1-checkout-and-config@main
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AX6-20240325-avahi 
            
-    - name: Prepare Firmware Repo
+    - name: Compile
       uses: thinkcyy/Action_zhKong_2-compile@main
       with:
            ROUTER_MODEL: AX6
