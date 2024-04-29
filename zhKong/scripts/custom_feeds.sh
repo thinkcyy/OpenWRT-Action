@@ -1,18 +1,18 @@
-echo '当前执行步骤：custom_feeds-添加feeds.conf.default'
+echo '当前执行步骤：2.1.1-custom_feeds-添加feeds.conf.default'
 echo 'src-git cus_lean_luci https://github.com/coolsnowwolf/luci' >>feeds.conf.default
 echo 'src-git cus_lean_packages https://github.com/coolsnowwolf/packages' >>feeds.conf.default
 echo 'src-git cus_lean_prouting https://github.com/coolsnowwolf/routing' >>feeds.conf.default
 
-echo '当前执行步骤：custom_feeds-更新 Feeds'
+echo '当前执行步骤：2.1.2-custom_feeds-更新 Feeds'
 ./scripts/feeds update -a
 
-echo '当前执行步骤：custom_feeds-删除luci-base、luci-mod-status、coremark、default-settings'
+echo '当前执行步骤：2.1.3-custom_feeds-删除luci-base、luci-mod-status、coremark、default-settings'
 rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
 rm -rf feeds/packages/utils/coremark
 rm -rf package/new/default-settings
 
-echo '当前执行步骤：custom_feeds-添加immortalwrt软件包'
+echo '当前执行步骤：2.1.4-custom_feeds-添加immortalwrt软件包'
 mkdir package/new
 git clone --depth 1 https://github.com/immortalwrt/immortalwrt immortal_immortalwrt
 cp -vr ./immortal_immortalwrt/package/emortal/autocore package/new/
@@ -35,6 +35,6 @@ rm -r feeds/lean/ddns-scripts_aliyun
 rm -r feeds/lean/autocore
 ./scripts/feeds install -a
 
-echo '当前执行步骤：custom_feeds-添加zhKong的ddns-scripts_aliyun包'
+echo '当前执行步骤：2.1.5-custom_feeds-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
