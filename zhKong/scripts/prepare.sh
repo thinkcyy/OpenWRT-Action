@@ -1,6 +1,6 @@
 cd openwrt
 
-echo '当前执行步骤：custom_feeds'
+echo '当前执行步骤：执行custom_feeds'
 chmod +x ../zhKong/scripts/*.sh
 ../zhKong/scripts/custom_feeds.sh
 
