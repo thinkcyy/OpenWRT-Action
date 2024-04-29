@@ -26,5 +26,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@main
       with:
-        name: OpenWrt-${{ inputs.COMPILE_CONFIG }}-${{ env.tag_name }}
+        name: OpenWrt-${{ env.COMPILE_CONFIG }}-${{ env.FILES_CONFIG }}-${{ env.tag_name }}
         path: /home/runner/work/OpenWRT-Action/OpenWRT-Action/OpenWRT-Action/artifact/
