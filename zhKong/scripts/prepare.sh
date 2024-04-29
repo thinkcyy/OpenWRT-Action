@@ -1,6 +1,6 @@
 cd openwrt
 
-echo '当前执行步骤：添加软件包'
+echo '当前执行步骤：custom_feeds'
 chmod +x ../zhKong/scripts/*.sh
 ../zhKong/scripts/custom_feeds.sh
 
