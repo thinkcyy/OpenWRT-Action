@@ -21,7 +21,7 @@ jobs:
       uses: thinkcyy/Action_zhKong_1-checkout-and-config@main
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AX6-20240325-avahi            
+           COMPILE_CONFIG: AX6-20240429-remove-privoxy            
           
     - name: Upload artifact
       uses: actions/upload-artifact@main
