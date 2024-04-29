@@ -15,7 +15,7 @@ jobs:
         ulimit -a
         echo "ROUTER_MODEL=AX6" >> $GITHUB_ENV
         echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        echo "COMPILE_CONFIG=AX6-20240325-avahi" >> $GITHUB_ENV    
+        echo "COMPILE_CONFIG=AX6-20240429-remove-privoxy" >> $GITHUB_ENV    
 
     - name: Compile
       uses: thinkcyy/Action_zhKong_1-checkout-and-config@main
