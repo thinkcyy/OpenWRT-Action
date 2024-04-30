@@ -15,7 +15,7 @@ jobs:
         echo "COMPILE_CONFIG=AX6-20240429-remove-privoxy" >> $GITHUB_ENV  
         
     - name: Compile
-      uses: thinkcyy/Action_zhKong_composite@main
+      uses: thinkcyy/Action_zhKong_composite@test
       with:
            ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
            COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}            
