@@ -1,0 +1,41 @@
+name: Reuse_Action_zhKong-AX6
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Show system
+      run: |
+        echo -e "Total CPU cores\t: $(nproc)"
+        cat /proc/cpuinfo | grep 'model name'
+        ulimit -a
+        echo "ROUTER_MODEL=AX6" >> $GITHUB_ENV
+        echo "FILES_CONFIG=public" >> $GITHUB_ENV
+        echo "COMPILE_CONFIG=AX6-20240429-remove-privoxy" >> $GITHUB_ENV   
+        
+    - name: Maximize build space
+      uses: easimon/maximize-build-space@master
+      with:
+        swap-size-mb: 512
+        temp-reserve-mb: 100
+        root-reserve-mb: 1280
+        remove-dotnet: 'true'
+        remove-android: 'true'
+        remove-haskell: 'true'
+        remove-codeql: 'true'
+        
+    - name: Compile
+      uses: thinkcyy/Action_zhKong_1-checkout-and-config@main
+      with:
+           ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
+           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}            
+          
+    - name: Upload artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: OpenWrt-${{ env.COMPILE_CONFIG }}-${{ env.FILES_CONFIG }}-${{ env.tag_name }}
+        path: /home/runner/work/OpenWRT-Action/OpenWRT-Action/OpenWRT-Action/artifact/
