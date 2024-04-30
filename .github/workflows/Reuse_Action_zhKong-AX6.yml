@@ -15,8 +15,19 @@ jobs:
         ulimit -a
         echo "ROUTER_MODEL=AX6" >> $GITHUB_ENV
         echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        echo "COMPILE_CONFIG=AX6-20240429-remove-privoxy" >> $GITHUB_ENV    
-
+        echo "COMPILE_CONFIG=AX6-20240429-remove-privoxy" >> $GITHUB_ENV   
+        
+    - name: Maximize build space
+      uses: easimon/maximize-build-space@master
+      with:
+        swap-size-mb: 512
+        temp-reserve-mb: 100
+        root-reserve-mb: 1280
+        remove-dotnet: 'true'
+        remove-android: 'true'
+        remove-haskell: 'true'
+        remove-codeql: 'true'
+        
     - name: Compile
       uses: thinkcyy/Action_zhKong_1-checkout-and-config@main
       with:
