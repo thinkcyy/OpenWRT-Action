@@ -12,7 +12,7 @@ jobs:
       run: |
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
         echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        echo "COMPILE_CONFIG=20240424-remove-igmpproxy" >> $GITHUB_ENV     
+        echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV     
         
     - name: Compile
       uses: thinkcyy/Action_LeanWRT_composite@main
