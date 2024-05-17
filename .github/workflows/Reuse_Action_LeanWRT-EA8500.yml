@@ -14,7 +14,7 @@ jobs:
         echo "FILES_CONFIG=public" >> $GITHUB_ENV
         #echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
         echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
-        echo "REPO_DEPTH=2" >> $GITHUB_ENV
+        echo "REPO_DEPTH=1" >> $GITHUB_ENV
         echo "REPO_COMMIT=606b5ae2eec6c827ed84b4295295f18499cddd17" >> $GITHUB_ENV
     
 #    - name: Initialization
@@ -29,7 +29,7 @@ jobs:
            ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
            COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}   
            OP_REPO: ${{ env.OP_REPO }}
-           REPO_DEPTH: ${{ env.REPO_DEPTH }}
+           #REPO_DEPTH: ${{ env.REPO_DEPTH }}
            REPO_COMMIT: ${{ env.REPO_COMMIT }}
            
     - name: Create release
