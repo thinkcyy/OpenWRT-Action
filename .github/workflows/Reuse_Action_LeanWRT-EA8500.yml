@@ -10,27 +10,24 @@ jobs:
     
     - name: Show system
       run: |
-        echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        echo "FILES_CONFIG=public" >> $GITHUB_ENV
+        #echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
+        #echo "FILES_CONFIG=public" >> $GITHUB_ENV
         #echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
-        echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
-        echo "REPO_DEPTH=1" >> $GITHUB_ENV
-        echo "REPO_COMMIT=606b5ae2eec6c827ed84b4295295f18499cddd17" >> $GITHUB_ENV
+        #echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
+        #echo "REPO_DEPTH=1" >> $GITHUB_ENV
+        #echo "REPO_COMMIT=606b5ae2eec6c827ed84b4295295f18499cddd17" >> $GITHUB_ENV
     
-#    - name: Initialization
-#      uses: thinkcyy/Action_Initialization@main
-#      with:
-#           ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
-#           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}          
+    - name: Initialization
+      uses: thinkcyy/Action_Initialization@main            
     
     - name: Compile
       uses: thinkcyy/Action_LeanWRT_composite@main
       with:
-           ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
-           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}   
-           OP_REPO: ${{ env.OP_REPO }}
-           #REPO_DEPTH: ${{ env.REPO_DEPTH }}
-           REPO_COMMIT: ${{ env.REPO_COMMIT }}
+           ROUTER_MODEL: EA8500
+           #COMPILE_CONFIG: EA8500-20240424-remove-igmpproxy   
+           OP_REPO: coolsnowwolf/lede
+           #REPO_DEPTH: 1
+           REPO_COMMIT: 606b5ae2eec6c827ed84b4295295f18499cddd17
            
     - name: Create release
       id: create_release
