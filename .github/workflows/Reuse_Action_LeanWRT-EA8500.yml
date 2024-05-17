@@ -12,7 +12,9 @@ jobs:
       run: |
         echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
         echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV     
+        echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
+        echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
+        echo "REPO_DEPTH=2" >> $GITHUB_ENV
     
     - name: Initialization
       uses: thinkcyy/Action_Initialization@main
@@ -24,7 +26,9 @@ jobs:
       uses: thinkcyy/Action_LeanWRT_composite@main
       with:
            ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
-           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}    
+           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}   
+           OP_REPO: ${{ env.OP_REPO }}
+           REPO_DEPTH: ${{ env.REPO_DEPTH }}
            
     - name: Create release
       id: create_release
