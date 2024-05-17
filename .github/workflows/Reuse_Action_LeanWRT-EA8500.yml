@@ -8,19 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-    - name: Show system
-      run: |
-        echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
-        echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
-        echo "REPO_DEPTH=2" >> $GITHUB_ENV
+#    - name: Show system
+#      run: |
+#        echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
+#        echo "FILES_CONFIG=public" >> $GITHUB_ENV
+#        echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
+#        echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
+#        echo "REPO_DEPTH=2" >> $GITHUB_ENV
     
-    - name: Initialization
-      uses: thinkcyy/Action_Initialization@main
-      with:
-           ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
-           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}          
+#    - name: Initialization
+#      uses: thinkcyy/Action_Initialization@main
+#      with:
+#           ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
+#           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}          
     
     - name: Compile
       uses: thinkcyy/Action_LeanWRT_composite@main
