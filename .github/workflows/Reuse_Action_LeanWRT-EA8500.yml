@@ -6,17 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-    
-    - name: Show system
-      run: |
-        #echo "ROUTER_MODEL=EA8500" >> $GITHUB_ENV
-        #echo "FILES_CONFIG=public" >> $GITHUB_ENV
-        #echo "COMPILE_CONFIG=EA8500-20240424-remove-igmpproxy" >> $GITHUB_ENV
-        #echo "OP_REPO=coolsnowwolf/lede" >> $GITHUB_ENV
-        #echo "REPO_DEPTH=1" >> $GITHUB_ENV
-        #echo "REPO_COMMIT=606b5ae2eec6c827ed84b4295295f18499cddd17" >> $GITHUB_ENV
-    
+    steps:   
+
     - name: Initialization
       uses: thinkcyy/Action_Initialization@main            
     
@@ -27,7 +18,8 @@ jobs:
            #COMPILE_CONFIG: EA8500-20240424-remove-igmpproxy   
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
-           REPO_COMMIT: 606b5ae2eec6c827ed84b4295295f18499cddd17
+           #切换至2023.11.11版本
+           REPO_COMMIT: 07c7f456d58a82e923f50e64e546f14b261d3560
            
     - name: Create release
       id: create_release
