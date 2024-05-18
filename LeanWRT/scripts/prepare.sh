@@ -7,7 +7,7 @@ chmod +x ../LeanWRT/scripts/*.sh
 echo '当前执行步骤：2.2-导入编译配置'
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
-echo {{ inputs.ROUTER_MODEL }}为：${{inputs.ROUTER_MODEL}}
+#echo {{ inputs.ROUTER_MODEL }}为：${{inputs.ROUTER_MODEL}}
 cp -v ../LeanWRT/config/config-${ROUTER_MODEL}.config .config
 
 #Action使用
