@@ -18,8 +18,8 @@ jobs:
            #COMPILE_CONFIG: EA8500-20240424-remove-igmpproxy   
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
-           #切换至2024.2.29版本
-           REPO_COMMIT: e15446b4ce380b0e9726a818846539d643549612
+           #切换至2024.2.2版本
+           REPO_COMMIT: 9ccbfda2bba9c64fe185091d1581f2a18bb1fc70
            
     - name: Create release
       id: create_release
