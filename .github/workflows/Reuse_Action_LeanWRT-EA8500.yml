@@ -15,11 +15,11 @@ jobs:
       uses: thinkcyy/Action_LeanWRT_composite@main
       with:
            ROUTER_MODEL: EA8500
-           #COMPILE_CONFIG: EA8500-20240424-remove-igmpproxy   
+           #COMPILE_CONFIG:    
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
-           #切换至2023.12.31版本
-           REPO_COMMIT: 606b5ae2eec6c827ed84b4295295f18499cddd17
+           #切换至2024.1.24版本-ipq806x: switch to kernel 5.10
+           REPO_COMMIT: 7515f84eaedc7b2b190eefddf8abbfd04685ec49
            
     - name: Create release
       id: create_release
