@@ -18,8 +18,8 @@ jobs:
            #COMPILE_CONFIG:    
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
-           #切换至2024.1.24版本-ipq806x: switch to kernel 5.10
-           REPO_COMMIT: 7515f84eaedc7b2b190eefddf8abbfd04685ec49
+           #ipq806x: 5.10内核编译失败，退回至切换至前一天2024.1.23版本
+           REPO_COMMIT: a5823d43b1765fdf0d8e2eed18e0e47d58e6301b
            
     - name: Create release
       id: create_release
