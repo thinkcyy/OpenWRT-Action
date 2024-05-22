@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_LeanWRT_composite@main
       with:
            ROUTER_MODEL: EA8500
-           #COMPILE_CONFIG:    
+           COMPILE_CONFIG: EA8500-20240522-full-NSS
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
            #ipq806x: 5.10内核编译失败，退回至切换至前一天2024.1.23版本
