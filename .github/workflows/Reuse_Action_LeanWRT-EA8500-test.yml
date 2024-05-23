@@ -14,7 +14,7 @@ jobs:
     - name: Clone files
       uses: actions/checkout@main
       with:
-         repository: thinkcyy/openwrt-config@
+         repository: thinkcyy/openwrt-config
          ref: 'test1'
          token: ${{ secrets.THINKCYY_TOKEN }}
          path: ./openwrt-config   
