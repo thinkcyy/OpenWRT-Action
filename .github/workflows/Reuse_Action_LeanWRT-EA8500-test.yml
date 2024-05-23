@@ -23,6 +23,7 @@ jobs:
       uses: thinkcyy/Action_LeanWRT_composite@main
       with:
            ROUTER_MODEL: EA8500
+           FILES_CONFIG: test
            COMPILE_CONFIG: EA8500-20240522-full-NSS
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
