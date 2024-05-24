@@ -20,7 +20,7 @@ jobs:
          path: ./openwrt-config   
              
     - name: Compile
-      uses: thinkcyy/Action_LeanWRT_composite@main
+      uses: thinkcyy/Action_LeanWRT_composite@OpenWrt
       with:
            ROUTER_MODEL: EA8500
            #FILES_CONFIG: test
