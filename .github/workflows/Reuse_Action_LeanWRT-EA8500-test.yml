@@ -24,7 +24,7 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            FILES_CONFIG: test
-           COMPILE_CONFIG: EA8500-20240524-full-NSS-without-crypto
+           COMPILE_CONFIG: EA8500-20240524-full-NSS
            OP_REPO: coolsnowwolf/lede
            #REPO_DEPTH: 1
            #ipq806x: 5.10内核编译失败，退回至切换至前一天2024.1.23版本
