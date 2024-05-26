@@ -26,7 +26,8 @@ rm -r feeds/lean/autocore
 
 # ddns-scripts_aliyun
 cp -r ../package/ddns-scripts_aliyun  package/new/
-cp nss-makefile-changes/qca-nss-clients-Makefile feeds/nss/qca-nss-clients/Makefile
-cp nss-makefile-changes/qca-nss-ecm-Makefile feeds/nss/qca-nss-ecm/Makefile
+#修改编译文件
+cp -v nss-makefile-changes/qca-nss-clients-Makefile feeds/nss/qca-nss-clients/Makefile
+cp -v nss-makefile-changes/qca-nss-ecm-Makefile feeds/nss/qca-nss-ecm/Makefile
 ./scripts/feeds update -a
 ./scripts/feeds install -a
