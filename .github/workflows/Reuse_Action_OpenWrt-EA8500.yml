@@ -24,9 +24,9 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            #FILES_CONFIG: test
-           COMPILE_CONFIG: EA8500-20240526-official-23.05-init
-           OP_REPO: openwrt/openwrt
-           REPO_BRANCH: openwrt-23.05
+           #COMPILE_CONFIG: EA8500-20240526-official-23.05-init
+           OP_REPO: APCCV/OpenWRT-23.05.0-NSS
+           REPO_BRANCH: 23.05.0-nss
            REPO_DEPTH: 1           
            #REPO_COMMIT: a5823d43b1765fdf0d8e2eed18e0e47d58e6301b
            
