@@ -20,13 +20,13 @@ mkdir package/new
 git clone https://github.com/coolsnowwolf/lede lede
 cp -r ./lede/package/lean feeds/
 
+# 删除lean的ddns-scripts_aliyun
 rm -r feeds/lean/ddns-scripts_aliyun
 rm -r feeds/lean/autocore
 
-
-# ddns-scripts_aliyun
-cp -r ../package/ddns-scripts_aliyun  package/new/
-
+echo '当前执行步骤：2.1.5-custom_feeds-添加zhKong的ddns-scripts_aliyun包'
+git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
+cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
