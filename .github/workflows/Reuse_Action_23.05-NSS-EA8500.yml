@@ -1,0 +1,42 @@
+name: Reuse_Action_23.05-NSS-EA8500
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:   
+
+    - name: Initialization
+      uses: thinkcyy/Action_Initialization@main
+      
+#    - name: Clone files
+#      uses: actions/checkout@main
+#      with:
+#         repository: thinkcyy/openwrt-config
+#         ref: 'test1'
+#         token: ${{ secrets.THINKCYY_TOKEN }}
+#         path: ./openwrt-config   
+             
+    - name: Compile
+      uses: thinkcyy/Action_LeanWRT_composite@OpenWrt
+      with:
+           ROUTER_MODEL: EA8500
+           #FILES_CONFIG: test
+           #COMPILE_CONFIG: EA8500-20240526-official-23.05-init
+           OP_REPO: APCCV/OpenWRT-23.05.0-NSS
+           REPO_BRANCH: 23.05.0-nss
+           REPO_DEPTH: 1           
+           #REPO_COMMIT: a5823d43b1765fdf0d8e2eed18e0e47d58e6301b
+           
+    - name: Create release
+      id: create_release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        name: OpenWrt-${{ env.TAG_NAME }}
+        allowUpdates: true
+        tag: ${{ env.TAG_NAME }}
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./OpenWRT-Action/artifact/*   
