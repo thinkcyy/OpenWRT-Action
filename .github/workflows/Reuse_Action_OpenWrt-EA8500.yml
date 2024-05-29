@@ -34,7 +34,7 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@main
       with:
-        name: OpenWrt-${{ env.TAG_NAME }}
+        name: OpenWrt-23.05-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
