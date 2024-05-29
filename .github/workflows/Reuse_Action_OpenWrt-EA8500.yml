@@ -24,7 +24,7 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            #FILES_CONFIG: test
-           COMPILE_CONFIG: EA8500-20240529-official-23.05-LUCI
+           COMPILE_CONFIG: EA8500-20240529-23.05-menuconfig
            OP_REPO: openwrt/openwrt
            REPO_BRANCH: openwrt-23.05
            REPO_DEPTH: 1           
