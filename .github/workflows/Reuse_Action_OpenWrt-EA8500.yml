@@ -27,7 +27,7 @@ jobs:
            COMPILE_CONFIG: EA8500-20240529-2-23.05-remove-samba-diff
            OP_REPO: openwrt/openwrt
            REPO_BRANCH: main
-           REPO_DEPTH: 1           
+           #REPO_DEPTH: 1           
            REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
            
     - name: Create release
