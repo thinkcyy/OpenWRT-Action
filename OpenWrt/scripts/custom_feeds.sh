@@ -29,7 +29,7 @@ echo '当前执行步骤：2.1.5-custom_feeds-添加zhKong的ddns-scripts_aliyun
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
 
-#调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc
+echo '当前执行步骤：2.1.6-custom_feeds-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
 rm -rf ./feeds/luci/applications/luci-app-turboacc/
 curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
