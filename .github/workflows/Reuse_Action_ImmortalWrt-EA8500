@@ -1,4 +1,4 @@
-name: Reuse_Action_OpenWrt-EA8500
+name: Reuse_Action_ImmortalWrt-EA8500
 
 on:
    workflow_dispatch:
