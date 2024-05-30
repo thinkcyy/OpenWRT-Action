@@ -25,16 +25,16 @@ jobs:
            ROUTER_MODEL: EA8500
            #FILES_CONFIG: test
            COMPILE_CONFIG: EA8500-20240529-2-23.05-remove-samba-diff
-           OP_REPO: openwrt/openwrt
-           REPO_BRANCH: main
-           #REPO_DEPTH: 1           
-           REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
+           OP_REPO: immortalwrt/immortalwrt
+           REPO_BRANCH: openwrt-23.05
+           REPO_DEPTH: 1           
+           #REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
            
     - name: Create release
       id: create_release
       uses: ncipollo/release-action@main
       with:
-        name: OpenWrt-23.05-${{ env.TAG_NAME }}
+        name: ImmortalWrt-23.05-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
