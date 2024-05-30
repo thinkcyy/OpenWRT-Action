@@ -1,0 +1,42 @@
+name: Reuse_Action_OpenWrt-EA8500
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:   
+
+    - name: Initialization
+      uses: thinkcyy/Action_Initialization@main
+      
+#    - name: Clone files
+#      uses: actions/checkout@main
+#      with:
+#         repository: thinkcyy/openwrt-config
+#         ref: 'test1'
+#         token: ${{ secrets.THINKCYY_TOKEN }}
+#         path: ./openwrt-config   
+             
+    - name: Compile
+      uses: thinkcyy/Action_LeanWRT_composite@OpenWrt
+      with:
+           ROUTER_MODEL: EA8500
+           #FILES_CONFIG: test
+           COMPILE_CONFIG: EA8500-20240529-2-23.05-remove-samba-diff
+           OP_REPO: openwrt/openwrt
+           REPO_BRANCH: main
+           #REPO_DEPTH: 1           
+           REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
+           
+    - name: Create release
+      id: create_release
+      uses: ncipollo/release-action@main
+      with:
+        name: OpenWrt-23.05-${{ env.TAG_NAME }}
+        allowUpdates: true
+        tag: ${{ env.TAG_NAME }}
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./OpenWRT-Action/artifact/*      
