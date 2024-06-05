@@ -34,7 +34,7 @@ rm -rf ./feeds/luci/applications/luci-app-turboacc/
 #curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 #git clone --depth=1 --single-branch https://github.com/chenmozhijin/turboacc ~/turboacc
 cp ~/add_turboacc_no_952953.sh ./
-./add_turboacc_no_952953.sh
+bash ./add_turboacc_no_952953.sh
 
 #修改编译文件
 #tree -L 2 feeds/nss/
