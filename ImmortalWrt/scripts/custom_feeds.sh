@@ -35,7 +35,7 @@ rm -rf ./feeds/luci/applications/luci-app-turboacc/
 #git clone --depth=1 --single-branch https://github.com/chenmozhijin/turboacc ~/turboacc
 #cp ~/add_turboacc_no_952953.sh ./
 #bash ./add_turboacc_no_952953.sh
-bash ../ImmortalWrt/scripts/add_turboacc_no_952953.sh
+bash ../ImmortalWrt/scripts/add_turboacc_only_952.sh
 
 #修改编译文件
 #tree -L 2 feeds/nss/
