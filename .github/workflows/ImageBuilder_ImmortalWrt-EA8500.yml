@@ -24,7 +24,7 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            REPO_TYPE: ImmortalWrt
-           IMAGEBUILDR: y
+           IMAGEBUILDER: y
            #FILES_CONFIG: test           
            COMPILE_CONFIG: EA8500-20240606-23.05-ImageBuilder
            OP_REPO: immortalwrt/immortalwrt
