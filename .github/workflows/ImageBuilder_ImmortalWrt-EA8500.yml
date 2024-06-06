@@ -1,4 +1,4 @@
-name: Reuse_Action_ImmortalWrt-EA8500
+name: ImageBuilder_ImmortalWrt-EA8500
 
 on:
    workflow_dispatch:
@@ -24,20 +24,11 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            REPO_TYPE: ImmortalWrt
+           IMAGEBUILDR: y
            #FILES_CONFIG: test           
-           COMPILE_CONFIG: EA8500-20240530-1-23.05-remove-doh-defconfig
+           COMPILE_CONFIG: EA8500-20240606-23.05-ImageBuilder
            OP_REPO: immortalwrt/immortalwrt
            REPO_BRANCH: openwrt-23.05
            REPO_DEPTH: 1           
            #REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
-           
-    - name: Create release
-      id: create_release
-      uses: ncipollo/release-action@main
-      with:
-        name: ImmortalWrt-23.05-${{ env.TAG_NAME }}
-        allowUpdates: true
-        tag: ${{ env.TAG_NAME }}
-        replacesArtifacts: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./OpenWRT-Action/artifact/*      
+
