@@ -31,4 +31,5 @@ jobs:
            REPO_BRANCH: openwrt-23.05
            REPO_DEPTH: 1           
            #REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
+           REPO_TAG: v23.05.2
 
