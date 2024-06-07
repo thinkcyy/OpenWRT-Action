@@ -26,7 +26,7 @@ jobs:
            REPO_TYPE: ImmortalWrt
            IMAGEBUILDER: y
            #FILES_CONFIG: test           
-           COMPILE_CONFIG: EA8500-20240607-2-dawn
+           COMPILE_CONFIG: EA8500-20240607-3-luci-lib-fs
            OP_REPO: immortalwrt/immortalwrt
            REPO_BRANCH: v23.05.2          
            #REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
