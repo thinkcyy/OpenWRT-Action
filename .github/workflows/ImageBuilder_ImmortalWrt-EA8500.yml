@@ -32,3 +32,13 @@ jobs:
            REPO_BRANCH: openwrt-23.05
            #REPO_COMMIT: 32e4c50d24d08570c6ae34d05922f1d9d879c0f2
            
+    - name: Create release
+      id: create_release
+      uses: ncipollo/release-action@main
+      with:
+        name: ImmortalWrt-23.05-ImageBuilder-${{ env.TAG_NAME }}
+        allowUpdates: true
+        tag: ${{ env.TAG_NAME }}
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./OpenWRT-Action/artifact/* 
