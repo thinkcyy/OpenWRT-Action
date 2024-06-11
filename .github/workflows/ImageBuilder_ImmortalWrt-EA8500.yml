@@ -27,8 +27,8 @@ jobs:
            IMAGEBUILDER: y                      
            COMPILE_CONFIG: EA8500-20240607-2-dawn
            OP_REPO: immortalwrt/immortalwrt
-           REPO_BRANCH: v23.05.1
-           #REPO_BRANCH: openwrt-23.01
+           REPO_BRANCH: v23.05.0
+           #REPO_BRANCH: openwrt-23.05
            #REPO_COMMIT: 1f45d29
            
     - name: Create release
