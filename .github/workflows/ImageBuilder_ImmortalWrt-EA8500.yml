@@ -35,7 +35,7 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@main
       with:
-        name: ImmortalWrt-23.05-ImageBuilder-${{ env.TAG_NAME }}
+        name: ImmortalWrt-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
