@@ -17,4 +17,4 @@ cp -v ../ImmortalWrt/config/config-${INPUT_ROUTER_MODEL}.config .config
 #cp -v ../ImmortalWrt/config/config-${{ inputs.ROUTER_MODEL }}.config .config
 
 echo '当前执行步骤：2.3-初始化编译配置defconfig'
-make defconfig
+# make defconfig
