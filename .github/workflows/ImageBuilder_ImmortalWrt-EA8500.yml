@@ -25,9 +25,9 @@ jobs:
            ROUTER_MODEL: EA8500
            REPO_TYPE: ImmortalWrt
            IMAGEBUILDER: y                      
-           COMPILE_CONFIG: EA8500-20240608-4-all-packages-not-set-other-i18n
+           COMPILE_CONFIG: EA8500-20240614-23.05.0-init
            OP_REPO: immortalwrt/immortalwrt
-           REPO_BRANCH: v23.05.2
+           REPO_BRANCH: v23.05.0
            #REPO_BRANCH: openwrt-23.05
            #REPO_COMMIT: 82ee4b1
            
