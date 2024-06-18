@@ -7,6 +7,6 @@ uci set system.@system[0].timezone=CST-8
 uci set system.@system[0].zonename=Asia/Shanghai
 uci commit system
 
-sed -i "s|DISTRIB_REVISION='|DISTRIB_REVISION='REVISION_tobeupdated|g"  /etc/openwrt_release
+sed -i "s|DISTRIB_REVISION='|DISTRIB_REVISION='ImageBuilder-config-20240618-|g"  /etc/openwrt_release
 
 exit 0
