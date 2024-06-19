@@ -15,7 +15,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/thinkcy-settings
   SECTION:=luci
   CATEGORY:=LuCI
-  TITLE:=LuCI support for Default Settings
+  TITLE:=LuCI support for thinkcy Settings
   DEPENDS:=+luci
   PKGARCH:=all
 endef
