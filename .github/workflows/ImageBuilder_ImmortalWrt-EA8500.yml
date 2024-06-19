@@ -25,7 +25,7 @@ jobs:
            ROUTER_MODEL: EA8500
            REPO_TYPE: ImmortalWrt
            IMAGEBUILDER: y                      
-           COMPILE_CONFIG: EA8500-20240618-1-Imagebuilder-thinkcy-default-settings
+           COMPILE_CONFIG: EA8500-20240618-1-Imagebuilder-thinkcy-settings
            OP_REPO: immortalwrt/immortalwrt
            REPO_BRANCH: v23.05.2
            #REPO_BRANCH: openwrt-23.05
