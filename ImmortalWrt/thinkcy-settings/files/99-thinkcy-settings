@@ -1,6 +1,6 @@
 #!/bin/sh
 
 sed -i "s|DISTRIB_REVISION='|DISTRIB_REVISION='REVISION_tobeupdated-|g"  /etc/openwrt_release
-sed -i "/DISTRIB_DESCRIPTION/s/\'/ DISTRIB_DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
+sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
 
 exit 0
