@@ -12,7 +12,7 @@ jobs:
       uses: thinkcyy/Action_Initialization@main            
     
     - name: Compile
-      uses: thinkcyy/Action_LeanWRT_composite@main
+      uses: thinkcyy/Action_OpenWrt_composite@main
       with:
            ROUTER_MODEL: EA8500
            COMPILE_CONFIG: EA8500-20240522-full-NSS
