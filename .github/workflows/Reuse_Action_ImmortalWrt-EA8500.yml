@@ -9,18 +9,10 @@ jobs:
     steps:   
 
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@main
-      
-#    - name: Clone files
-#      uses: actions/checkout@main
-#      with:
-#         repository: thinkcyy/openwrt-config
-#         ref: 'test1'
-#         token: ${{ secrets.THINKCYY_TOKEN }}
-#         path: ./openwrt-config   
-             
+      uses: thinkcyy/Action_Initialization@main      
+           
     - name: Compile
-      uses: thinkcyy/Action_LeanWRT_composite@OpenWrt
+      uses: thinkcyy/Action_OpenWrt_composite@OpenWrt
       with:
            ROUTER_MODEL: EA8500
            REPO_TYPE: ImmortalWrt
