@@ -33,6 +33,7 @@ cp -r ./lede/package/lean feeds/
 # 删除lean的ddns-scripts_aliyun
 rm -r feeds/lean/ddns-scripts_aliyun
 rm -r feeds/lean/autocore
+rm -r feeds/lean/default-settings
 ./scripts/feeds install -a
 
 echo '当前执行步骤：2.1.5-custom_feeds-添加zhKong的ddns-scripts_aliyun包'
