@@ -19,7 +19,7 @@ jobs:
            REPO_TYPE: zhKong
            IMAGEBUILDER: y                                 
            OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: main
+           REPO_BRANCH: main_nss
            #REPO_COMMIT: 
            
     - name: Create release
