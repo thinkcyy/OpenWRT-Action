@@ -20,7 +20,7 @@ jobs:
 #         path: ./openwrt-config   
              
     - name: Compile
-      uses: thinkcyy/Action_LeanWRT_composite@OpenWrt
+      uses: thinkcyy/Action_OpenWrt_composite@OpenWrt
       with:
            ROUTER_MODEL: EA8500
            REPO_TYPE: ImmortalWrt
