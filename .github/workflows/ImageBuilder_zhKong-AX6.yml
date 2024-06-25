@@ -1,0 +1,34 @@
+name: Reuse_Action_zhKong-AX6-V2
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Show system
+      run: |
+        echo "ROUTER_MODEL=AX6" >> $GITHUB_ENV
+        echo "COMPILE_CONFIG=AX6-20240501-full-NSS" >> $GITHUB_ENV    
+        
+    - name: Initialization
+      uses: thinkcyy/Action_Initialization@main                
+                   
+    - name: Compile
+      uses: thinkcyy/Action_zhKong_composite@main
+      with:
+           ROUTER_MODEL: ${{ env.ROUTER_MODEL }}
+           COMPILE_CONFIG: ${{ env.COMPILE_CONFIG }}    
+           
+    - name: Create release
+      id: create_release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        name: OpenWrt-${{ env.TAG_NAME }}
+        allowUpdates: true
+        tag: ${{ env.TAG_NAME }}
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./OpenWRT-Action/artifact/*      
