@@ -30,7 +30,7 @@ cp -r ./immortal_package/utils/coremark package/new/
 git clone --depth 1 https://github.com/coolsnowwolf/lede lede
 cp -r ./lede/package/lean feeds/
 
-# 删除lean的ddns-scripts_aliyun
+# 删除lean的ddns-scripts_aliyun、dedefault-settings
 rm -r feeds/lean/ddns-scripts_aliyun
 rm -r feeds/lean/autocore
 rm -r feeds/lean/default-settings
