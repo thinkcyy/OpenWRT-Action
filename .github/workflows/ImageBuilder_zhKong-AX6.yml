@@ -1,4 +1,4 @@
-name: Reuse_Action_zhKong-AX6-V2
+name: ImageBuilder_zhKong-AX6
 
 on:
    workflow_dispatch:
