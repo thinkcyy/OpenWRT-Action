@@ -39,4 +39,4 @@ rm -r feeds/lean/default-settings
 echo '当前执行步骤：2.1.5-custom_feeds-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
-tree -L 2
+tree -L 3 ./package
