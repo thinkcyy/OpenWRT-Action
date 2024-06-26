@@ -18,8 +18,8 @@ jobs:
            COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
            REPO_TYPE: zhKong
            IMAGEBUILDER: y                                 
-           OP_REPO: thinkcyy/AX3600-OpenWrt
-           REPO_BRANCH: master
+           OP_REPO: AgustinLorenzo/openwrt
+           REPO_BRANCH: main
            #REPO_COMMIT: 
            
     - name: Create release
