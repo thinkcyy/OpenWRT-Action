@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@zhKong
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
+           COMPILE_CONFIG: AX6-zhkong-thinkcy-minimal
            REPO_TYPE: zhKong
            IMAGEBUILDER: y                                 
            OP_REPO: AgustinLorenzo/openwrt
