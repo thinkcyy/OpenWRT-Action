@@ -19,7 +19,7 @@ jobs:
            REPO_TYPE: zhKong
            IMAGEBUILDER: y                                 
            OP_REPO: thinkcyy/AX3600-OpenWrt
-           REPO_BRANCH: main_nss
+           REPO_BRANCH: master
            #REPO_COMMIT: 
            
     - name: Create release
