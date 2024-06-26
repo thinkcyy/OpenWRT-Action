@@ -1,7 +1,7 @@
-echo '当前执行步骤：2.1.1-custom_feeds-添加feeds.conf.default'
-echo 'src-git cus_lean_luci https://github.com/coolsnowwolf/luci' >>feeds.conf.default
-echo 'src-git cus_lean_packages https://github.com/coolsnowwolf/packages' >>feeds.conf.default
-echo 'src-git cus_lean_prouting https://github.com/coolsnowwolf/routing' >>feeds.conf.default
+#echo '当前执行步骤：2.1.1-custom_feeds-添加feeds.conf.default'
+#echo 'src-git cus_lean_luci https://github.com/coolsnowwolf/luci' >>feeds.conf.default
+#echo 'src-git cus_lean_packages https://github.com/coolsnowwolf/packages' >>feeds.conf.default
+#echo 'src-git cus_lean_prouting https://github.com/coolsnowwolf/routing' >>feeds.conf.default
 
 echo '当前执行步骤：2.1.2-custom_feeds-更新 Feeds'
 ./scripts/feeds update -a
@@ -27,8 +27,8 @@ cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 git clone --depth 1 https://github.com/immortalwrt/packages immortal_package
 cp -r ./immortal_package/utils/coremark package/new/
 
-git clone --depth 1 https://github.com/coolsnowwolf/lede lede
-cp -r ./lede/package/lean feeds/
+#git clone --depth 1 https://github.com/coolsnowwolf/lede lede
+#cp -r ./lede/package/lean feeds/
 
 # 删除lean的ddns-scripts_aliyun、dedefault-settings
 rm -r feeds/lean/ddns-scripts_aliyun
@@ -39,3 +39,4 @@ rm -r feeds/lean/default-settings
 echo '当前执行步骤：2.1.5-custom_feeds-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
+tree -L 2
