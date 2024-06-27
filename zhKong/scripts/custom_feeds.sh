@@ -49,4 +49,16 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 echo '-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal/
-tree -L 3 ./package
+#tree -L 3 ./package
+
+echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
+echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
+
+echo '-导入编译配置'
+cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
+
+echo '-Action导入编译配置'
+cp -v ../zhKong/config/config-${INPUT_ROUTER_MODEL}.config .config
+
+echo '-初始化编译配置defconfig'
+make defconfig
