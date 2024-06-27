@@ -9,7 +9,7 @@ jobs:
     steps:
         
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@main                
+      uses: thinkcyy/Action_Initialization@quick                
                    
     - name: Compile
       uses: thinkcyy/Action_OpenWrt_composite@zhKong
@@ -20,6 +20,7 @@ jobs:
            IMAGEBUILDER: y                                 
            OP_REPO: AgustinLorenzo/openwrt
            REPO_BRANCH: main
+           MATCH_FEED_HASH: y
            #REPO_COMMIT: 
            
     - name: Create release
