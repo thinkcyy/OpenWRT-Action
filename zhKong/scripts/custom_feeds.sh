@@ -51,6 +51,9 @@ git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal/
 #tree -L 3 ./package
 
+ echo '-向后调整tinc服务启动次序'             
+ sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
+
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
