@@ -23,6 +23,8 @@ cd ../immortal_immortalwrt
 REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE})
 git checkout $REV_HASH
 
+cd ..
+
 rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
 rm -rf feeds/packages/utils/coremark
@@ -54,8 +56,8 @@ cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal/
 echo '-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
-#echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
-#echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
+echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
+echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
 echo '-导入编译配置'
 cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
