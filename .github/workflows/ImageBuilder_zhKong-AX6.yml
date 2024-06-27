@@ -16,8 +16,7 @@ jobs:
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
-           REPO_TYPE: zhKong
-           IMAGEBUILDER: y                                 
+           REPO_TYPE: zhKong           
            OP_REPO: AgustinLorenzo/openwrt
            REPO_BRANCH: main_nss
            MATCH_FEED_HASH: y
@@ -32,4 +31,4 @@ jobs:
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./OpenWRT-Action/artifact/* 
+        artifacts: ./Action-root/artifact/* 
