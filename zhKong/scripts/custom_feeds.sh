@@ -12,11 +12,11 @@ git clone https://github.com/immortalwrt/immortalwrt immortal_immortalwrt
 REV_DATE=$(git log -1 --format=%cd --date=iso8601-strict)
 
 cd immortal_luci
-REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE}
+REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE})
 git checkout $REV_HASH
 
 cd ../immortal_package
-REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE}
+REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE})
 git checkout $REV_HASH
 
 cd ../immortal_immortalwrt
