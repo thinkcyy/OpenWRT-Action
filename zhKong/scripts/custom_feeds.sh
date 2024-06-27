@@ -29,10 +29,10 @@ rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
 rm -rf feeds/packages/utils/coremark
 rm -rf package/new/default-settings
-cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
-cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
-cp -r ./immortal_package/utils/coremark package/immortal/
-cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
+cp -vr ./immortal_luci/modules/luci-base feeds/luci/modules/
+cp -vr ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
+cp -vr ./immortal_package/utils/coremark package/immortal/
+cp -vr ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 
 echo '-步骤：custom_feed-添加autocore'
 cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
