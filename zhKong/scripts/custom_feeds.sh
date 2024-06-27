@@ -12,15 +12,15 @@ git clone https://github.com/immortalwrt/immortalwrt immortal_immortalwrt
 REV_DATE=$(git log -1 --format=%cd --date=iso8601-strict)
 
 cd immortal_luci
-REV_HASH="$(git rev-list -n 1 --all --before=${REV_DATE}"
+REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE}
 git checkout $REV_HASH
 
 cd ../immortal_package
-REV_HASH="$(git rev-list -n 1 --all --before=${REV_DATE}"
+REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE}
 git checkout $REV_HASH
 
 cd ../immortal_immortalwrt
-REV_HASH="$(git rev-list -n 1 --all --before=${REV_DATE}"
+REV_HASH=$(git rev-list -n 1 --all --before=${REV_DATE})
 git checkout $REV_HASH
 
 rm -rf feeds/luci/modules/luci-base
@@ -51,11 +51,11 @@ git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal/
 #tree -L 3 ./package
 
- echo '-向后调整tinc服务启动次序'             
- sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
+echo '-向后调整tinc服务启动次序'             
+sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
-echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
-echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
+#echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
+#echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
 echo '-导入编译配置'
 cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
