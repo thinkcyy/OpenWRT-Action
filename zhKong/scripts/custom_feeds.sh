@@ -25,12 +25,16 @@ git checkout $REV_HASH
 
 cd ..
 
-rm -rf feeds/luci/modules/luci-base
-rm -rf feeds/luci/modules/luci-mod-status
-rm -rf feeds/packages/utils/coremark
+echo '-步骤：custom_feed-替换自带luci'
+rm -rf feeds/luci
+#rm -rf feeds/luci/modules/luci-base
+#rm -rf feeds/luci/modules/luci-mod-status
+mv immortal_luci  feeds
+
+#rm -rf feeds/packages/utils/coremark
 rm -rf package/new/default-settings
-cp -vr ./immortal_luci/modules/luci-base feeds/luci/modules/
-cp -vr ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
+#cp -vr ./immortal_luci/modules/luci-base feeds/luci/modules/
+#cp -vr ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 cp -vr ./immortal_package/utils/coremark package/immortal/
 cp -vr ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 
@@ -51,10 +55,13 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal/
-#tree -L 3 ./package
+
 
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
+
+echo '-package文件总览：'
+tree -L 3 ./package
 
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
