@@ -1,6 +1,11 @@
 echo '-步骤：custom_feed-更新 Feeds'
+
+echo '-步骤：custom_feed-替换自带的feed源'
+cp ../scripts/feeds.conf
+
 ./scripts/feeds update -a
 
+: <<'COMMENT'
 echo '-步骤：custom_feed-替换自带feed中的luci-base、luci-mod-status、coremark和自带package中的default-settings'
 mkdir package/immortal
 
@@ -50,11 +55,14 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 #rm -r feeds/lean/autocore
 #rm -r feeds/lean/default-settings
 
+COMMENT
+ 
+
 ./scripts/feeds install -a
 
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt zhKong_OpenWrt
-cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal/
+cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/
 
 
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
