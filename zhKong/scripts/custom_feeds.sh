@@ -67,13 +67,13 @@ COMMENT
 echo '-步骤：custom_feed-添加coolsnowwolf/luci中的luci-app-zerotier、'
 mkdir package/lean
 git clone --depth 1 https://github.com/coolsnowwolf/luci cus_lean_luci
-cp -r cus_lean_luci/applications/luci-app-zerotier package/lean/
+#cp -r cus_lean_luci/applications/luci-app-zerotier package/lean/
 cp -r cus_lean_luci/applications/luci-app-turboacc package/lean/
-cp -r cus_lean_luci/applications/luci-app-cpufreq package/lean/
-cp -r cus_lean_luci/applications/luci-app-advanced-reboot package/lean/
-cp -r cus_lean_luci/applications/luci-app-dawn package/lean/
-cp -r cus_lean_luci/applications/luci-app-samba4 package/lean/
-cp -r cus_lean_luci/applications/luci-app-usb-printer package/lean/
+#cp -r cus_lean_luci/applications/luci-app-cpufreq package/lean/
+#cp -r cus_lean_luci/applications/luci-app-advanced-reboot package/lean/
+#cp -r cus_lean_luci/applications/luci-app-dawn package/lean/
+#cp -r cus_lean_luci/applications/luci-app-samba4 package/lean/
+#cp -r cus_lean_luci/applications/luci-app-usb-printer package/lean/
 
 git clone --depth 1 https://github.com/coolsnowwolf/lede cus_lean_lede
 cp -r cus_lean_lede/package/lean/autosamba package/lean/
@@ -103,4 +103,4 @@ echo '-步骤：custom_feed-Action导入编译配置'
 cp -v ../zhKong/config/config-${INPUT_ROUTER_MODEL}.config .config
 
 echo '-步骤：custom_feed-初始化编译配置defconfig'
-make defconfig
+#make defconfig
