@@ -81,7 +81,7 @@ cp -r cus_lean_lede/package/lean/ddns-scripts_dnspod package/lean/
 cp -r cus_lean_lede/package/lean/ipv6-helper package/lean/
 
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
-git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt -b openwrt-23.05 zhKong_OpenWrt
+git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/
 
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
