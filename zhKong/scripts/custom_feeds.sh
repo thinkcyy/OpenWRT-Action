@@ -58,13 +58,12 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 COMMENT
  
 
-./scripts/feeds install -a
 
 #echo '-步骤：custom_feed-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
 #rm -rf ./feeds/luci/applications/luci-app-turboacc/
 #curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
-echo '-步骤：custom_feed-添加coolsnowwolf/luci中的luci-app-zerotier、'
+echo '-步骤：custom_feed-添加coolsnowwolf的软件包'
 mkdir package/lean
 git clone --depth 1 https://github.com/coolsnowwolf/luci cus_lean_luci
 #cp -r cus_lean_luci/applications/luci-app-zerotier package/lean/
@@ -81,14 +80,14 @@ cp -r cus_lean_lede/package/lean/automount package/lean/
 cp -r cus_lean_lede/package/lean/ddns-scripts_dnspod package/lean/
 cp -r cus_lean_lede/package/lean/ipv6-helper package/lean/
 
-
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt -b openwrt-23.05 zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/
 
-
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
+
+./scripts/feeds install -a
 
 echo '-package文件总览：'
 tree -L 3 ./package
@@ -103,4 +102,4 @@ echo '-步骤：custom_feed-Action导入编译配置'
 cp -v ../zhKong/config/config-${INPUT_ROUTER_MODEL}.config .config
 
 echo '-步骤：custom_feed-初始化编译配置defconfig'
-#make defconfig
+make defconfig
