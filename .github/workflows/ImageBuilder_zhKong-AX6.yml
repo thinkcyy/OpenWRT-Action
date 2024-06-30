@@ -33,4 +33,4 @@ jobs:
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./Action-root/artifact/* 
+        artifacts: ./runner_root/artifact/* 
