@@ -1,7 +1,7 @@
 echo '-步骤：custom_feed-更新 Feeds'
 
-echo '-步骤：custom_feed-替换自带的feed源'
-cp ../$REPO_TYPE/scripts/feeds.conf.default ./
+#echo '-步骤：custom_feed-替换自带的feed源'
+#cp ../$REPO_TYPE/scripts/feeds.conf.default ./
 
 ./scripts/feeds update -a
 
