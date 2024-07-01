@@ -1,0 +1,8 @@
+src-git packages https://git.openwrt.org/feed/packages.git^e616f879c079966b0cfe94284551aa7d698e4a6e
+src-git luci https://git.openwrt.org/project/luci.git^41c18218f382757b62cbf678168bb749c10c8a5e
+src-git routing https://git.openwrt.org/feed/routing.git^4af9b69e1ba22a7406e20cdfb4982962e631fce4
+src-git telephony https://git.openwrt.org/feed/telephony.git^c60658b7db8b6d49735912732c2d2a9293d140bf
+src-git nss_packages https://github.com/AgustinLorenzo/nss-packages.git^44f35e92b15caee5bbd8592bd5ff3f0a08b872bf
+src-git cus_lean_luci https://github.com/coolsnowwolf/luci^c79d23bf46f5f28543370ff435a5fa18f46afd08
+src-git cus_lean_packages https://github.com/coolsnowwolf/packages^9dab2a65f8ef37e23e05f3070bd583e628ec10f1
+src-git cus_lean_prouting https://github.com/coolsnowwolf/routing^3aefda75aee96b485713ba12a8c4e37d76e00095
