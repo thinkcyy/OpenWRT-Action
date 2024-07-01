@@ -93,6 +93,7 @@ COMMENT
 
 echo '-package文件总览：'
 tree -L 3 ./package
+tree -L 3 ./feeds
 
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
