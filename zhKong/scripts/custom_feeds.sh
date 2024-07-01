@@ -55,7 +55,7 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 #rm -r feeds/lean/autocore
 #rm -r feeds/lean/default-settings
 
-COMMENT
+
  
 
 
@@ -86,6 +86,8 @@ cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/
 
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
+
+COMMENT
 
 ./scripts/feeds install -a
 
