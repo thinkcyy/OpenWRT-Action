@@ -3,6 +3,8 @@
 #echo 'src-git cus_lean_routing https://github.com/coolsnowwolf/routing' >>feeds.conf.default
 
 # 更新 Feeds
+echo '当前工作目录'
+pwd
 ./scripts/feeds update -a
 tree -L 3
 
