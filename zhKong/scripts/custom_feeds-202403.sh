@@ -30,5 +30,6 @@ rm -r feeds/lean/ddns-scripts_aliyun
 rm -r feeds/lean/autocore
 ./scripts/feeds install -a
 
-# ddns-scripts_aliyun
-cp -r ../package/ddns-scripts_aliyun  package/new/
+echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
+git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
+cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
