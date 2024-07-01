@@ -55,19 +55,19 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 #rm -r feeds/lean/autocore
 #rm -r feeds/lean/default-settings
 
-
+COMMENT
  
 
 
-#echo '-步骤：custom_feed-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
-#rm -rf ./feeds/luci/applications/luci-app-turboacc/
-#curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
+echo '-步骤：custom_feed-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
+rm -rf ./feeds/luci/applications/luci-app-turboacc/
+curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
 echo '-步骤：custom_feed-添加coolsnowwolf的软件包'
 mkdir package/lean
 git clone --depth 1 https://github.com/coolsnowwolf/luci cus_lean_luci
 #cp -r cus_lean_luci/applications/luci-app-zerotier package/lean/
-cp -r cus_lean_luci/applications/luci-app-turboacc package/lean/
+#cp -r cus_lean_luci/applications/luci-app-turboacc package/lean/
 #cp -r cus_lean_luci/applications/luci-app-cpufreq package/lean/
 #cp -r cus_lean_luci/applications/luci-app-advanced-reboot package/lean/
 #cp -r cus_lean_luci/applications/luci-app-dawn package/lean/
@@ -87,7 +87,7 @@ cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
-COMMENT
+
 
 ./scripts/feeds install -a
 
