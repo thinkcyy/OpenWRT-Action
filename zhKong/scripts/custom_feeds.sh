@@ -4,6 +4,7 @@ echo '-步骤：custom_feed-更新 Feeds'
 #cp ../$REPO_TYPE/scripts/feeds.conf.default ./
 
 ./scripts/feeds update -a
+./scripts/feeds install -a
 
 : <<'COMMENT'
 echo '-步骤：custom_feed-替换自带feed中的luci-base、luci-mod-status、coremark和自带package中的default-settings'
@@ -89,7 +90,7 @@ sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
 
 
-./scripts/feeds install -a
+
 
 echo '-package文件总览：'
 tree -L 3 ./package
