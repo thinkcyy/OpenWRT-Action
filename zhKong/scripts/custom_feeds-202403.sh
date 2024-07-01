@@ -7,7 +7,7 @@ echo '当前工作目录'
 pwd
 chmod +x ./scripts/*
 
-./scripts/feeds update -a
+#./scripts/feeds update -a
 wait 10
 
 tree -L 3
