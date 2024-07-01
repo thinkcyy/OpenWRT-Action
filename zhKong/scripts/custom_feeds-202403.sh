@@ -4,7 +4,7 @@
 
 # 更新 Feeds
 ./scripts/feeds update -a
-tree -L 3 ./feeds
+tree -L 3
 
 rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
