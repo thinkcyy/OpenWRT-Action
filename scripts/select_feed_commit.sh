@@ -4,7 +4,7 @@ sed -i "/^\#/d" feeds.conf
 ./scripts/feeds update -a
 if [ ! -n "$1" ] ;then
   REV_DATE=$1
-elif
+else
   REV_DATE=$(git log -1 --format=%cd --date=iso8601-strict)
 fi
 echo "选定的日期为：$REV_DATE"
