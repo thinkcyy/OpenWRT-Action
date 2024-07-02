@@ -60,12 +60,12 @@ COMMENT
  
 
 
-echo '-步骤：custom_feed-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
-rm -rf ./feeds/luci/applications/luci-app-turboacc/
-curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
+#echo '-步骤：custom_feed-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
+#rm -rf ./feeds/luci/applications/luci-app-turboacc/
+#curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
-echo '-步骤：custom_feed-添加coolsnowwolf的软件包'
-mkdir package/lean
+#echo '-步骤：custom_feed-添加coolsnowwolf的软件包'
+#mkdir package/lean
 git clone --depth 1 https://github.com/coolsnowwolf/luci cus_lean_luci
 #cp -r cus_lean_luci/applications/luci-app-zerotier package/lean/
 #cp -r cus_lean_luci/applications/luci-app-turboacc package/lean/
@@ -75,11 +75,11 @@ git clone --depth 1 https://github.com/coolsnowwolf/luci cus_lean_luci
 #cp -r cus_lean_luci/applications/luci-app-samba4 package/lean/
 #cp -r cus_lean_luci/applications/luci-app-usb-printer package/lean/
 
-git clone --depth 1 https://github.com/coolsnowwolf/lede cus_lean_lede
-cp -r cus_lean_lede/package/lean/autosamba package/lean/
-cp -r cus_lean_lede/package/lean/automount package/lean/
-cp -r cus_lean_lede/package/lean/ddns-scripts_dnspod package/lean/
-cp -r cus_lean_lede/package/lean/ipv6-helper package/lean/
+#git clone --depth 1 https://github.com/coolsnowwolf/lede cus_lean_lede
+#cp -r cus_lean_lede/package/lean/autosamba package/lean/
+#cp -r cus_lean_lede/package/lean/automount package/lean/
+#cp -r cus_lean_lede/package/lean/ddns-scripts_dnspod package/lean/
+#cp -r cus_lean_lede/package/lean/ipv6-helper package/lean/
 
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
