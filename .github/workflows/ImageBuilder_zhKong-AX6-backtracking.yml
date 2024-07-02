@@ -26,7 +26,7 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-06-28T14:51:00+08:00'
-           FEEDS_DATE: '2024-06-30T00:00:00+08:00'
+           FEEDS_DATE: '2024-05-31T00:00:00+08:00'
            #REPO_COMMIT: 
            
     - name: Create release
