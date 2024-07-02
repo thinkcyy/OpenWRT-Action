@@ -2,7 +2,11 @@ echo "当前执行步骤：选择feeds日期"
 sed -e "/^src-git\S*/s//src-git-full/" feeds.conf.default > feeds.conf
 sed -i "/^\#/d" feeds.conf
 ./scripts/feeds update -a
-REV_DATE=$(git log -1 --format=%cd --date=iso8601-strict)
+if [ ! -n "$1" ] ;then
+  REV_DATE=$1
+elif
+  REV_DATE=$(git log -1 --format=%cd --date=iso8601-strict)
+fi
 echo "选定的日期为：$REV_DATE"
 sed -e "/^src-git\S*\s/{s///;s/\s.*$//p}" feeds.conf  | while read -r FEED_ID
 do
