@@ -16,6 +16,7 @@ jobs:
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AX6-20240325-avahi
+           IMAGEBUILDER: y
            REPO_TYPE: zhKong           
            OP_REPO: AgustinLorenzo/openwrt
            REPO_BRANCH: main
