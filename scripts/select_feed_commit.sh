@@ -14,6 +14,6 @@ cd feeds/$FEED_ID
 FEED_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 REV_HASH=$(git rev-list -n 1 --before=${REV_DATE} ${FEED_BRANCH})
 echo $FEED_ID对应的HASH为：$REV_HASH
-sed -i -e "/\s${FEED_ID}\s.*\.git$/s/$/^${REV_HASH}/" feeds.conf
 cd ../..
+sed -i -e "/\s${FEED_ID}\s.*\.git$/s/$/^${REV_HASH}/" feeds.conf
 done
