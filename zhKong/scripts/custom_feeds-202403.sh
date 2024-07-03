@@ -24,11 +24,11 @@ cd ../lede
 
 cd ..
 
-echo '-步骤：custom_feed-替换自带luci-base、luci-mod-status'
-rm -rf feeds/luci/modules/luci-base
-rm -rf feeds/luci/modules/luci-mod-status
-cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
-cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
+#echo '-步骤：custom_feed-替换自带luci-base、luci-mod-status'
+#rm -rf feeds/luci/modules/luci-base
+#rm -rf feeds/luci/modules/luci-mod-status
+#cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
+#cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 
 echo '-步骤：custom_feed-替换自带coremark'
 rm -rf feeds/packages/utils/coremark
