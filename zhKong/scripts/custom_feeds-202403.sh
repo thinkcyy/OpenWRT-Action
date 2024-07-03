@@ -14,15 +14,12 @@ cd immortal_luci
 ../../scripts/select_dir_commit.sh
 
 cd ../immortal_package
-REV_HASH=$(git rev-list -n 1 --all --before=${FEEDS_DATE})
 ../../scripts/select_dir_commit.sh
 
 cd ../immortal_immortalwrt
-REV_HASH=$(git rev-list -n 1 --all --before=${FEEDS_DATE})
 ../../scripts/select_dir_commit.sh
 
 cd ../lede
-REV_HASH=$(git rev-list -n 1 --all --before=${FEEDS_DATE})
 ../../scripts/select_dir_commit.sh
 
 cd ..
@@ -37,22 +34,20 @@ echo '-步骤：custom_feed-替换自带coremark'
 rm -rf feeds/packages/utils/coremark
 cp -r ./immortal_package/utils/coremark package/immortal
 
-echo '-步骤：custom_feed-添加autocore'
-cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
-sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package/immortal/autocore/files/luci-mod-status-autocore.json
+#echo '-步骤：custom_feed-添加autocore'
+#cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
+#sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package/immortal/autocore/files/luci-mod-status-autocore.json
 
-echo '-步骤：custom_feed-替换自带default-settings'
-cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
+#echo '-步骤：custom_feed-替换自带default-settings'
+#cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 
 echo '-步骤：custom_feed-添加lean自带的lean软件目录'
 cp -r ./lede/package/lean package/
-rm -r package/lean/ddns-scripts_aliyun
-rm -r package/lean/autocore
-rm -r package/lean/default-settings
+rm -rf package/lean/ddns-scripts_aliyun
+rm -rf package/lean/autocore
+rm -rf package/lean/default-settings
  
 ./scripts/feeds install -a
-
-tree -L 3
 
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
