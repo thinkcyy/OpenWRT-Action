@@ -31,15 +31,16 @@ cd ..
 echo '-步骤：custom_feed-替换自带luci-base、luci-mod-status'
 rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
-cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
-cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
+cp -vr ./immortal_luci/modules/luci-base feeds/luci/modules/
+cp -vr ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 
 echo '-步骤：custom_feed-替换自带coremark'
 rm -rf feeds/packages/utils/coremark
 cp -r ./immortal_package/utils/coremark package/immortal
 
 echo '-步骤：custom_feed-添加autocore'
-cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
+tree -L 3 ./immortal_immortalwrt/package
+cp -vr ./immortal_immortalwrt/package/emortal/autocore package/immortal/
 sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package/immortal/autocore/files/luci-mod-status-autocore.json
 
 echo '-步骤：custom_feed-替换自带default-settings'
