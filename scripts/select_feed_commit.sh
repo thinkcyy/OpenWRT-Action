@@ -10,7 +10,10 @@ fi
 echo "选定的日期为：$REV_DATE"
 sed -e "/^src-git\S*\s/{s///;s/\s.*$//p}" feeds.conf  | while read -r FEED_ID
 do
-REV_HASH=$(git -C feeds/${FEED_ID} rev-list -n 1 --all --before=${REV_DATE})
+cd feeds/$FEED_ID
+FEED_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+REV_HASH=$(git rev-list -n 1 --before=${REV_DATE} ${FEED_BRANCH})
 echo $FEED_ID对应的HASH为：$REV_HASH
 sed -i -e "/\s${FEED_ID}\s.*\.git$/s/$/^${REV_HASH}/" feeds.conf
+cd ../..
 done
