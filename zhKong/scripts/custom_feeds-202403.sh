@@ -1,6 +1,6 @@
-#echo 'src-git cus_lean_luci https://github.com/coolsnowwolf/luci' >>feeds.conf.default
-#echo 'src-git cus_lean_packages https://github.com/coolsnowwolf/packages' >>feeds.conf.default
-#echo 'src-git cus_lean_routing https://github.com/coolsnowwolf/routing' >>feeds.conf.default
+echo 'src-git cus_lean_luci https://github.com/coolsnowwolf/luci' >>feeds.conf.default
+echo 'src-git cus_lean_packages https://github.com/coolsnowwolf/packages' >>feeds.conf.default
+echo 'src-git cus_lean_routing https://github.com/coolsnowwolf/routing' >>feeds.conf.default
 
 # 更新 Feeds
 echo '当前工作目录'
@@ -8,7 +8,6 @@ pwd
 chmod +x ./scripts/*
 
 ./scripts/feeds update -a
-wait 10
 
 tree -L 3
 
@@ -35,6 +34,7 @@ cp -r ./lede/package/lean feeds/
 
 rm -r feeds/lean/ddns-scripts_aliyun
 rm -r feeds/lean/autocore
+
 ./scripts/feeds install -a
 
 tree -L 3
@@ -42,3 +42,6 @@ tree -L 3
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
 cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/new/
+
+echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
+sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
