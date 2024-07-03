@@ -11,19 +11,19 @@ git clone https://github.com/coolsnowwolf/lede lede
 
 # 锁定日期
 cd immortal_luci
-../scripts/select_dir_commit.sh
+../../scripts/select_dir_commit.sh
 
 cd ../immortal_package
 REV_HASH=$(git rev-list -n 1 --all --before=${FEEDS_DATE})
-../scripts/select_dir_commit.sh
+../../scripts/select_dir_commit.sh
 
 cd ../immortal_immortalwrt
 REV_HASH=$(git rev-list -n 1 --all --before=${FEEDS_DATE})
-../scripts/select_dir_commit.sh
+../../scripts/select_dir_commit.sh
 
 cd ../lede
 REV_HASH=$(git rev-list -n 1 --all --before=${FEEDS_DATE})
-../scripts/select_dir_commit.sh
+../../scripts/select_dir_commit.sh
 
 cd ..
 
