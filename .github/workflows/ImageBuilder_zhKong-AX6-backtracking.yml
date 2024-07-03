@@ -21,7 +21,7 @@ jobs:
            OP_REPO: AgustinLorenzo/openwrt
            REPO_BRANCH: main           
            #DEFAULT_FEEDS: feeds.conf.default-20240325-no-hsah
-           EXTRA_FEEDS: add_feeds_cus_lean
+           #EXTRA_FEEDS: add_feeds_cus_lean
            CUSTOM_FEEDS_SH: custom_feeds-202403
            #如果CUSTOM_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
