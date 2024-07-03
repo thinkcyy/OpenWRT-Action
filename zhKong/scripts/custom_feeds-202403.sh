@@ -30,9 +30,9 @@ cd ..
 #cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
 #cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 
-echo '-步骤：custom_feed-替换自带coremark'
-rm -rf feeds/packages/utils/coremark
-cp -r ./immortal_package/utils/coremark package/immortal
+#echo '-步骤：custom_feed-替换自带coremark'
+#rm -rf feeds/packages/utils/coremark
+#cp -r ./immortal_package/utils/coremark package/immortal
 
 #echo '-步骤：custom_feed-添加autocore'
 #cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
@@ -41,11 +41,11 @@ cp -r ./immortal_package/utils/coremark package/immortal
 #echo '-步骤：custom_feed-替换自带default-settings'
 #cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 
-echo '-步骤：custom_feed-添加lean自带的lean软件目录'
-cp -r ./lede/package/lean package/
-rm -rf package/lean/ddns-scripts_aliyun
-rm -rf package/lean/autocore
-rm -rf package/lean/default-settings
+#echo '-步骤：custom_feed-添加lean自带的lean软件目录'
+#cp -r ./lede/package/lean package/
+#rm -rf package/lean/ddns-scripts_aliyun
+#rm -rf package/lean/autocore
+#rm -rf package/lean/default-settings
  
 ./scripts/feeds install -a
 
