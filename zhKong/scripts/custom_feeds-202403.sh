@@ -1,7 +1,7 @@
 # 更新 Feeds
 echo '当前工作目录'
-pwd
-chmod +x ./scripts/*
+#pwd
+#chmod +x ./scripts/*
 
 ./scripts/feeds update -a
 
