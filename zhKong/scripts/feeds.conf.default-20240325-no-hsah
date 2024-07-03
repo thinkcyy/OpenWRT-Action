@@ -5,4 +5,4 @@ src-git telephony https://git.openwrt.org/feed/telephony.git
 src-git nss_packages https://github.com/AgustinLorenzo/nss-packages.git
 src-git cus_lean_luci https://github.com/coolsnowwolf/luci
 src-git cus_lean_packages https://github.com/coolsnowwolf/packages
-src-git cus_lean_prouting https://github.com/coolsnowwolf/routing
+src-git cus_lean_routing https://github.com/coolsnowwolf/routing
