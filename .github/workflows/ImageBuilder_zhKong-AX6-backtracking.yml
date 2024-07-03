@@ -27,7 +27,7 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-03T12:52:00+08:00'
-           FEEDS_DATE: '2024-05-31T23:59:59+08:00'
+           FEEDS_DATE: '2024-03-31T23:59:59+08:00'
            #REPO_COMMIT: 
            
            
