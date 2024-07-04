@@ -22,8 +22,8 @@ jobs:
            #REPO_BRANCH: main           
            #REPO_COMMIT: 
            #DEFAULT_FEEDS: feeds.conf.default-20240325-no-hsah
-           #EXTRA_FEEDS: add_feeds_cus_lean
-           #CUSTOM_FEEDS_SH: custom_feeds-202403
+           EXTRA_FEEDS: add_feeds_cus_lean
+           CUSTOM_FEEDS_SH: custom_feeds-202403
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
