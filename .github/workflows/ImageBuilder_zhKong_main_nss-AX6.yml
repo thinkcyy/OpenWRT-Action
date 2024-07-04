@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@zhKong_v2
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AX6-zhkong-thinkcy-minimal
+           COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
            IMAGEBUILDER: y
            REPO_TYPE: zhKong           
            OP_REPO: zhkong/openwrt-ipq807x
@@ -34,7 +34,7 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@main
       with:
-        name: OpenWrt-zhKong-${{ env.TAG_NAME }}
+        name: OpenWrt-zhKong-main_nss-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
