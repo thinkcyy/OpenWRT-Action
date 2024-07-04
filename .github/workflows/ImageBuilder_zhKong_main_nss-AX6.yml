@@ -18,17 +18,17 @@ jobs:
            COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
            IMAGEBUILDER: y
            REPO_TYPE: zhKong           
-           OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: main           
+           OP_REPO: zhkong/openwrt-ipq807x
+           #REPO_BRANCH: main           
            #REPO_COMMIT: 
            #DEFAULT_FEEDS: feeds.conf.default-20240325-no-hsah
-           EXTRA_FEEDS: add_feeds_cus_lean
-           CUSTOM_FEEDS_SH: custom_feeds-202403
+           #EXTRA_FEEDS: add_feeds_cus_lean
+           #CUSTOM_FEEDS_SH: custom_feeds-202403
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
-           ACTION_DATE: '2024-07-03T23:59:59+08:00'
-           FEEDS_DATE:  '2024-05-31T23:59:59+08:00'
+           #ACTION_DATE: '2024-07-03T23:59:59+08:00'
+           #FEEDS_DATE:  '2024-05-31T23:59:59+08:00'
            
     - name: Create release
       id: create_release
