@@ -12,7 +12,7 @@ jobs:
       uses: thinkcyy/Action_Initialization@quick                
                    
     - name: Compile
-      uses: thinkcyy/Action_OpenWrt_composite@zhKong_v2
+      uses: thinkcyy/Action_OpenWrt_composite@zhKong
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
