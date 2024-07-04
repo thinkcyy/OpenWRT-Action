@@ -46,6 +46,10 @@ cp -r ./lede/package/lean package/
 rm -rf package/lean/ddns-scripts_aliyun
 rm -rf package/lean/autocore
 #rm -rf package/lean/default-settings
+
+echo '-步骤：custom_feed-调整为适用于22.03的TurboACC https://github.com/chenmozhijin/turboacc'
+rm -rf ./feeds/cus_lean_luci/applications/luci-app-turboacc/
+curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
  
 ./scripts/feeds install -a
 
