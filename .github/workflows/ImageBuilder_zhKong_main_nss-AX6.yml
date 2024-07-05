@@ -30,13 +30,27 @@ jobs:
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
            #FEEDS_DATE:  '2024-05-17T23:59:59+08:00'
            
-    - name: Create release
-      id: create_release
-      uses: ncipollo/release-action@main
-      with:
-        name: OpenWrt-zhKong-main_nss-${{ env.TAG_NAME }}
-        allowUpdates: true
-        tag: ${{ env.TAG_NAME }}
-        replacesArtifacts: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./runner_root/artifact/* 
+    - name: Download package sources
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: make download V=s
+
+    - name: Build tools
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: |
+        make tools/install -j$(nproc) V=s || \
+        make tools/install V=s
+        
+    - name: Build toolchain
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: |
+        make toolchain/install -j$(nproc) V=s || \
+        make toolchain/install V=s
+
+    - name: Build target images
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: |
+        make -j$(nproc) V=s || \
+        make V=s
+
+    - name: Release
+      uses: thinkcyy/Action_OpenWrt_composite@release      
