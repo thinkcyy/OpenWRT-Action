@@ -20,10 +20,10 @@ jobs:
            REPO_TYPE: zhKong           
            OP_REPO: zhkong/openwrt-ipq807x
            REPO_BRANCH: xiaomi-ax3600-stock-layout           
-           #REPO_COMMIT: 
+           REPO_COMMIT: 94e01900829cbec67987a1b97598cc351033d7fb
            #DEFAULT_FEEDS: feeds.conf.default-20240325-no-hsah
-           EXTRA_FEEDS: add_feeds_cus_lean
-           CUSTOM_FEEDS_SH: custom_feeds-202403
+           #EXTRA_FEEDS: add_feeds_cus_lean
+           #CUSTOM_FEEDS_SH: custom_feeds-202403
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
