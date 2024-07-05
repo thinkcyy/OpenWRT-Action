@@ -52,6 +52,9 @@ jobs:
         make -j$(nproc) V=s || \
         make V=s
 
+    - name: Upload
+      uses: thinkcyy/Action_OpenWrt_composite@release
+      
     - name: Create release
       uses: ncipollo/release-action@main
       with:
