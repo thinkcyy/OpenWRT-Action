@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare_v2
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AgustinLorenzo.default
+           COMPILE_CONFIG: AX6-20240705-main-nss-init
            IMAGEBUILDER: y
            REPO_TYPE: zhKong           
            OP_REPO: zhkong/openwrt-ipq807x
