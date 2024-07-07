@@ -46,7 +46,10 @@ cp -r ./lede/package/lean package/
 rm -rf package/lean/ddns-scripts_aliyun
 rm -rf package/lean/autocore
 #rm -rf package/lean/default-settings
- 
+
+mkdir -p ./package/thinkcy
+cp -vr ../thinkcy-settings ./package/thinkcy 
+
 ./scripts/feeds install -a
 
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
