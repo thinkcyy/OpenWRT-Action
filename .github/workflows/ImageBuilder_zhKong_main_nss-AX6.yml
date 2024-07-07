@@ -15,11 +15,11 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare_v2
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AX6-20240705-main-nss-init
+           COMPILE_CONFIG: AX6-20240707-main-nss-init
            IMAGEBUILDER: y
            REPO_TYPE: zhKong           
            OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: main_nss           
+           REPO_BRANCH: main_nss
            REPO_DATE: '2024-07-05T23:59:59+08:00'
            #REPO_DATE: 94e01900829cbec67987a1b97598cc351033d7fb
            #DEFAULT_FEEDS:  feeds.conf.default-main_nss_wifi
