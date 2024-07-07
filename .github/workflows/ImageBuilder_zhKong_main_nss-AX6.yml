@@ -23,8 +23,8 @@ jobs:
            REPO_DATE: '2024-07-05T23:59:59+08:00'
            #REPO_DATE: 94e01900829cbec67987a1b97598cc351033d7fb
            #DEFAULT_FEEDS:  feeds.conf.default-main_nss_wifi
-           #EXTRA_FEEDS: add_feeds_cus_lean
-           #CUSTOM_FEEDS_SH: custom_feeds-202403
+           EXTRA_FEEDS: add_feeds_cus_lean
+           CUSTOM_FEEDS_SH: custom_feeds-202403
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
