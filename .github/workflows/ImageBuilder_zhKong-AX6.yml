@@ -12,7 +12,7 @@ jobs:
       uses: thinkcyy/Action_Initialization@quick                
                    
     - name: Compile
-      uses: thinkcyy/Action_OpenWrt_composite@zhKong_v2
+      uses: thinkcyy/Action_OpenWrt_composite@zhKong_v3
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AX6-ImageBuilder-20240625-thinkcy-setttings
@@ -27,7 +27,7 @@ jobs:
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
-           ACTION_DATE: '2024-07-03T23:59:59+08:00'
+           ACTION_DATE: '2024-07-08T23:59:59+08:00'
            FEEDS_DATE:  '2024-05-31T23:59:59+08:00'
            
     - name: Create release
