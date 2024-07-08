@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare_v2
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: /AX6-20240707-minimal
+           COMPILE_CONFIG: AX6-20240707-minimal
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
