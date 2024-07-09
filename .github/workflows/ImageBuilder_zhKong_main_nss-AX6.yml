@@ -12,7 +12,7 @@ jobs:
       uses: thinkcyy/Action_Initialization@quick                
                    
     - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
+      uses: thinkcyy/Action_OpenWrt_composite@prepare_v2
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG: AgustinLorenzo.20240709-zerotier
