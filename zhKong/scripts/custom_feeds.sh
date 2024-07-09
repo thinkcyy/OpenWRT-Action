@@ -1,6 +1,16 @@
 echo '-步骤：custom_feed-更新 Feeds'
 
 ./scripts/feeds update -a
+
+mkdir -p package/thinkcy
+echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
+git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
+cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
+
+echo '-步骤：custom_feed-添加lean的luci仓库'
+git clone https://github.com/coolsnowwolf/luci cus_lean_luci
+cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
+
 ./scripts/feeds install -a
 
 
