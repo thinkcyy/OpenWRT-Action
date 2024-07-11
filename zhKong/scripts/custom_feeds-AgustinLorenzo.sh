@@ -44,11 +44,11 @@ sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package
 echo '-步骤：custom_feed-替换自带default-settings'
 cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 
-echo '-步骤：custom_feed-添加lean自带的lean软件目录'
-cp -r ./lede/package/lean package/
-rm -rf package/lean/ddns-scripts_aliyun
-rm -rf package/lean/autocore
-rm -rf package/lean/default-settings
+#echo '-步骤：custom_feed-添加lean自带的lean软件目录'
+#cp -r ./lede/package/lean package/
+#rm -rf package/lean/ddns-scripts_aliyun
+#rm -rf package/lean/autocore
+#rm -rf package/lean/default-settings
 
 mkdir -p ./package/thinkcy
 cp -r ../thinkcy-settings ./package/thinkcy 
