@@ -3,4 +3,9 @@
 sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
 
+chmod +x /etc/tinc/tincvpn/tinc-up
+chmod +x /etc/tinc/tincvpn/tinc-down
+chmod 400 /etc/dropbear/authorized_keys
+chmod 644 /etc/dropbear
+
 exit 0
