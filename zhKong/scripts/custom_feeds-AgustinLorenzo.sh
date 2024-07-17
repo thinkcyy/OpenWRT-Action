@@ -1,3 +1,5 @@
+# for AgustinLorenzo/openwrt:main_nss
+
 ./scripts/feeds update -a
 
 
@@ -75,8 +77,8 @@ cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
-echo '-步骤：custom_feed-替换为AgustinLorenzo的main分支的imagebuilder源代码'             
-git clone  https://github.com/AgustinLorenzo/openwrt -b main --single-branch ./main
+echo '-步骤：custom_feed-替换为openwrt/openwrt的main分支的imagebuilder源代码'             
+git clone  https://github.com/openwrt/openwrt -b main --single-branch ./main
 cp -r ./main/target/imagebuilder ./target/
 
 
