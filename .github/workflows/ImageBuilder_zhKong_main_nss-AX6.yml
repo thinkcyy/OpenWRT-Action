@@ -20,8 +20,8 @@ jobs:
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            REPO_BRANCH: main_nss
-           REPO_DATE: '2024-07-05T23:59:59+08:00'
-           #REPO_DATE: 2ded54972e5acb6df8c323a173a4d8ff27f9f1a0
+           #REPO_DATE: '2024-07-05T23:59:59+08:00'
+           REPO_DATE: 3711557bdfb45e1e0ca2c304a3d04eaa7aae1bae
            #DEFAULT_FEEDS:  feeds.conf.default-main_nss_wifi
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
