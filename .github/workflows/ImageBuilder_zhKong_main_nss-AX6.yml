@@ -22,7 +22,7 @@ jobs:
            REPO_BRANCH: main_nss
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
            REPO_DATE: 3711557bdfb45e1e0ca2c304a3d04eaa7aae1bae
-           #DEFAULT_FEEDS:  feeds.conf.default-main_nss_wifi
+           DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
