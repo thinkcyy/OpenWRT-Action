@@ -60,7 +60,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: OpenWrt-zhKong-main_nss-${{ env.TAG_NAME }}
+        name: OpenWrt-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
