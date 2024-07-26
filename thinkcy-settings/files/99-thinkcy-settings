@@ -7,6 +7,7 @@ sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_rel
 # 设置shellclash运行环境
 echo "alias clash=\"sh /etc/clash/clash.sh\"" >> /etc/profile
 echo "export clashdir=\"/etc/clash\"" >> /etc/profile
+/etc/clash/ && /etc/clash/init.sh
 
 chmod +x /etc/tinc/tincvpn/tinc-up
 chmod +x /etc/tinc/tincvpn/tinc-down
