@@ -1,7 +1,12 @@
 #!/bin/sh
 
+# 自定义版本号
 sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
+
+# 设置shellclash运行环境
+echo "alias clash=\"sh /etc/clash/clash.sh\"" >> /etc/profile
+echo "export clashdir=\"/etc/clash\"" >> /etc/profile
 
 chmod +x /etc/tinc/tincvpn/tinc-up
 chmod +x /etc/tinc/tincvpn/tinc-down
