@@ -28,20 +28,19 @@ cd ../lede
 cd ..
 COMMENT
 
-
 echo '-步骤：custom_feed-替换自带luci-base、luci-mod-status'
 rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
 cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
 cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 
-echo '-步骤：custom_feed-替换自带coremark'
-rm -rf feeds/packages/utils/coremark
-cp -r ./immortal_package/utils/coremark package/immortal
+#echo '-步骤：custom_feed-替换自带coremark'
+#rm -rf feeds/packages/utils/coremark
+#cp -r ./immortal_package/utils/coremark package/immortal
 
-echo '-步骤：custom_feed-添加autocore'
-cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
-sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package/immortal/autocore/files/luci-mod-status-autocore.json
+#echo '-步骤：custom_feed-添加autocore'
+#cp -r ./immortal_immortalwrt/package/emortal/autocore package/immortal/
+#sed -i 's/"getTempInfo" /"getTempInfo", "getCPUBench", "getCPUUsage" /g' package/immortal/autocore/files/luci-mod-status-autocore.json
 
 echo '-步骤：custom_feed-替换自带default-settings'
 cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
@@ -55,24 +54,18 @@ cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 mkdir -p ./package/thinkcy
 cp -r ../thinkcy-settings ./package/thinkcy 
 
-echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
-git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
-cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
-
 echo '-步骤：custom_feed-添加lean的luci仓库'
 git clone https://github.com/coolsnowwolf/luci cus_lean_luci
 cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
-
 
 echo '-步骤：custom_feed-修改默认语言'
 sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option en English' ./feeds/luci/modules/luci-base/root/etc/config/luci
 
-
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
-cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
+cp -r ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
 
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
@@ -80,7 +73,6 @@ sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 #echo '-步骤：custom_feed-替换为openwrt/openwrt的main分支的imagebuilder源代码'             
 #git clone  https://github.com/openwrt/openwrt -b main --single-branch ./main
 #cp -r ./main/target/imagebuilder ./target/
-
 
 ./scripts/feeds install -a
 
