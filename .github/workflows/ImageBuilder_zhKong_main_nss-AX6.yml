@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AX6-main-nss-20240731-all-ipk-remove-i18n-es
+           COMPILE_CONFIG: AX6-main-nss-20240730-all-ipk
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
