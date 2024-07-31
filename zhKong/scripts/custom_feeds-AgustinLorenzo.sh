@@ -1,5 +1,7 @@
 # for AgustinLorenzo/openwrt:main_nss
 
+../scripts/add_package_common.sh
+
 ./scripts/feeds update -a
 
 
