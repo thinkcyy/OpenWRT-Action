@@ -60,8 +60,8 @@ cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
 
 echo '-步骤：custom_feed-修改默认语言'
 sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-base/root/etc/config/luci
-sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option en English' ./feeds/luci/modules/luci-base/root/etc/config/luci
+sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./feeds/luci/modules/luci-base/root/etc/config/luci
 
 echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
