@@ -21,9 +21,9 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: =Archive=${{ env.TAG_NAME }}
+        name: ${{ env.TYPE_NAME }}-${{ env.TAG_NAME }}
         allowUpdates: true
-        tag: ${{ env.TAG_NAME }}
+        tag: tag-${{ env.TAG_NAME }}
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ./runner_root/artifact/*
