@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare_v4
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AX6-main-nss-20240730-all-ipk
+           COMPILE_CONFIG: AX6-main-nss-20240731-all-ipk-remove-i18n-es
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
@@ -30,7 +30,7 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            ACTION_DATE: '2024-07-31T23:59:59+08:00'
-           FEEDS_DATE:  '2024-07-29T23:59:59+08:00'
+           FEEDS_DATE:  '2024-07-25T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
