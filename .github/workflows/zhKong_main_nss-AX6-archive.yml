@@ -53,6 +53,8 @@ jobs:
       run: |
         make -j$(nproc) V=s || \
         make V=s
+        
+        echo "RELEASE_NAME_PREFIX=[Archive]" >> $GITHUB_ENV
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
@@ -60,7 +62,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: OpenWrt-${{ env.TAG_NAME }}
+        name: ${{ env.RELEASE_NAME_PREFIX }}-OpenWrt-${{ env.REPO_TYPE }}-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
