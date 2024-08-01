@@ -22,7 +22,7 @@ jobs:
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            #REPO_BRANCH: main_nss
-           REPO_BRANCH: ipq807x-nsswifi-2024-07-21-1508
+           REPO_BRANCH: ipq807x-nsswifi-2024-07-27-0238
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
            #REPO_DATE: ad3b782
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
@@ -32,7 +32,7 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
-           FEEDS_DATE:  '2024-07-24T23:59:59+08:00'
+           FEEDS_DATE:  '2024-07-30T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
