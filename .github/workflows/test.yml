@@ -21,7 +21,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: ++Archive++-${{ env.TAG_NAME }}
+        name: 【Archive】-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
