@@ -7,31 +7,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        
-    - name: Initialization
-      uses: thinkcyy/Action_Initialization@quick                
-                   
-    - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
-      with:
-           ROUTER_MODEL: AX6
-           COMPILE_CONFIG: AgustinLorenzo.20240709-zerotier
-           IMAGEBUILDER: y
-           REPO_TYPE: zhKong
-           OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: main_nss
-           #REPO_BRANCH: ipq807x-nsswifi-2024-07-08-2301
-           #REPO_DATE: '2024-07-05T23:59:59+08:00'
-           #REPO_DATE: 794264e
-           #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
-           #EXTRA_FEEDS: add_feeds_cus_lean_luci
-           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
-           #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
-           #MATCH_FEED_HASH: y
-           #ACTION_DATE: fc19ca2
-           #ACTION_DATE: '2024-07-23T23:59:59+08:00'
-           #FEEDS_DATE:  '2024-07-23T23:59:59+08:00'
-           
+
+    - name: touch
+      run: |
+        mkdir -p runner_root/openwrt/bin/targets/
+        touch runner_root/openwrt/bin/targets/sysupgrade.bin
+        echo "TAG_NAME=test-tag-name" >> $GITHUB_ENV
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
@@ -39,7 +20,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: OpenWrt-${{ env.TAG_NAME }}
+        name: \[OpenWrt\]-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
