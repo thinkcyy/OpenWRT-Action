@@ -28,8 +28,8 @@ jobs:
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
-           ACTION_DATE: '2024-07-31T23:59:59+08:00'
-           FEEDS_DATE:  '2024-07-25T23:59:59+08:00'
+           #ACTION_DATE: '2024-07-31T23:59:59+08:00'
+           #FEEDS_DATE:  '2024-07-25T23:59:59+08:00'
 
     #- name: touch
     #  run: |
