@@ -13,6 +13,7 @@ jobs:
         mkdir -p runner_root/openwrt/bin/targets/
         touch runner_root/openwrt/bin/targets/sysupgrade.bin
         echo "TAG_NAME=test-tag-name" >> $GITHUB_ENV
+        echo "TYPE_NAME=[OpenWrt]" >> $GITHUB_ENV
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
@@ -20,7 +21,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: \[OpenWrt]-${{ env.TAG_NAME }}
+        name: ${{ env.TYPE_NAME }}-${{ env.TAG_NAME }}
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
