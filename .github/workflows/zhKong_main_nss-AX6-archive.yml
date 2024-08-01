@@ -19,10 +19,10 @@ jobs:
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: main_nss
-           #REPO_BRANCH: ipq807x-nsswifi-2024-07-08-2301
+           #REPO_BRANCH: main_nss
+           REPO_BRANCH: ipq807x-nsswifi-2024-07-21-1508
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
-           REPO_DATE: 794264e
+           #REPO_DATE: 794264e
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
