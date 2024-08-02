@@ -9,7 +9,7 @@ jobs:
     steps:
 
     - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
+      uses: thinkcyy/Action_OpenWrt_composite@prepare_test
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AgustinLorenzo.default
