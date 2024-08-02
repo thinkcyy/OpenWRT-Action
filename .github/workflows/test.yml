@@ -42,12 +42,12 @@ jobs:
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
       
-    - name: Create release
-      uses: ncipollo/release-action@main
-      with:
-        name: ${{ env.TYPE_NAME }}-${{ env.TAG_NAME }}
-        allowUpdates: true
-        tag: tag-${{ env.TAG_NAME }}
-        replacesArtifacts: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./runner_root/artifact/*
+#    - name: Create release
+ #     uses: ncipollo/release-action@main
+  #    with:
+   #     name: ${{ env.TYPE_NAME }}-${{ env.TAG_NAME }}
+    #    allowUpdates: true
+     #   tag: tag-${{ env.TAG_NAME }}
+      #  replacesArtifacts: true
+       # token: ${{ secrets.GITHUB_TOKEN }}
+        #artifacts: ./runner_root/artifact/*
