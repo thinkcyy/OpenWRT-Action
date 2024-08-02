@@ -7,7 +7,7 @@ if [  -n "$1" ] ;then
 else
   REV_DATE=$(git log -1 --format=%cd --date=iso8601-strict)
 fi
-sed -i -e "s/\;.*$/ /g" feeds.conf
+sed -i -e "s/\;.*$//g" feeds.conf
 echo "选定的日期为：$REV_DATE"
 sed -e "/^src-git\S*\s/{s///;s/\s.*$//p}" feeds.conf  | while read -r FEED_ID
 do
