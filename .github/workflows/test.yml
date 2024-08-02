@@ -14,7 +14,7 @@ jobs:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AgustinLorenzo.default
            COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.20240709-zerotier
-           COMPILE_CONFIG: AX6-main-nss-20240731-all-ipk-remove-i18n-es
+           #COMPILE_CONFIG: AX6-main-nss-20240731-all-ipk-remove-i18n-es
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
