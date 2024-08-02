@@ -31,12 +31,12 @@ jobs:
            #ACTION_DATE: '2024-07-31T23:59:59+08:00'
            #FEEDS_DATE:  '2024-07-24T23:59:59+08:00'
 
-    #- name: touch
-    #  run: |
-    #    mkdir -p runner_root/openwrt/bin/targets/
-    #    touch runner_root/openwrt/bin/targets/sysupgrade.bin
-    #    echo "TAG_NAME=test-tag-name" >> $GITHUB_ENV
-    #    echo "TYPE_NAME=[OpenWrt]" >> $GITHUB_ENV
+    - name: touch
+      run: |
+        [[ -d "runner_root/openwrt/bin/targets/" ]] && mkdir -p runner_root/openwrt/bin/targets/
+        touch runner_root/openwrt/bin/targets/sysupgrade.bin
+        #echo "TAG_NAME=test-tag-name" >> $GITHUB_ENV
+        echo "TYPE_NAME=[OpenWrt]" >> $GITHUB_ENV
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
