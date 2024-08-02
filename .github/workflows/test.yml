@@ -33,8 +33,8 @@ jobs:
 
     - name: touch
       run: |
-        [[ -d "./runner_root/openwrt/bin/targets" ]] && mkdir -p ./runner_root/openwrt/bin/targets/
-        touch ./runner_root/openwrt/bin/targets/sysupgrade.bin
+        [[ ! -d "./runner_root/openwrt/bin/targets" ]] && mkdir -p ./runner_root/openwrt/bin/targets/
+        touch ./runner_root/openwrt/bin/targets/test.sysupgrade.bin
         #echo "TAG_NAME=test-tag-name" >> $GITHUB_ENV
         echo "TYPE_NAME=[OpenWrt]" >> $GITHUB_ENV
 
