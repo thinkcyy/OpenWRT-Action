@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@main
       with:
            ROUTER_MODEL: EA8500
-           COMPILE_CONFIG: EA8500-20240522-full-NSS
+           COMPILE_CONFIG: EA8500-20240524-full-NSS-without-crypto
            OP_REPO: coolsnowwolf/lede
            REPO_BRANCH: master
            IMAGEBUILDER: y
