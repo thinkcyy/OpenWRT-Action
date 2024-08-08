@@ -2,6 +2,7 @@ cd openwrt
 
 echo '当前执行步骤：2.1-执行custom_feeds'
 chmod +x ../LeanWRT/scripts/*.sh
+../scripts/add_package_common.sh
 ../LeanWRT/scripts/custom_feeds.sh
 
 echo '当前执行步骤：2.2-导入编译配置'
