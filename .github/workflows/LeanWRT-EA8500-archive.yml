@@ -27,7 +27,7 @@ jobs:
            REPO_DATE: a5823d4
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
-           #CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
+           CUSTOM_FEEDS_SH: custom_feeds-Lean
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
