@@ -7,8 +7,8 @@ sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_rel
 # 设置shellclash
 echo "alias clash=\"sh /etc/clash/clash.sh\"" >> /etc/profile
 echo "export clashdir=\"/etc/clash\"" >> /etc/profile
-chmod 755 /etc/clash/init.sh
-cd /etc/clash/ && /etc/clash/init.sh
+#chmod 755 /etc/clash/init.sh
+#cd /etc/clash/ && /etc/clash/init.sh
 cp -f /etc/clash/clashservice /etc/init.d/clash
 chmod 755 /etc/init.d/clash
 /etc/init.d/clash enable
