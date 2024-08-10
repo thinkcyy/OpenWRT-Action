@@ -1,8 +1,10 @@
 # for coolsnowwolf/openwrt
 
-../scripts/add_package_common.sh
+
 
 ./scripts/feeds update -a
+
+../scripts/add_package_common.sh
 
 mkdir -p ./package/thinkcy
 cp -r ../thinkcy-settings ./package/thinkcy 
@@ -11,6 +13,8 @@ echo '-步骤：custom_feed-向后调整tinc服务启动次序'
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
 ./scripts/feeds install -a
+
+
 
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 #echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
