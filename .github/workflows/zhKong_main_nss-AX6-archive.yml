@@ -15,25 +15,24 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare_v5
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG_BASE: AgustinLorenzo.20240709-zerotier
+           COMPILE_CONFIG_BASE: AX6-main-nss-20240730-all-ipk
            #COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.20240709-zerotier
            #COMPILE_CONFIG: AgustinLorenzo.diff.20240709-zerotier   
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            #REPO_BRANCH: main_nss
-           #REPO_BRANCH: ipq807x-nsswifi-mesh-2024-07-21-1903
+           REPO_BRANCH: ipq807x-nsswifi-2024-07-31-0100
            #REPO_DATE: '2024-07-25T23:59:59+08:00'
-           # 88384cc是已知最后的适用12.1版本（20240725之前）的NSS-firmware的源码，曾在20240730编译成功。
-           REPO_DATE: 88384cc
+           #REPO_DATE: 88384cc
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
-           MATCH_FEED_HASH: y
+           #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-08-02T23:59:59+08:00'
-           FEEDS_DATE:  '2024-07-25T23:59:59+08:00'
+           FEEDS_DATE:  '2024-07-31T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
