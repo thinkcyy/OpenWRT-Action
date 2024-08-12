@@ -4,6 +4,16 @@
 #sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
 
+# NAT6相关调整
+uci set dhcp.odhcpd.loglevel="3"
+uci commit dhcp
+service odhcpd restart
+
+uci set network.CT.sourcefilter="0"
+uci set network.wan6.sourcefilter="0"
+uci commit network
+service network restart
+
 # 设置shellclash
 echo "alias clash=\"sh /etc/clash/clash.sh\"" >> /etc/profile
 echo "export clashdir=\"/etc/clash\"" >> /etc/profile
