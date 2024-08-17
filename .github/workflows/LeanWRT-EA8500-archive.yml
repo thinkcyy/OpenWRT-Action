@@ -23,7 +23,7 @@ jobs:
            OP_REPO: coolsnowwolf/lede
            REPO_BRANCH: master
            #REPO_BRANCH: ipq807x-nsswifi-mesh-2024-07-21-1903
-           #REPO_DATE: '2023-07-09T19:00:00+08:00'           
+           REPO_DATE: '2023-07-09T19:00:00+08:00'           
            #REPO_DATE: a5823d4
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
