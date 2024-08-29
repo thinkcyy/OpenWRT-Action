@@ -16,6 +16,10 @@ echo '-步骤：custom_feed-移除frp日志'
 sed -i '/Starting frp service/d' ./feeds/luci/applications/luci-app-frpc/root/etc/init.d/frp
 sed -i '/Shutting down frp service/d' ./feeds/luci/applications/luci-app-frpc/root/etc/init.d/frp
 
+echo '-步骤：custom_feed-修改imagebuilder'    
+rm -rf  target/imagebuilder
+cp -r ../imagebuilder target/
+
 ./scripts/feeds install -a
 
 
