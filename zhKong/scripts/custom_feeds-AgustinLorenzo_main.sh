@@ -62,6 +62,14 @@ cp -vr ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/immortal
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
 
+echo '-步骤：custom_feed-移除frp日志'      
+sed -i '/Starting frp service/d' ./feeds/luci/applications/luci-app-frpc/root/etc/init.d/frp
+sed -i '/Shutting down frp service/d' ./feeds/luci/applications/luci-app-frpc/root/etc/init.d/frp
+
+echo '-步骤：custom_feed-修改imagebuilder'    
+rm -rf  target/imagebuilder
+cp -r ../imagebuilder target/
+
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
