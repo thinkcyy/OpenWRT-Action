@@ -1,3 +1,6 @@
+
+../scripts/add_package_common.sh
+
 ./scripts/feeds update -a
 
 
