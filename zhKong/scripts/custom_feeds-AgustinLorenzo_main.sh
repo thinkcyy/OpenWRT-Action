@@ -39,7 +39,7 @@ cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 echo '-步骤：custom_feed-替换自带default-settings'
 cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 
-mkdir -p ./package/thinkcy
+[[ -d "package/thinkcy" ]] && mkdir -p ./package/thinkcy
 cp -vr ../thinkcy-settings ./package/thinkcy 
 
 echo '-步骤：custom_feed-添加lean的luci仓库'
