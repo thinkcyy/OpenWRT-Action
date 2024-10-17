@@ -10,20 +10,12 @@ lock_date() {
         #echo feeds.conf内容为：
         #cat feeds.conf                
         
-        #单独设定某仓库hash时，在上一轮打标成果基础上添加该仓库hash
-        if [  -n "$2" ] ;then                
-                echo 本轮打标结果
-                sed '/${FEED_ID}/p' feeds.conf
-                sed -n '/${FEED_ID}/p' feeds.conf >> feeds-locked.conf
-                cp feeds-locked.conf feeds.conf
-                echo 本轮打标后结果为
-                echo feeds.conf
-        fi
+
 }
 
 if [  -n "$2" ] ;then
         echo "--当前执行步骤：锁定$2日期"
-        ehco 保留上一轮打标成果为feeds-locked.conf
+        echo 保留上一轮打标成果为feeds-locked.conf
         cp feeds.conf feeds-locked.conf        
         cat feeds-locked.conf
         #移除上一轮打标成果中的目标feed
@@ -56,6 +48,13 @@ do
   if [  -n "$2" ] ;then
     if [  "$FEED_ID" = "$2" ] ;then  
       lock_date
+      #在上一轮打标成果基础上添加该仓库hash                    
+      echo 本轮打标结果
+      sed '/${FEED_ID}/p' feeds.conf
+      sed -n '/${FEED_ID}/p' feeds.conf >> feeds-locked.conf
+      cp feeds-locked.conf feeds.conf
+      echo 本轮打标后结果为
+      echo feeds.conf    
     else
       continue  
     fi
