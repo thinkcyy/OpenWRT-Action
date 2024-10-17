@@ -11,13 +11,15 @@ lock_date() {
         fi
 }
 
-sed -e "/^src-git\S*/s//src-git-full/" feeds.conf.default > feeds.conf        
-sed -i "/^\#/d" feeds.conf
-
 if [  -n "$2" ] ;then
         echo "--当前执行步骤：锁定$2日期"
+        #保留上一轮打标成果
         cp feeds.conf feeds-locked.conf
-        sed -i -e "/$2/d" feeds-locked.conf        
+        #移除上一轮打标成果中的目标feed
+        sed -i -e "/$2/d" feeds-locked.conf 
+        #重新初始化feed为全量链接
+        sed -e "/^src-git\S*/s//src-git-full/" feeds.conf.default > feeds.conf       
+        sed -i "/^\#/d" feeds.conf
 else
         echo "-当前执行步骤：锁定feeds日期"
         sed -e "/^src-git\S*/s//src-git-full/" feeds.conf.default > feeds.conf        
