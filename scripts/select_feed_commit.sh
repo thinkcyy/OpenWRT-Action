@@ -3,8 +3,10 @@ lock_date() {
         FEED_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
         REV_HASH=$(git rev-list -n 1 --before=${REV_DATE} ${FEED_BRANCH})
         echo $FEED_ID对应的HASH为：$REV_HASH
-        cd ../..
-        sed  -i -e "/\s${FEED_ID}\s.*\.git$/s/$/^${REV_HASH}/" feeds.conf 
+        sed -i -e "/\s${FEED_ID}\s.*\.git$/s/$/^${REV_HASH}/" feeds.conf
+        echo feeds.conf内容为：
+        cat feeds.conf
+        cd ../..        
         if [  -n "$2" ] ;then
                 sed -n '/${FEED_ID}/p' feeds.conf >> feeds-locked.conf
                 cp feeds-locked.conf feeds.conf
