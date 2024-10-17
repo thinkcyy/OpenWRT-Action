@@ -30,6 +30,8 @@ do
   if [  -n "$2" ] ;then
     if [  "$FEED_ID" = "$2" ] ;then  
       lock_date()
+    else
+      continue  
     fi
   else
     lock_date() 
