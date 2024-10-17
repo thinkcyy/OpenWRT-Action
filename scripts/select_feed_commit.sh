@@ -29,11 +29,11 @@ sed -e "/^src-git\S*\s/{s///;s/\s.*$//p}" feeds-temp.conf  | while read -r FEED_
 do
   if [  -n "$2" ] ;then
     if [  "$FEED_ID" = "$2" ] ;then  
-      lock_date()
+      lock_date
     else
       continue  
     fi
   else
-    lock_date() 
+    lock_date
   fi
 done
