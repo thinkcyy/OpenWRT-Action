@@ -7,10 +7,6 @@ lock_date() {
         cd ../..
         #打标
         sed -i -e "/\s${FEED_ID}\s.*\.git$/s/$/^${REV_HASH}/" feeds.conf
-        #echo feeds.conf内容为：
-        #cat feeds.conf                
-        
-
 }
 
 if [  -n "$2" ] ;then
@@ -55,6 +51,7 @@ do
       cp feeds-locked.conf feeds.conf
       echo 本轮打标后结果为
       echo feeds.conf    
+      break
     else
       continue  
     fi
