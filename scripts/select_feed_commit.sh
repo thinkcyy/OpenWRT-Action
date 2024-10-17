@@ -11,7 +11,8 @@ lock_date() {
 echo "-当前执行步骤：锁定feeds日期"
 sed -e "/^src-git\S*/s//src-git-full/" feeds.conf.default > feeds-temp.conf
 sed -i "/^\#/d" feeds-temp.conf
-./scripts/feeds update -a
+#./scripts/feeds update -a
+
 if [  -n "$1" ] ;then
   REV_DATE=$1
 else
