@@ -17,7 +17,7 @@ sed -i "/^\#/d" feeds.conf
 if [  -n "$2" ] ;then
         echo "--当前执行步骤：锁定$2日期"
         cp feeds.conf feeds-locked.conf
-        sed -i -e "/${FEED_ID}/d' feeds-locked.conf        
+        sed -i -e "/${FEED_ID}/d" feeds-locked.conf        
 else
         echo "-当前执行步骤：锁定feeds日期"
         sed -e "/^src-git\S*/s//src-git-full/" feeds.conf.default > feeds.conf        
