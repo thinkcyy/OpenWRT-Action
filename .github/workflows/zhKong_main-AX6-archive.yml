@@ -12,7 +12,7 @@ jobs:
       uses: thinkcyy/Action_Initialization@quick                
                    
     - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare_v5
+      uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AX6-ImageBuilder-20240625-thinkcy-setttings
@@ -32,7 +32,8 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-08T23:59:59+08:00'
-           FEEDS_DATE:  '2024-05-31T23:59:59+08:00'
+           FEEDS_DATE:  '2024-10-31T23:59:59+08:00'
+           NSS_DATE:  '2024-05-31T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
