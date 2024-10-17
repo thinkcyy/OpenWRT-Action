@@ -46,11 +46,11 @@ do
       lock_date
       #在上一轮打标成果基础上添加该仓库hash                    
       echo 本轮打标结果
-      sed '/${FEED_ID}/p' feeds.conf
-      sed -n '/${FEED_ID}/p' feeds.conf >> feeds-locked.conf
+      sed '/${2}/p' feeds.conf
+      sed -n '/${2}/p' feeds.conf >> feeds-locked.conf
       cp feeds-locked.conf feeds.conf
       echo 本轮打标后结果为
-      echo feeds.conf    
+      cat feeds.conf    
       break
     else
       continue  
