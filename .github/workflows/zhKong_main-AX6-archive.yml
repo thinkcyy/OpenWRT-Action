@@ -32,8 +32,8 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-08T23:59:59+08:00'
-           FEEDS_DATE:  '2024-06-30T23:59:59+08:00'
-           NSS_DATE:  '2024-05-31T23:59:59+08:00'
+           FEEDS_DATE:  '2024-05-31T23:59:59+08:00'
+           #NSS_DATE:  '2024-05-31T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
