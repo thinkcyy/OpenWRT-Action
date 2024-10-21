@@ -17,12 +17,12 @@ jobs:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AgustinLorenzo.default.20240801-nss-fw-12.5
            COMPILE_CONFIG_DIFF: common.cust.package.diff
-           COMPILE_CONFIG: AgustinLorenzo.nss.fw.12.5.diff.all.ipk-test
+           #COMPILE_CONFIG: AgustinLorenzo.nss.fw.12.5.diff.all.ipk-test
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            #REPO_BRANCH: main_nss
-           REPO_BRANCH: ipq807x-nsswifi-2024-10-14-0005
+           REPO_BRANCH: ipq807x-nsswifi-2024-10-20-0030
            #REPO_DATE: '2024-07-25T23:59:59+08:00'
            #REPO_DATE: 88384cc
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
@@ -32,7 +32,7 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-08-02T23:59:59+08:00'
-           FEEDS_DATE:  '2024-10-14T23:59:59+08:00'
+           FEEDS_DATE:  '2024-10-20T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
