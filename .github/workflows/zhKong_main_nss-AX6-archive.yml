@@ -17,7 +17,7 @@ jobs:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AgustinLorenzo.main.nss.default.202411
            COMPILE_CONFIG_DIFF: common.cust.package.diff
-           COMPILE_CONFIG: AgustinLorenzo.diff.AX6.202411
+           COMPILE_CONFIG: AgustinLorenzo.diff.AX6-202410
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
