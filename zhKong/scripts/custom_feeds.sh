@@ -17,6 +17,8 @@ sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-ba
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option en English' ./feeds/luci/modules/luci-base/root/etc/config/luci
 
+sed -i "/config internal languages/a\\        option zh_cn \'chinese\'" ./feeds/luci/modules/luci-base/root/etc/config/luci
+
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
