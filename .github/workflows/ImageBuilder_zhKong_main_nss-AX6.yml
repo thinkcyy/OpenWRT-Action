@@ -16,7 +16,7 @@ jobs:
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AgustinLorenzo.main.nss.default-202410
-           #COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.all.ipk
+           COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.all.ipk
            COMPILE_CONFIG: AgustinLorenzo.diff.AX6-202410           
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
