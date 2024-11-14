@@ -13,6 +13,7 @@ cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
 
 ./scripts/feeds install -a
 
+# 调整默认语言
 sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option en English' ./feeds/luci/modules/luci-base/root/etc/config/luci
@@ -27,6 +28,9 @@ cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
 
 echo '-步骤：custom_feed-Action导入编译配置'
 cp -v ../zhKong/config/config-${INPUT_ROUTER_MODEL}.config .config
+
+# 删除Agustin自带西班牙语配置
+sed -i "/-es=/d" .config
 
 echo '-步骤：custom_feed-初始化编译配置defconfig'
 make defconfig
