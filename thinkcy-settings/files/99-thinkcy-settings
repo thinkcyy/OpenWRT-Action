@@ -4,6 +4,9 @@
 #sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
 
+sed -i "/DISTRIB_RELEASE/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
+
+
 # NAT6相关调整
 uci set dhcp.odhcpd.loglevel="3"
 uci commit dhcp
