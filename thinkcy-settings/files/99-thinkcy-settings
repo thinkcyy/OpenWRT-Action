@@ -4,7 +4,7 @@
 #sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
 
-sed -i "/DISTRIB_RELEASE/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
+sed -i "/DISTRIB_RELEASE/s/\'/ DESCRIPTION_tobeupdated\'/2"  /etc/openwrt_release
 
 
 # NAT6相关调整
