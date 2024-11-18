@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG_BASE: AgustinLorenzo.main.nss.default.202411
+           COMPILE_CONFIG_BASE: AgustinLorenzo.main.nss.default.20241118
            COMPILE_CONFIG_DIFF: common.cust.package.diff
            COMPILE_CONFIG: AgustinLorenzo.diff.AX6-202410           
            IMAGEBUILDER: y
@@ -32,7 +32,7 @@ jobs:
            #MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
-           FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
+           #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
            
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
