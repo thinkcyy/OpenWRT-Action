@@ -15,7 +15,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG_BASE: Qosmio.qualcommax-6.x-nss-wifi.default.202411
+           COMPILE_CONFIG_BASE: Qosmio.qualcommax-6.x-nss-wifi.init.202411
            COMPILE_CONFIG_DIFF: common.cust.package.diff
            COMPILE_CONFIG: Qosmio.diff.AX6.202411           
            IMAGEBUILDER: y
