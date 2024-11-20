@@ -7,10 +7,17 @@ sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_rel
 sed -i "/DISTRIB_RELEASE/s/\'/ DESCRIPTION_tobeupdated\'/2"  /etc/openwrt_release
 
 
+
+
 # NAT6相关调整
 uci set dhcp.odhcpd.loglevel="3"
 uci commit dhcp
 service odhcpd restart
+
+# NSS不需要硬件加速
+uci set network.@device[0].packet_steering=0
+uci set network.@device[0].flow_offloading=0
+uci set network.@device[0].flow_offloading_hw=0
 
 uci set network.CT.sourcefilter="0"
 uci set network.wan6.sourcefilter="0"
