@@ -20,7 +20,7 @@ jobs:
            COMPILE_CONFIG: Qosmio.diff.AX6.202411           
            IMAGEBUILDER: y
            REPO_TYPE: Qosmio
-           OP_REPO: qosmio/openwrt
+           OP_REPO: qosmio/openwrt-ipq
            #REPO_BRANCH: main_nss
            REPO_BRANCH: qualcommax-6.x-nss-wifi
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
