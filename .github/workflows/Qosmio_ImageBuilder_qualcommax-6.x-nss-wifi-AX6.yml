@@ -1,4 +1,4 @@
-name: Qosmio_ImageBuilder_qualcommax-6.x-nss-wifi-AX6
+name: Qosmio_ImageBuilder_24.10-nss
 
 on:
    workflow_dispatch:
