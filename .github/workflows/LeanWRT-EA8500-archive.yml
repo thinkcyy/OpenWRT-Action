@@ -1,4 +1,4 @@
-name: LeanWRT-EA8500-archive
+name: LeanWRT-master-EA8500-[Archive]
 
 on:
    workflow_dispatch:
