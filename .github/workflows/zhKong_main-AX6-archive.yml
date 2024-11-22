@@ -1,4 +1,4 @@
-name: zhKong_main-AX6-archive
+name: zhKong-main-AX6-[Archive]
 
 on:
    workflow_dispatch:
