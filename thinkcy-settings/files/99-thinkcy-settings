@@ -38,4 +38,8 @@ chmod +x /etc/tinc/tincvpn/tinc-down
 chmod 400 /etc/dropbear/authorized_keys
 chmod 644 /etc/dropbear
 
+# 调整nlbwmon起始日期
+chmod +x /etc/z-set_nlbwmon.sh
+nohup sh /etc/z-set_nlbwmon.sh &
+
 exit 0
