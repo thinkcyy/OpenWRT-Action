@@ -1,4 +1,4 @@
-name: ImageBuilder_zhKong-AX6_main_nss
+name: zhKong-main.nss-AX6
 
 on:
    workflow_dispatch:
