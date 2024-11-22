@@ -1,4 +1,4 @@
-name: Qosmio_ImageBuilder_24.10-nss
+name: Qosmio-24.10.nss-AX6
 
 on:
    workflow_dispatch:
