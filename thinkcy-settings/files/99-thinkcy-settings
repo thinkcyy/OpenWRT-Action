@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set +e
+
 # 自定义版本号
 #sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
@@ -42,4 +44,5 @@ chmod 644 /etc/dropbear
 chmod +x /etc/z-set_nlbwmon.sh
 nohup sh /etc/z-set_nlbwmon.sh &
 
+set -e
 exit 0
