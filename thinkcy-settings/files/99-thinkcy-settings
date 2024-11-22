@@ -42,7 +42,7 @@ chmod 644 /etc/dropbear
 
 # 调整nlbwmon起始日期
 chmod +x /etc/z-set_nlbwmon.sh
-nohup sh /etc/z-set_nlbwmon.sh &
+sh /etc/z-set_nlbwmon.sh &
 
 set -e
 exit 0
