@@ -1,4 +1,4 @@
-name: zhKong_main_nss-AX6-archive
+name: zhKong-main.nss-AX6-[Archive]
 
 on:
    workflow_dispatch:
