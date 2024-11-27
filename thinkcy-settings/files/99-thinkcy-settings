@@ -21,6 +21,10 @@ uci set network.@device[0].packet_steering=0
 uci set network.@device[0].flow_offloading=0
 uci set network.@device[0].flow_offloading_hw=0
 
+uci set network.globals.packet_steering=0
+uci set firewall.@defaults[0].flow_offloading=0
+uci set ecm.@general[0].enable_bridge_filtering=0
+
 uci set network.CT.sourcefilter="0"
 uci set network.wan6.sourcefilter="0"
 uci commit network
