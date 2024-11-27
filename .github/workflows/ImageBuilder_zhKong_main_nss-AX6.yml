@@ -15,9 +15,9 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG_BASE: AgustinLorenzo.main.nss.default.20241118
-           COMPILE_CONFIG_DIFF: common.cust.package.diff
-           COMPILE_CONFIG: AgustinLorenzo.diff.AX6.202411.luci.24.10           
+           COMPILE_CONFIG_BASE: common.cust.package.diff
+           COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.AX6.202411.luci.24.10
+           #COMPILE_CONFIG:            
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
