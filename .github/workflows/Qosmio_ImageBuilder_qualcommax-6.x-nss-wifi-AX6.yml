@@ -12,7 +12,7 @@ jobs:
       uses: thinkcyy/Action_Initialization@main                
                    
     - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
+      uses: thinkcyy/Action_OpenWrt_composite@prepare@quick 
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: Qosmio.qualcommax-6.x-nss-wifi.default.202411
