@@ -53,8 +53,8 @@ jobs:
     - name: Build target images
       working-directory: ${{ github.workspace }}/runner_root/openwrt
       run: |
-       # make -i -j$(nproc) V=s || make -i V=s
-       make -j$(nproc) V=s || make V=s
+       make -i -j$(nproc) V=s || make -i V=s
+       # make -j$(nproc) V=s || make V=s
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
