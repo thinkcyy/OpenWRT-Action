@@ -5,8 +5,10 @@ set +e
 # 自定义版本号
 #sed -i "/DISTRIB_REVISION/s/\'/ REVISION_tobeupdated\'/2"  /etc/openwrt_release
 sed -i "/DISTRIB_DESCRIPTION/s/\'/ DESCRIPTION_tobeupdated\'/2" /etc/openwrt_release
-
 sed -i "/DISTRIB_RELEASE/s/\'/ DESCRIPTION_tobeupdated\'/2"  /etc/openwrt_release
+
+# 24.10版本号储存位置改变为/usr/lib/os-release
+sed -i "/OPENWRT_RELEASE/s/\"/ DESCRIPTION_tobeupdated\"/2"  /usr/lib/os-release
 
 
 
