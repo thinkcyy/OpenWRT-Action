@@ -32,6 +32,10 @@ uci set network.wan6.sourcefilter="0"
 uci commit network
 service network restart
 
+# 链接clash可执行文件
+cd /etc/clash
+ln -s bin/$(ls bin) clash
+
 # 设置shellclash
 echo "alias clash=\"sh /etc/clash/clash.sh\"" >> /etc/profile
 echo "export clashdir=\"/etc/clash\"" >> /etc/profile
