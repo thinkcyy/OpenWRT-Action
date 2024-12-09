@@ -17,12 +17,12 @@ jobs:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: common.cust.package.diff
            COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.AX6.202411.luci.24.10
-           #COMPILE_CONFIG:            
+           COMPILE_CONFIG: common.extra.package.diff
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            #REPO_BRANCH: main_nss
-           REPO_BRANCH: ipq807x-nsswifi-2024-11-23-2203
+           REPO_BRANCH: ipq807x-nsswifi-2024-12-09-0128
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
            #REPO_DATE: ad3b782
            #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
