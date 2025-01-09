@@ -16,8 +16,8 @@ jobs:
       with:
            ROUTER_MODEL: SAX1V1K
            COMPILE_CONFIG_BASE: common.cust.package.diff
-           COMPILE_CONFIG_DIFF: AgustinLorenzo.diff.SAX1V1K.202501
-           COMPILE_CONFIG: common.extra.package.diff
+           COMPILE_CONFIG_DIFF: common.extra.package.diff
+           COMPILE_CONFIG: SAX1V1K.202501
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
