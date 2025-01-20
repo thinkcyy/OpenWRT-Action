@@ -1,4 +1,4 @@
-name: zhKong-main.nss-qualcommax_ipq807x
+name: zhKong-main.nss-ipq807x
 
 on:
    workflow_dispatch:
