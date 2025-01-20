@@ -1,15 +1,15 @@
-name: Qosmio-24.10.nss-AX6
+name: Qosmio-24.10.nss-ipq807x
 
 on:
    workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
         
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@quick                
+      uses: thinkcyy/Action_Initialization@main                
                    
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
