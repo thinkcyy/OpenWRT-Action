@@ -10,49 +10,5 @@ sed -i "/DISTRIB_RELEASE/s/\'/ DESCRIPTION_tobeupdated\'/2"  /etc/openwrt_releas
 # 24.10版本号储存位置改变为/usr/lib/os-release
 sed -i "/OPENWRT_RELEASE/s/\"/ DESCRIPTION_tobeupdated\"/2"  /usr/lib/os-release
 
-
-
-
-# NAT6相关调整
-uci set dhcp.odhcpd.loglevel="3"
-uci commit dhcp
-service odhcpd restart
-
-# NSS不需要硬件加速
-uci set network.@device[0].packet_steering=0
-uci set network.@device[0].flow_offloading=0
-uci set network.@device[0].flow_offloading_hw=0
-
-uci set network.globals.packet_steering=0
-uci set firewall.@defaults[0].flow_offloading=0
-uci set ecm.@general[0].enable_bridge_filtering=0
-
-uci set network.CT.sourcefilter="0"
-uci set network.wan6.sourcefilter="0"
-uci commit network
-service network restart
-
-# 链接clash可执行文件
-cd /etc/clash
-ln -s bin/$(ls bin) clash
-
-# 设置shellclash
-echo "alias clash=\"sh /etc/clash/clash.sh\"" >> /etc/profile
-echo "export clashdir=\"/etc/clash\"" >> /etc/profile
-#chmod 755 /etc/clash/init.sh
-#cd /etc/clash/ && /etc/clash/init.sh
-cp -f /etc/clash/clashservice /etc/init.d/clash
-chmod 755 /etc/init.d/clash
-/etc/init.d/clash enable
-
-chmod +x /etc/tinc/tincvpn/tinc-up
-chmod +x /etc/tinc/tincvpn/tinc-down
-chmod 400 /etc/dropbear/authorized_keys
-chmod 644 /etc/dropbear
-
-# 调整nlbwmon起始日期
-chmod +x /etc/z-set_nlbwmon.sh
-sh /etc/z-set_nlbwmon.sh &
-
 set -e
 exit 0
