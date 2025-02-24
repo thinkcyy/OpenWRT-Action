@@ -16,7 +16,7 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            COMPILE_CONFIG_BASE: EA8500-20240524-full-NSS-without-crypto
-           COMPILE_CONFIG_DIFF: common.cust.package.diff
+           COMPILE_CONFIG_DIFF: leanwrt.cust.packages.diff
            #COMPILE_CONFIG:    
            IMAGEBUILDER: y
            REPO_TYPE: LeanWRT
