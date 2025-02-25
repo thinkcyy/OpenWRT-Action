@@ -25,7 +25,7 @@ jobs:
            #REPO_BRANCH: ipq807x-nsswifi-2025-02-15-2321
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
            REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
-           #DEFAULT_FEEDS: feeds.conf.default-main_nss_wifi
+           DEFAULT_FEEDS: feeds.conf.default-20250225
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
