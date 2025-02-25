@@ -29,7 +29,7 @@ jobs:
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
-           #MATCH_FEED_HASH: y
+           MATCH_FEED_HASH: y
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
            #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
