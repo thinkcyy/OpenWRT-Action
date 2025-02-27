@@ -21,16 +21,15 @@ jobs:
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: main_nss
-           #REPO_BRANCH: ipq807x-nsswifi-2025-02-15-2321
-           # 切换内核至6.6.66所在commit
-           REPO_DATE: '28f534d953'
+           #REPO_BRANCH: main_nss
+           REPO_BRANCH: ipq807x-nsswifi-2025-02-15-2321
+           #REPO_DATE: '28f534d953'
            #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
-           # cherry-pick NSS软件包相关commit
-           CHERRY_START: "5b8c1d3707^"
-           CHERRY_END: "..dbe9517b3e"
-           #CHECKOUT_FILE_COMMIT: 28f534d953
-           #CHECKOUT_FILE: include/kernel-6.6
+           #CHERRY_START: 5b8c1d3707
+           #CHERRY_END: dbe9517b3e
+           # 切换内核至6.6.66
+           CHECKOUT_FILE_COMMIT: 28f534d953
+           CHECKOUT_FILE: include/kernel-6.6
            #DEFAULT_FEEDS: feeds.conf.default-20250225
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
