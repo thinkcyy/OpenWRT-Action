@@ -1,0 +1,75 @@
+name: zhKong-main.nss-ipq807x-cherrypick
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+        
+    - name: Initialization
+      uses: thinkcyy/Action_Initialization@main               
+                   
+    - name: Prepare
+      uses: thinkcyy/Action_OpenWrt_composite@prepare
+      with:
+           ROUTER_MODEL: AX6
+           COMPILE_CONFIG_BASE: common.cust.package.diff
+           COMPILE_CONFIG_DIFF: common.extra.package.diff
+           COMPILE_CONFIG: qualcommax_ipq807x
+           IMAGEBUILDER: y
+           REPO_TYPE: zhKong
+           OP_REPO: AgustinLorenzo/openwrt
+           #REPO_BRANCH: main_nss
+           REPO_BRANCH: ipq807x-nsswifi-2025-03-02-0220
+           #REPO_DATE: '28f534d953'
+           #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
+           #CHERRY_START: 5b8c1d3707
+           #CHERRY_END: dbe9517b3e
+           # 切换内核至6.6.66
+           CHECKOUT_FILE_COMMIT: 28f534d953
+           CHECKOUT_FILE: include/kernel-6.6 target/linux
+           #DEFAULT_FEEDS: feeds.conf.default-20250225
+           #EXTRA_FEEDS: add_feeds_cus_lean_luci
+           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
+           #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
+           #MATCH_FEED_HASH: y
+           #ACTION_DATE: fc19ca2
+           #ACTION_DATE: '2024-07-03T23:59:59+08:00'
+           #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
+           
+    - name: Download package sources
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: make download V=s
+
+    - name: Build tools
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: |
+        make tools/install -j$(nproc) V=s || \
+        make tools/install V=s
+        
+    - name: Build toolchain
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: |
+        make toolchain/install -j$(nproc) V=s || \
+        make toolchain/install V=s
+
+    - name: Build target images
+      working-directory: ${{ github.workspace }}/runner_root/openwrt
+      run: |
+        make -j$(nproc) V=s || \
+        make V=s
+
+    - name: Upload
+      uses: thinkcyy/Action_OpenWrt_composite@release
+      
+    - name: Create release
+      uses: ncipollo/release-action@main
+      with:
+        name: ${{ env.TAG_NAME }}
+        allowUpdates: true
+        tag: ${{ env.TAG_NAME }}
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ./runner_root/artifact/*
