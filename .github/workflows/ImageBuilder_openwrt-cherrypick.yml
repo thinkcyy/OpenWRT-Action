@@ -1,4 +1,4 @@
-name: zhKong-main.nss-ipq807x-cherrypick
+name: openwrt-ipq807x-cherrypick
 
 on:
    workflow_dispatch:
