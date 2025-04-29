@@ -26,7 +26,7 @@ jobs:
            #REPO_DATE: '28f534d953'
            #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
            CHERRY_REPO: AgustinLorenzo/openwrt
-           CHERRY_BRANCH: main_nss
+           CHERRY_BRANCH: ipq807x-nsswifi-2025-04-07-0528
            CHERRY_START: 3396138477
            CHERRY_END: 4050834ef6
            # 切换内核至6.6.66
