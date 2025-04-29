@@ -20,16 +20,18 @@ jobs:
            COMPILE_CONFIG: qualcommax_ipq807x
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
-           OP_REPO: AgustinLorenzo/openwrt
+           OP_REPO: openwrt/openwrt
            #REPO_BRANCH: main_nss
-           REPO_BRANCH: ipq807x-nsswifi-2025-03-02-0220
+           REPO_BRANCH: v24.10.1
            #REPO_DATE: '28f534d953'
            #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
-           #CHERRY_START: 5b8c1d3707
-           #CHERRY_END: dbe9517b3e
+           CHERRY_REPO: AgustinLorenzo/openwrt
+           CHERRY_BRANCH: main_nss
+           CHERRY_START: 
+           CHERRY_END: 
            # 切换内核至6.6.66
-           CHECKOUT_FILE_COMMIT: 28f534d953
-           CHECKOUT_FILE: include/kernel-6.6 target/linux
+           # CHECKOUT_FILE_COMMIT: 28f534d953
+           # CHECKOUT_FILE: include/kernel-6.6 target/linux
            #DEFAULT_FEEDS: feeds.conf.default-20250225
            #EXTRA_FEEDS: add_feeds_cus_lean_luci
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
