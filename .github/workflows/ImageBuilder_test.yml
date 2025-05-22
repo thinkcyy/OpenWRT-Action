@@ -53,6 +53,8 @@ jobs:
     - name: Build packages
       working-directory: ${{ github.workspace }}/runner_root/openwrt
       run: |
+        sed -i "s|CONFIG_PACKAGE_thinkcy-settings=y|CONFIG_PACKAGE_thinkcy-settings=m|g" ./.config
+        make defconfig
         make package/thinkcy/thinkcy-settings/compile  -j$(nproc) V=s || \
         make package/thinkcy/thinkcy-settings/compile  V=s
 
