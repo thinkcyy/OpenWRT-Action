@@ -8,31 +8,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
         
-    - name: Initialization
-      uses: thinkcyy/Action_Initialization@quick
-                   
-    - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
-      with:
-           ROUTER_MODEL: AX6
-           COMPILE_CONFIG_BASE: common.cust.package.diff
-           COMPILE_CONFIG_DIFF: common.docker
-           COMPILE_CONFIG: qualcommax_ipq807x
-           IMAGEBUILDER: y
-           REPO_TYPE: zhKong
-           OP_REPO: AgustinLorenzo/openwrt
-           #REPO_BRANCH: main_nss
-           REPO_BRANCH: ipq807x-nsswifi-2025-05-17-1949
-           #REPO_DATE: '2024-07-05T23:59:59+08:00'
-           #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
-           #DEFAULT_FEEDS: feeds.conf.default-20250225
-           #EXTRA_FEEDS: add_feeds_cus_lean_luci
-           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
-           #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
-           #MATCH_FEED_HASH: y
-           #ACTION_DATE: fc19ca2
-           #ACTION_DATE: '2024-07-03T23:59:59+08:00'
-           #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
 
    
     - name: Download files
