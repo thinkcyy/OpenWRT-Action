@@ -38,7 +38,7 @@ jobs:
     - name: Build packages
       working-directory: ${{ github.workspace }}/runner_root/openwrt
       run: |
-        make package/thinkcy/thinkcy-settings/compile 
+        make package/thinkcy/thinkcy-settings/compile  V=s
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
