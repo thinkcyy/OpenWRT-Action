@@ -1,4 +1,4 @@
-name: zhKong-ACwifidude-23.05-nss-qsdk11
+name: zhKong-ACwifidude-23.05-nss-qsdk11-ipq806x
 
 on:
    workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
       with:
            ROUTER_MODEL: EA8500
            COMPILE_CONFIG_BASE: common.cust.package.diff
-           COMPILE_CONFIG_DIFF: ACwifidude-EA8500
+           COMPILE_CONFIG_DIFF: ACwifidude-ipq806x
            #COMPILE_CONFIG: qualcommax_ipq807x
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
