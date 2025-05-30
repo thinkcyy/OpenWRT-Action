@@ -17,7 +17,7 @@ jobs:
            ROUTER_MODEL: EA8500
            COMPILE_CONFIG_BASE: common.cust.package.diff
            COMPILE_CONFIG_DIFF: ACwifidude-ipq806x
-           #COMPILE_CONFIG: qualcommax_ipq807x
+           COMPILE_CONFIG: common.usb.diff
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: ACwifidude/openwrt
