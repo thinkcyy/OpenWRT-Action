@@ -14,15 +14,15 @@ jobs:
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
-           ROUTER_MODEL: AX6
+           ROUTER_MODEL: EA8500
            COMPILE_CONFIG_BASE: common.cust.package.diff
-           COMPILE_CONFIG_DIFF: common.docker
-           COMPILE_CONFIG: qualcommax_ipq807x
+           COMPILE_CONFIG_DIFF: ACwifidude-EA8500
+           #COMPILE_CONFIG: qualcommax_ipq807x
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
-           OP_REPO: AgustinLorenzo/openwrt
+           OP_REPO: ACwifidude/openwrt
            #REPO_BRANCH: main_nss
-           REPO_BRANCH: ipq807x-nsswifi-2025-05-25-0348
+           REPO_BRANCH: openwrt-23.05-nss-qsdk11
            #REPO_DATE: '2024-07-05T23:59:59+08:00'
            #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
            #DEFAULT_FEEDS: feeds.conf.default-20250225
