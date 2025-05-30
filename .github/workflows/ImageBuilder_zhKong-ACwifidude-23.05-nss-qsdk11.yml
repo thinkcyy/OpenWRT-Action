@@ -34,6 +34,11 @@ jobs:
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
            #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
            
+    - name: Replace IB
+      working-directory: ${{ github.workspace }}/runner_root
+      run: |
+        cp -r imagebuilder ./openwrt/target/
+           
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
       run: make download V=s
