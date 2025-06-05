@@ -15,9 +15,9 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           COMPILE_CONFIG_BASE: common.cust.package.diff
-           COMPILE_CONFIG_DIFF: common.docker
-           COMPILE_CONFIG: qualcommax_ipq807x
+           COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
+           COMPILE_CONFIG_DIFF: common.cust.package.diff
+           COMPILE_CONFIG: common.docker
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
