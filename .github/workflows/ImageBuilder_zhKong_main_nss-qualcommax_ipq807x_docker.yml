@@ -16,8 +16,8 @@ jobs:
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: qualcommax_ipq807x
-           #COMPILE_CONFIG_DIFF: common.cust.package.diff
-           COMPILE_CONFIG: common.docker
+           COMPILE_CONFIG_DIFF: common.cust.package.diff
+           #COMPILE_CONFIG: common.docker
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
