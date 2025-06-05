@@ -9,7 +9,7 @@ jobs:
     steps:
         
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@main
+      uses: thinkcyy/Action_Initialization@quick
                    
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
