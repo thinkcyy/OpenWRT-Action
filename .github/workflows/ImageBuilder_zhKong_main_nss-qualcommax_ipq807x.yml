@@ -9,13 +9,13 @@ jobs:
     steps:
         
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@fast
+      uses: thinkcyy/Action_Initialization@main
                    
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           #COMPILE_CONFIG_BASE: common.cust.package.diff
+           COMPILE_CONFIG_BASE: common.cust.package-1.diff
            #COMPILE_CONFIG_DIFF: common.extra.package.diff
            COMPILE_CONFIG: qualcommax_ipq807x
            IMAGEBUILDER: y
