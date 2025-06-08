@@ -15,8 +15,8 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:
            ROUTER_MODEL: AX6
-           #COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
-           COMPILE_CONFIG_DIFF: common.cust.package.diff-netlink
+           COMPILE_CONFIG_BASE: AgustinLorenzo.kernel-6.12-base-202506.config
+           COMPILE_CONFIG_DIFF: AgustinLorenzo.kernel-6.12-diff-crypto.config
            #COMPILE_CONFIG: common.cust.package.diff-2
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
