@@ -45,6 +45,7 @@ jobs:
         for config in CONFIG_VERIFIED
         do 
         sed -i "$a/${config}" ./.config  
+        done
         
         # 这一步待验证的配置
         CONFIG_TO_ADD="\
@@ -52,7 +53,8 @@ jobs:
 
         for config in CONFIG_TO_ADD
         do 
-        sed -i "$a/${config}" ./.config  
+        sed -i "$a/${config}" ./.config
+        done
           
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
