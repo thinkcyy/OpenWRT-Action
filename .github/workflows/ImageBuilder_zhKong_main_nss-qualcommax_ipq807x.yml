@@ -17,7 +17,7 @@ jobs:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: AgustinLorenzo.kernel-6.12-base-202506
            COMPILE_CONFIG_DIFF: AgustinLorenzo.kernel-6.12-diff-crypto
-           #COMPILE_CONFIG: common.cust.package.diff-2
+           COMPILE_CONFIG: common.cust.package.diff-netlink-1
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
