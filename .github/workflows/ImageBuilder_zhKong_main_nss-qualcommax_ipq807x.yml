@@ -16,7 +16,7 @@ jobs:
       with:
            ROUTER_MODEL: AX6
            #COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
-           COMPILE_CONFIG_DIFF: common.cust.package.diff-1
+           COMPILE_CONFIG_DIFF: common.cust.package.diff-1+netlink
            #COMPILE_CONFIG: common.cust.package.diff-2
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
