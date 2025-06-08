@@ -48,9 +48,7 @@ jobs:
         
         # 这一步待验证的配置
         CONFIG_TO_ADD="\
-        CONFIG_PACKAGE_kmod-nft-connlimit=y \
-        CONFIG_PACKAGE_kmod-nft-netdev=y \
-        CONFIG_PACKAGE_kmod-nft-queue=y"
+        CONFIG_PACKAGE_kmod-macvlan=m"
 
         for config in CONFIG_TO_ADD
         do 
