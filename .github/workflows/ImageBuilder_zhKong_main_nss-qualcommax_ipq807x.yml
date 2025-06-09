@@ -33,7 +33,7 @@ jobs:
         
         for config in CONFIG_VERIFIED
         do 
-        sed -i "$a\${config}" ./.config
+        sed -i "$a${config}" ./.config
         done
         
         # 这一步待验证的配置
@@ -43,7 +43,7 @@ jobs:
         CONFIG_PACKAGE_kmod-nf-nathelper-extra=m"
         for config in CONFIG_TO_ADD
         do 
-        sed -i "$a\${config}" ./.config
+        sed -i "$a${config}" ./.config
         done
           
     - name: Download package sources
