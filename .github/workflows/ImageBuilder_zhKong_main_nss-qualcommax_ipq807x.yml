@@ -30,10 +30,10 @@ jobs:
         CONFIG_VERIFIED="\
         CONFIG_PACKAGE_kmod-nft-socket=y \
         CONFIG_PACKAGE_kmod-nft-tproxy=y"
-        
-        for config in CONFIG_VERIFIED
+
+        for config in $CONFIG_VERIFIED
         do 
-        sed -i "$a${config}" ./.config
+        sed -i '$a'"${config}"'' ./t
         done
         
         # 这一步待验证的配置
@@ -41,9 +41,10 @@ jobs:
         CONFIG_PACKAGE_kmod-nf-nat6=y \
         CONFIG_PACKAGE_kmod-nf-nathelper=m \
         CONFIG_PACKAGE_kmod-nf-nathelper-extra=m"
-        for config in CONFIG_TO_ADD
+        
+        for config in $CONFIG_TO_ADD
         do 
-        sed -i "$a${config}" ./.config
+        sed -i '$a'"${config}"'' ./t
         done
           
     - name: Download package sources
