@@ -21,7 +21,7 @@ jobs:
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
-           REPO_BRANCH: ipq807x-nsswifi-2025-05-25-0348
+           REPO_BRANCH: ipq807x-nsswifi-2025-06-04-0300
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            
     - name: Modify config
