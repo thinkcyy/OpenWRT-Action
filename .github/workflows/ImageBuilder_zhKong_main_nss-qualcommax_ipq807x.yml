@@ -13,17 +13,15 @@ jobs:
                    
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
-      with:
-           ROUTER_MODEL: AX6
+      with:           
            REPO_BRANCH: ipq807x-nsswifi-2025-06-04-0300
            COMPILE_CONFIG_BASE: AgustinLorenzo.kernel-6.12-base-202506
-           #COMPILE_CONFIG_DIFF: common.cust.package.diff
-           COMPILE_CONFIG_AUTOMERGE: common.cust.package
-           #COMPILE_CONFIG：
+           COMPILE_CONFIG_DIFF: common.cust.package-1-OpenWrt_Component           
+           COMPILE_CONFIG: common.cust.package-2-luci_app
+           #COMPILE_CONFIG_AUTOMERGE: common.cust.package
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
-
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            
     - name: Modify config
