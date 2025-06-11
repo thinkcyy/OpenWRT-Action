@@ -54,6 +54,8 @@ jobs:
         make -j$(nproc) V=s || \
         make V=s
 
+        echo "RELEASE_NAME_PREFIX=[Archive]" >> $GITHUB_ENV
+
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
       
