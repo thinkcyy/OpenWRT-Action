@@ -17,7 +17,7 @@ jobs:
            REPO_BRANCH: ipq807x-nsswifi-2025-05-25-0348
            COMPILE_CONFIG_BASE: qualcommax_ipq807x
            COMPILE_CONFIG_DIFF: common.cust.package.diff
-           COMPILE_CONFIG: common.docker
+           #COMPILE_CONFIG: common.docker
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
