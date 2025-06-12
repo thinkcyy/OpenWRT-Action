@@ -16,9 +16,9 @@ jobs:
       with:           
            REPO_BRANCH: ipq807x-nsswifi-2025-06-04-0300
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
-           COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app"
+           COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package.diff-3.1-netfilter_essential"
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
-           COMPILE_CONFIG: common.cust.package.diff-3.1-netfilter_essential
+           COMPILE_CONFIG: common.cust.package-4-nss
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
@@ -28,9 +28,11 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@config_add
       with:
            #CONFIG_VERIFIED: 'CONFIG_PACKAGE_kmod-nft-socket=y CONFIG_PACKAGE_kmod-nft-tproxy=y CONFIG_PACKAGE_kmod-nf-nat6=y'
-           CONFIG_TO_ADD: 'CONFIG_PACKAGE_kmod-qca-nss-drv-match=y CONFIG_PACKAGE_kmod-qca-mcs=y CONFIG_PACKAGE_kmod-qca-nss-crypto=y CONFIG_PACKAGE_kmod-qca-nss-crypto=y CONFIG_PACKAGE_wsdd2=y'
-           # CONFIG_TO_DEL: "CONFIG_PACKAGE_bc=n CONFIG_BUSYBOX_DEFAULT_BC=n "
+           #CONFIG_TO_ADD: 'CONFIG_PACKAGE_kmod-qca-nss-drv-match=y CONFIG_PACKAGE_kmod-qca-mcs=y CONFIG_PACKAGE_kmod-qca-nss-crypto=y CONFIG_PACKAGE_kmod-qca-nss-crypto=y CONFIG_PACKAGE_wsdd2=y'
+           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan CONFIG_PACKAGE_kmod-nf-nathelper CONFIG_PACKAGE_kmod-nf-nathelper-extra"
+           
            # 已验证失败：CONFIG_PACKAGE_kmod-nft-netdev=m CONFIG_PACKAGE_kmod-macvlan=m CONFIG_PACKAGE_kmod-nf-nathelper=m  CONFIG_PACKAGE_kmod-nf-nathelper-extra=m
+           # 6.12.31内核已验证成功：CONFIG_PACKAGE_kmod-qca-nss-drv-match=y CONFIG_PACKAGE_kmod-qca-mcs=y CONFIG_PACKAGE_kmod-qca-nss-crypto=y CONFIG_PACKAGE_wsdd2=y
           
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
