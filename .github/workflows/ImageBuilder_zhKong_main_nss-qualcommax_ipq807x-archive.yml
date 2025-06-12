@@ -56,13 +56,11 @@ jobs:
 
     - name: Upload
       uses: thinkcyy/Action_OpenWrt_composite@release
-      with:
-        RELEASE_NAME_PREFIX: "[Archive]"
-      
+            
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: ${{ env.RELEASE_NAME_PREFIX }}-${{ env.TAG_NAME }}
+        name: "[Archive]-${{ env.TAG_NAME }}"
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
