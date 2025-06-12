@@ -17,7 +17,7 @@ jobs:
            REPO_BRANCH: ipq807x-nsswifi-2025-06-04-0300
            COMPILE_CONFIG_BASE: AgustinLorenzo.kernel-6.12-base-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-4-nss"
-           COMPILE_CONFIG: common.docker
+           COMPILE_CONFIG: common.extra.package.diff
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
@@ -28,8 +28,8 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@config_add
       with:
            #CONFIG_VERIFIED: 'CONFIG_PACKAGE_kmod-nft-socket=y CONFIG_PACKAGE_kmod-nft-tproxy=y CONFIG_PACKAGE_kmod-nf-nat6=y'
-           #CONFIG_TO_ADD: ' '
-           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan CONFIG_PACKAGE_kmod-nf-nathelper CONFIG_PACKAGE_kmod-nf-nathelper-extra"
+           CONFIG_TO_ADD: ' '
+           #CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan CONFIG_PACKAGE_kmod-nf-nathelper CONFIG_PACKAGE_kmod-nf-nathelper-extra"
            # 已验证失败：CONFIG_PACKAGE_kmod-nft-netdev=m CONFIG_PACKAGE_kmod-macvlan=m CONFIG_PACKAGE_kmod-nf-nathelper=m  CONFIG_PACKAGE_kmod-nf-nathelper-extra=m
           
     - name: Download package sources
