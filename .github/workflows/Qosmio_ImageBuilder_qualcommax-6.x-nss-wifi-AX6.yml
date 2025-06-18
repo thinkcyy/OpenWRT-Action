@@ -14,7 +14,7 @@ jobs:
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:           
-           REPO_BRANCH: main-nss
+           REPO_BRANCH: 24.10-nss
            COMPILE_CONFIG_BASE: Qosmio-qualcommax_ipq807x
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
@@ -27,7 +27,8 @@ jobs:
     - name: Modify config
       uses: thinkcyy/Action_OpenWrt_composite@config_add
       with:
-           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan CONFIG_PACKAGE_kmod-nf-nathelper CONFIG_PACKAGE_kmod-nf-nathelper-extra"
+           CONFIG_TO_ADD: ' '
+           #CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan CONFIG_PACKAGE_kmod-nf-nathelper CONFIG_PACKAGE_kmod-nf-nathelper-extra"
                       
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
