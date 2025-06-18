@@ -28,7 +28,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@config_add
       with:
            # CONFIG_TO_ADD: ' '
-           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-macvlan"
+           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
                       
     - name: Download package sources
       working-directory: ${{ github.workspace }}/runner_root/openwrt
