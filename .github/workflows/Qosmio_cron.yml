@@ -10,7 +10,7 @@ env:
 jobs:
   check:
     outputs:
-      status: ${{ steps.early.conclusion }}
+      CONTINUE: ${{ steps.early.outputs.CONTINUE }}
     runs-on: ubuntu-22.04
     steps:
       
@@ -28,11 +28,11 @@ jobs:
         LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
         echo 最新提交日期为$LAST
         echo 判断是否24小时内更新
-        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_ENV )      
+        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT )      
       
   build:
     needs: check
-    if: ${{ env.CONTINUE == 'YES' }}
+    if: needs.check.outputs.CONTINUE == 'YES'
     runs-on: ubuntu-22.04
     steps:
         
