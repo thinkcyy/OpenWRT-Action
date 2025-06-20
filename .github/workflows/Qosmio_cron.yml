@@ -28,7 +28,7 @@ jobs:
         LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
         echo 最新提交日期为$LAST
         echo 判断是否24小时内更新
-        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT )      
+        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) ||  && echo 24小时内无更新，退出     
       
   build:
     needs: check
