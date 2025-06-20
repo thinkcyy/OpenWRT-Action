@@ -18,6 +18,7 @@ jobs:
         OP_REPO: qosmio/openwrt-ipq
         REPO_BRANCH: main-nss                 
       run: |
+        echo $OP_REPO $REPO_BRANCH
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
         echo 获取最新提交日期
