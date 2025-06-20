@@ -15,11 +15,12 @@ jobs:
     - id: early
       name: Early exit
       run: |
+        echo 下载源仓库
         git clone https://github.com/${{ inputs.OP_REPO }} $([[ ${{ inputs.REPO_BRANCH }} != 'n' ]] && echo "-b ${{ inputs.REPO_BRANCH }} --single-branch")  ./openwrt
-        #获取最新提交日期
+        echo 获取最新提交日期
         LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
         echo 最新提交日期为$LAST
-        #判断是否24小时内更新
+        echo 判断是否24小时内更新
         [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; exit 0 ) || (echo 24小时内无更新，退出 ; exit 1 )      
       
   build:
