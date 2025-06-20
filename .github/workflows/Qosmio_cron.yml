@@ -4,6 +4,8 @@ on:
    workflow_dispatch:
    schedule:
     - cron: '0 20 * * *'
+env:
+   CONTINUE: no
 
 jobs:
   check:
@@ -16,7 +18,7 @@ jobs:
       name: Early exit
       env:
         OP_REPO: qosmio/openwrt-ipq
-        REPO_BRANCH: main-nss                 
+        REPO_BRANCH: main-nss
       run: | 
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
