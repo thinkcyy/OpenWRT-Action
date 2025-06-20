@@ -13,7 +13,7 @@ jobs:
     steps:
         
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@main
+      uses: thinkcyy/Action_Initialization@fast
 
     - id: early
       name: Early exit
