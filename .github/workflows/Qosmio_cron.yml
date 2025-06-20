@@ -4,8 +4,6 @@ on:
    workflow_dispatch:
    schedule:
     - cron: '0 20 * * *'
-env:
-   CONTINUE: no
 
 jobs:
   check:
@@ -19,7 +17,6 @@ jobs:
       env:
         OP_REPO: qosmio/openwrt-ipq
         REPO_BRANCH: main-nss
-        CONTINUE: no
       run: | 
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
@@ -86,7 +83,7 @@ jobs:
     - name: Create release
       uses: ncipollo/release-action@main
       with:
-        name: ${{ env.TAG_NAME }}
+        name: "[Cron]-${{ env.TAG_NAME }}"
         allowUpdates: true
         tag: ${{ env.TAG_NAME }}
         replacesArtifacts: true
