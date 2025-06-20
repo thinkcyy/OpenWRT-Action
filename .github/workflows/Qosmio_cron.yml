@@ -19,6 +19,7 @@ jobs:
       env:
         OP_REPO: qosmio/openwrt-ipq
         REPO_BRANCH: main-nss
+        CONTINUE: no
       run: | 
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
