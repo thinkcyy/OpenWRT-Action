@@ -11,7 +11,10 @@ jobs:
       status: ${{ steps.early.conclusion }}
     runs-on: ubuntu-22.04
     steps:
-    
+        
+    - name: Initialization
+      uses: thinkcyy/Action_Initialization@quick
+      
     - id: early
       name: Early exit
       run: |
