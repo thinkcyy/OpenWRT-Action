@@ -25,15 +25,25 @@ jobs:
         cd ./openwrt
         #LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
         
-        echo 获取最新TAG
-        LAST_TAG=$(git tag --sort=-v:refname | head -n 1)
-        #echo 最新提交日期为$LAST
-        echo 最新TAG为$LAST_TAG
+        # 获取最新两个TAG的commit
+        # LAST_TAG=$(git tag --sort=-v:refname | head -n 1)        
+        LAST_2_TAG_COMMIT=$(git rev-list --tags --max-count=2)
+
+        # 选取非mesh的COMMIT
+        for i in $LAST_2_TAG_COMMIT
+        do 
+        [[ "$(git tag --points-at $i)" != "*mesh*" ]] && NON_MESH_COMMIT=$i && break
+        done
+
+        # 确定非mesh的tag名称
+        LAST_TAG=$(git tag --points-at $NON_MESH_COMMIT)
+
+        echo 最新的非mesh的TAG为$LAST_TAG，对应的COMMIT为$NON_MESH_COMMIT
         echo "BRANCH=$LAST_TAG" >> $GITHUB_OUTPUT
 
         #echo 判断是否24小时内更新
-        LAST_TAG_HASH=$(git rev-list --tags --max-count=1)
-        LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $LAST_TAG_HASH -1) 
+        #LAST_TAG_HASH=$(git rev-list --tags --max-count=1)
+        LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $LAST_TAG -1) 
         [[ `expr $(($(date +%s) - $(date +%s -d "$LAST_TAG_DATE")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
       
   build:
