@@ -35,7 +35,9 @@ jobs:
         NON_MESH_TAG_LIST=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
         NON_MESH_TAG_HASH=$(git show-ref --tags $NON_MESH_TAG_LIST --hash)
         LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $NON_MESH_TAG_HASH -1) 
-        echo 最新的非mesh标签为$NON_MESH_TAG_LIST，对应的commit为$NON_MESH_TAG_HASH，日期为$LAST_TAG_DATE
+        echo 最新的非mesh标签为$NON_MESH_TAG_LIST
+        echo 对应的commit为$NON_MESH_TAG_HASH
+        echo 对应的日期为$LAST_TAG_DATE
 
         # 选取非mesh的COMMIT
         #if [ -z $LAST_TAG_COMMIT ]
