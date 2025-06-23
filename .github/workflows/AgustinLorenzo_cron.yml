@@ -9,23 +9,32 @@ jobs:
   check:
     outputs:
       CONTINUE: ${{ steps.early.outputs.CONTINUE }}
+      BRANCH: ${{ steps.early.outputs.BRANCH }}
     runs-on: ubuntu-22.04
     steps:
       
     - id: early
       name: Early exit
       env:
-        OP_REPO: qosmio/openwrt-ipq
-        REPO_BRANCH: main-nss
+        OP_REPO: AgustinLorenzo/openwrt
+        REPO_BRANCH: main_nss
       run: | 
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
-        echo 获取最新提交日期
+        #echo 获取最新提交日期
         cd ./openwrt
-        LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
-        echo 最新提交日期为$LAST
+        #LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
+        
+        echo 获取最新TAG
+        LAST_TAG=$(git tag --sort=-v:refname | head -n 1)
+        #echo 最新提交日期为$LAST
+        echo 最新TAG为$LAST_TAG
+        echo "BRANCH=$LAST_TAG" >> $GITHUB_OUTPUT
+
         echo 判断是否24小时内更新
-        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
+        LAST_TAG_HASH=$(git rev-list --tags --max-count=1)
+        LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $LAST_TAG_HASH -1) 
+        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST_TAG_DATE")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
       
   build:
     needs: check
@@ -39,15 +48,15 @@ jobs:
     - name: Prepare
       uses: thinkcyy/Action_OpenWrt_composite@prepare
       with:           
-           REPO_BRANCH: main-nss
-           COMPILE_CONFIG_BASE: Qosmio-qualcommax_ipq807x
+           REPO_BRANCH: ${{jobs.check.outputs.BRANCH }}
+           COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
            COMPILE_CONFIG: common.cust.package-4-nss
            IMAGEBUILDER: y
-           CUSTOM_FEEDS_SH: custom_feeds-Qosmio
-           REPO_TYPE: Qosmio
-           OP_REPO: qosmio/openwrt-ipq
+           REPO_TYPE: zhKong
+           OP_REPO: AgustinLorenzo/openwrt
+           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
 
     - name: Modify config
       uses: thinkcyy/Action_OpenWrt_composite@config_add
