@@ -32,10 +32,10 @@ jobs:
         # LAST_TAG_COMMIT=$(git rev-list --tags --since=$(date -d "yesterday" +%Y-%m-%d) --max-count=2)
         
         # 获取最新的非mesh的tag
-        NON_MESH_TAG_LIST=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
-        NON_MESH_TAG_HASH=$(git show-ref --tags $NON_MESH_TAG_LIST --hash)
+        NON_MESH_TAG=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
+        NON_MESH_TAG_HASH=$(git show-ref --tags $NON_MESH_TAG --hash)
         LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $NON_MESH_TAG_HASH -1) 
-        echo 最新的非mesh标签为$NON_MESH_TAG_LIST
+        echo 最新的非mesh标签为$NON_MESH_TAG
         echo 对应的commit为$NON_MESH_TAG_HASH
         echo 对应的日期为$LAST_TAG_DATE
 
@@ -55,7 +55,7 @@ jobs:
         #LAST_TAG=$(git tag --points-at $NON_MESH_COMMIT)
 
         #echo 最新的非mesh的TAG为$LAST_TAG，对应的COMMIT为$NON_MESH_COMMIT
-        #echo "BRANCH=$LAST_TAG" >> $GITHUB_OUTPUT
+        echo "BRANCH=$NON_MESH_TAG" >> $GITHUB_OUTPUT
 
         #echo 判断是否24小时内更新
         #LAST_TAG_HASH=$(git rev-list --tags --max-count=1)         
