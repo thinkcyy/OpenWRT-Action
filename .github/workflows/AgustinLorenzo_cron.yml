@@ -34,7 +34,8 @@ jobs:
         # 获取最新的非mesh的tag
         NON_MESH_TAG_LIST=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
         NON_MESH_TAG_HASH=$(git show-ref --tags $NON_MESH_TAG_LIST --hash)
-        echo 最新的非mesh标签为$NON_MESH_TAG_LIST，对应的commit为$NON_MESH_TAG_HASH
+        LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $NON_MESH_TAG_HASH -1) 
+        echo 最新的非mesh标签为$NON_MESH_TAG_LIST，对应的commit为$NON_MESH_TAG_HASH，日期为$LAST_TAG_DATE
 
         # 选取非mesh的COMMIT
         #if [ -z $LAST_TAG_COMMIT ]
@@ -55,8 +56,7 @@ jobs:
         #echo "BRANCH=$LAST_TAG" >> $GITHUB_OUTPUT
 
         #echo 判断是否24小时内更新
-        #LAST_TAG_HASH=$(git rev-list --tags --max-count=1)
-        LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $NON_MESH_TAG_HASH -1) 
+        #LAST_TAG_HASH=$(git rev-list --tags --max-count=1)         
         [[ `expr $(($(date +%s) - $(date +%s -d "$LAST_TAG_DATE")))` -lt 86400 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
       
   build:
