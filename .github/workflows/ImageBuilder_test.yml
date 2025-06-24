@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
         
-    - name: Initialization
-      uses: thinkcyy/Action_Initialization@fast
+    #- name: Initialization
+    #  uses: thinkcyy/Action_Initialization@fast
                    
-    - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
+    - name: compile
+      uses: thinkcyy/Action_OpenWrt_composite@compile
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: common.cust.package.diff
