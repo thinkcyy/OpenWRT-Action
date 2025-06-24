@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    
     steps:
         
     #- name: Initialization
@@ -13,6 +14,8 @@ jobs:
                    
     - name: compile
       uses: thinkcyy/Action_OpenWrt_composite@compile
+      secrets:
+           token: ${{ secrets.GITHUB_TOKEN }}
       with:
            ROUTER_MODEL: AX6
            COMPILE_CONFIG_BASE: common.cust.package.diff
@@ -33,22 +36,3 @@ jobs:
            #ACTION_DATE: fc19ca2
            #ACTION_DATE: '2024-07-03T23:59:59+08:00'
            #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
-
-   
-    - name: Download files
-      working-directory: ${{ github.workspace }}/runner_root/
-      run: |
-        wget -q --no-check-certificate -O /tmp/test.tar.gz https://zoenix.cc/xyz/github//test.tar.gz  && tar -xzf /tmp/test.tar.gz
-
-    - name: Upload
-      uses: thinkcyy/Action_OpenWrt_composite@release
-      
-    - name: Create release
-      uses: ncipollo/release-action@main
-      with:
-        name: ${{ env.TAG_NAME }}
-        allowUpdates: true
-        tag: ${{ env.TAG_NAME }}
-        replacesArtifacts: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./runner_root/artifact/*
