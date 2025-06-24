@@ -67,12 +67,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
         
-    - name: Initialization
-      uses: thinkcyy/Action_Initialization@main
-                   
-    - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
+    - name: compile
+      uses: thinkcyy/Action_OpenWrt_composite@compile
       with:           
+           TAG_PREFIX: "[Cron]"
            REPO_BRANCH: ${{ needs.check.outputs.BRANCH }}
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
@@ -82,44 +80,5 @@ jobs:
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
-
-    - name: Modify config
-      uses: thinkcyy/Action_OpenWrt_composite@config_add
-      with:
-           # CONFIG_TO_ADD: ' '
            CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
-                      
-    - name: Download package sources
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: make download V=s
-
-    - name: Build tools
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: |
-        make tools/install -j$(nproc) V=s || \
-        make tools/install V=s
-        
-    - name: Build toolchain
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: |
-        make toolchain/install -j$(nproc) V=s || \
-        make toolchain/install V=s
-
-    - name: Build target images
-      working-directory: ${{ github.workspace }}/runner_root/openwrt
-      run: |
-       make -i -j$(nproc) V=s || make -i V=s
-       # make -j$(nproc) V=s || make V=s
-
-    - name: Upload
-      uses: thinkcyy/Action_OpenWrt_composite@release
-      
-    - name: Create release
-      uses: ncipollo/release-action@main
-      with:
-        name: "[Cron]-${{ env.TAG_NAME }}"
-        allowUpdates: true
-        tag: ${{ env.TAG_NAME }}
-        replacesArtifacts: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ./runner_root/artifact/*
+           token: ${{ secrets.GITHUB_TOKEN }} 
