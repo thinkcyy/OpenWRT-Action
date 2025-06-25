@@ -24,6 +24,7 @@ jobs:
         echo 最新提交为：$(git log -1 --oneline)
         LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
         echo 对应日期为：$LAST
+        echo 当前日期为：$(date +"%Y-%m-%d %H:%M:%S")
         # 判断是否更新
         [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 129600 ]] && (echo 36小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
       
