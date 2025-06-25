@@ -1,1 +1,1 @@
-高通ipq807X芯片路由器固件，追随AgustinLorenzo/openwrt、qosmio/openwrt-ipq源码自动编译
+高通ipq807x芯片路由器nss硬件加速固件（含ImageBuilder），追随AgustinLorenzo/openwrt、qosmio/openwrt-ipq源码自动编译
