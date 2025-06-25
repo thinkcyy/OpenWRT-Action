@@ -1,0 +1,1 @@
+高通ipq807X芯片路由器固件，追随AgustinLorenzo/openwrt、qosmio/openwrt-ipq源码自动编译
