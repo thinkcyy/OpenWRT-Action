@@ -20,7 +20,7 @@ jobs:
       run: | 
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
-                cd ./openwrt
+        cd ./openwrt
         echo 最新提交为：$(git log -1 --oneline)
         LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
         echo 对应日期为：$LAST
