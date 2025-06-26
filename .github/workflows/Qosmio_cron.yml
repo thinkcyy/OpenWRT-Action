@@ -24,7 +24,8 @@ jobs:
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
         cd ./openwrt
         echo 最新提交为：$(git log -1 --oneline)
-        LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
+        # LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
+        LAST=$(git log -1 --format="%cd")
         echo 对应日期为：$LAST
         echo 当前日期为：$(date +"%Y-%m-%d %H:%M:%S")
         # 判断是否更新
