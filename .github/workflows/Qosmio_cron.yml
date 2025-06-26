@@ -1,4 +1,4 @@
-name: Qosmio-cron
+name: Qosmio-cron-test
 
 on:
    workflow_dispatch:
