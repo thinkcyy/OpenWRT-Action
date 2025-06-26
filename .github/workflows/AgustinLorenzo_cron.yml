@@ -19,7 +19,8 @@ jobs:
         OP_REPO: AgustinLorenzo/openwrt
         REPO_BRANCH: main_nss
       run: | 
-        git config --global log.date iso-strict-local
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        git config --global log.date iso-local
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
         #echo 获取最新提交日期
