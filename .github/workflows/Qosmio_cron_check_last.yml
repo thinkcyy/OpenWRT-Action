@@ -4,26 +4,20 @@ on:
    workflow_dispatch:
    schedule:
     - cron: '0 20 * * *'
-
+    
+env:
+  OP_REPO: qosmio/openwrt-ipq
+  REPO_BRANCH: main-nss
+  REPO_TYPE: Qosmio
+  CKOUTPATH: ckout
+  
 jobs:
   check:
     outputs:
       CONTINUE: ${{ steps.check.outputs.CONTINUE }}
     runs-on: ubuntu-22.04
-    steps:
-    
-    - id: setenv
-      name: setenv
-      env:
-        OP_REPO: qosmio/openwrt-ipq
-        REPO_BRANCH: main-nss
-        REPO_TYPE: Qosmio
-        CKOUTPATH: ckout
-      run: | 
-        echo "OP_REPO=$OP_REPO" >> $GITHUB_ENV
-        echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
-        echo "REPO_TYPE=$REPO_TYPE" >> $GITHUB_ENV
-        echo "CKOUTPATH=$CKOUTPATH" >> $GITHUB_ENV
+    steps:   
+
     
     - name: Checkout
       uses: actions/checkout@v4
