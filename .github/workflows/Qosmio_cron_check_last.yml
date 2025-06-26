@@ -53,11 +53,10 @@ jobs:
         echo 当前日期为：$(date +"%Y-%m-%d %H:%M:%S")
         # 判断是否更新
         #[[ `expr $(($(date +%s) - $(date +%s -d "$LAST_DTE")))` -lt 129600 ]] && (echo 36小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出  
+        
         cd ../${{ env.CKOUTPATH }}
         LAST_FILE="./${{ env.REPO_TYPE }}/last-check-${{ github.workflow }}"
-        #[ ! -f $LAST_FILE ] && echo $LAST_UPDATE > $LAST_FILE && (echo 首次运行，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || \
-        # 判断文件
-        echo $LAST_FILE
+        #[ ! -f $LAST_FILE ] && echo $LAST_UPDATE > $LAST_FILE && (echo 首次运行，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || \        
         [[ -f $LAST_FILE ]] && LAST_CHECK=$(tail -n 1 $LAST_FILE) && echo 上次更新为：$LAST_CHECK || echo 首次运行
         # 判断更新        
         if [[ -z "${LAST_CHECK}" ]] || [[ "${LAST_UPDATE}" != "${LAST_CHECK}" ]] ;
