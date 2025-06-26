@@ -1,0 +1,54 @@
+name: Qosmio-cron_check_last
+
+on:
+   workflow_dispatch:
+   schedule:
+    - cron: '0 20 * * *'
+
+jobs:
+  check:
+    outputs:
+      CONTINUE: ${{ steps.early.outputs.CONTINUE }}
+    runs-on: ubuntu-22.04
+    steps:
+      
+    - id: early
+      name: Early exit
+      env:
+        OP_REPO: qosmio/openwrt-ipq
+        REPO_BRANCH: main-nss
+      run: | 
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        git config --global log.date iso-local
+        echo 下载源仓库
+        git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
+        cd ./openwrt
+        echo 最新提交为：$(git log -1 --oneline)
+        # LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
+        LAST=$(git log -1 --format="%cd")
+        echo 对应日期为：$LAST
+        echo 当前日期为：$(date +"%Y-%m-%d %H:%M:%S")
+        # 判断是否更新
+        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST")))` -lt 129600 ]] && (echo 36小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
+      
+  build:
+    needs: check
+    if: needs.check.outputs.CONTINUE == 'YES'
+    runs-on: ubuntu-22.04
+    steps:
+        
+    - name: compile
+      uses: thinkcyy/Action_OpenWrt_composite@compile
+      with:           
+           RELEASE_PREFIX: "[Cron]"
+           COMPILE_CONFIG_BASE: Qosmio-qualcommax_ipq807x
+           COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
+           #COMPILE_CONFIG_AUTOMERGE: common.cust.package
+           COMPILE_CONFIG: common.cust.package-4-nss
+           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"           
+           IMAGEBUILDER: y
+           REPO_TYPE: Qosmio
+           OP_REPO: qosmio/openwrt-ipq
+           REPO_BRANCH: main-nss
+           CUSTOM_FEEDS_SH: custom_feeds-Qosmio
+           token: ${{ secrets.GITHUB_TOKEN }} 
