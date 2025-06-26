@@ -60,7 +60,12 @@ jobs:
         echo $LAST_FILE
         [[ -f $LAST_FILE ]] && LAST_CHECK=$(tail -n 1 $LAST_FILE)
         echo 判断更新
-        [[ -z "${LAST_CHECK}" -o "${LAST_UPDATE}" != "${LAST_CHECK}" ]] &&  (echo  $LAST_UPDATE >> $LAST_FILE ; (echo 发现更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) ; (git add -A && git commit -m "$LAST_DTE" &&  git push)) || echo 没有更新，退出
+        if [[ -z "${LAST_CHECK}" ]] || [[ "${LAST_UPDATE}" != "${LAST_CHECK}" ]] ;
+        then
+           echo  $LAST_UPDATE >> $LAST_FILE ; (echo 发现更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) ; (git add -A && git commit -m "$LAST_DTE" &&  git push)
+        else
+           echo 没有更新，退出
+        fi
      
         
   build:
