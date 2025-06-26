@@ -1,4 +1,4 @@
-name: Qosmio-cron_check_last
+name: Qosmio-cron
 
 on:
    workflow_dispatch:
