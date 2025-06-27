@@ -30,8 +30,8 @@ jobs:
         OP_REPO: ${{ env.OP_REPO }}
         REPO_BRANCH: ${{ env.REPO_BRANCH }}
       run: | 
-        echo 当前目录：$(pwd)
-        ls -la
+        # echo 当前目录：$(pwd)
+        # ls -la
         sudo timedatectl set-timezone "Asia/Shanghai"
         git config --global log.date iso-local
         git config --global user.email "action@github.com"
