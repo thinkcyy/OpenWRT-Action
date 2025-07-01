@@ -11,28 +11,14 @@ jobs:
     - name: Initialization
       uses: thinkcyy/Action_Initialization@main               
                    
-    - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
-      with:
-           ROUTER_MODEL: EA8500
-           COMPILE_CONFIG_BASE: common.cust.package.diff
-           COMPILE_CONFIG_DIFF: ACwifidude-ipq806x
-           COMPILE_CONFIG: common.usb.diff
-           IMAGEBUILDER: y
-           REPO_TYPE: zhKong
-           OP_REPO: ACwifidude/openwrt
-           #REPO_BRANCH: main_nss
-           REPO_BRANCH: openwrt-23.05-nss-qsdk11
-           #REPO_DATE: '2024-07-05T23:59:59+08:00'
-           #REPO_DATE: 31e45f62cafbc9361c72d320241e589b31e2b5ed
-           #DEFAULT_FEEDS: feeds.conf.default-20250225
-           #EXTRA_FEEDS: add_feeds_cus_lean_luci
-           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
-           #如果DEFAULT_FEEDS已自带HASH，MATCH_FEED_HASH要取消设定
-           #MATCH_FEED_HASH: y
-           #ACTION_DATE: fc19ca2
-           #ACTION_DATE: '2024-07-03T23:59:59+08:00'
-           #FEEDS_DATE:  '2024-10-23T23:59:59+08:00'
+    - name: repo
+      working-directory: ${{ github.workspace }}/runner_root
+      run: |
+        git clone -b openwrt-23.05-nss-qsdk11 https://github.com/ACwifidude/openwrt.git openwrt
+        cd openwrt
+        git remote add upstream https://git.openwrt.org/openwrt/openwrt.git
+        git fetch upstream && git rebase upstream/openwrt-24.10
+        ./scripts/feeds update -a && ./scripts/feeds install -a && cp diffconfig .config && make defconfig && ./scripts/getver.sh
            
     - name: Replace IB
       working-directory: ${{ github.workspace }}/runner_root
