@@ -9,11 +9,13 @@ jobs:
     steps:
         
     - name: Initialization
-      uses: thinkcyy/Action_Initialization@main               
+      uses: thinkcyy/Action_Initialization@fast     
                    
     - name: repo
-      working-directory: ${{ github.workspace }}/runner_root
+      working-directory: ${{ github.workspace }}
       run: |
+        git clone --depth 1 https://github.com/thinkcyy/OpenWRT-Action runner_root           
+        cd runner_root
         git clone -b openwrt-23.05-nss-qsdk11 https://github.com/ACwifidude/openwrt.git openwrt
         cd openwrt
         git remote add upstream https://git.openwrt.org/openwrt/openwrt.git
