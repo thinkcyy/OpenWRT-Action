@@ -1,4 +1,4 @@
-name: zhKong-ACwifidude-23.05-nss-qsdk11-ipq806x
+name: zhKong-ACwifidude-24.10-test
 
 on:
    workflow_dispatch:
