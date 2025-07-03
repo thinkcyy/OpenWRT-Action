@@ -81,5 +81,4 @@ jobs:
            REPO_TYPE: ${{ env.REPO_TYPE }}
            OP_REPO: ${{ env.OP_REPO }}
            REPO_BRANCH: ${{ env.REPO_BRANCH}}
-           CUSTOM_FEEDS_SH: custom_feeds-Qosmio
            token: ${{ secrets.GITHUB_TOKEN }} 
