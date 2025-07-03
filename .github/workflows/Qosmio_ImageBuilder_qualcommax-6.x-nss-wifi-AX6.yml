@@ -27,7 +27,7 @@ jobs:
     - name: Modify config
       uses: thinkcyy/Action_OpenWrt_composite@config_add
       with:
-           CONFIG_TO_ADD: "CONFIG_ALL_KMODS=y"
+           # CONFIG_TO_ADD: "CONFIG_ALL_KMODS=y"
            CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
                       
     - name: Download package sources
