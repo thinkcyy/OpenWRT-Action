@@ -5,22 +5,35 @@ on:
    schedule:
     - cron: '0 20 * * *'
 
+env:
+  OP_REPO: AgustinLorenzo/openwrt
+  REPO_BRANCH: main_nss
+  REPO_TYPE: zhKong
+  CKOUTPATH: ckout
+  
 jobs:
   check:
     outputs:
-      CONTINUE: ${{ steps.early.outputs.CONTINUE }}
-      BRANCH: ${{ steps.early.outputs.BRANCH }}
+      CONTINUE: ${{ steps.check.outputs.CONTINUE }}
+      BRANCH: ${{ steps.check.outputs.BRANCH }}
     runs-on: ubuntu-22.04
     steps:
-      
-    - id: early
-      name: Early exit
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+         path: "${{ env.CKOUTPATH }}"
+         
+    - id: check
+      name: Check for OP repo update
       env:
-        OP_REPO: AgustinLorenzo/openwrt
-        REPO_BRANCH: main_nss
+        OP_REPO: ${{ env.OP_REPO }}
+        REPO_BRANCH: ${{ env.REPO_BRANCH }}
       run: | 
         sudo timedatectl set-timezone "Asia/Shanghai"
         git config --global log.date iso-local
+        git config --global user.email "action@github.com"
+        git config --global user.name "action"
         echo 下载源仓库
         git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
         #echo 获取最新提交日期
@@ -33,13 +46,25 @@ jobs:
         # LAST_TAG_COMMIT=$(git rev-list --tags --since=$(date -d "yesterday" +%Y-%m-%d) --max-count=2)
         
         # 获取最新的非mesh的tag
-        NON_MESH_TAG=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
-        NON_MESH_TAG_HASH=$(git show-ref --tags $NON_MESH_TAG --hash)
-        LAST_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $NON_MESH_TAG_HASH -1) 
-        echo 最新的非mesh标签为：$NON_MESH_TAG
-        echo 对应的commit为：$NON_MESH_TAG_HASH
-        echo 对应的日期为：$LAST_TAG_DATE
+        LAST_NON_MESH_TAG=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
+        LAST_NON_MESH_TAG_HASH=$(git show-ref --tags $LAST_NON_MESH_TAG --hash)
+        LAST_NON_MESH_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $LAST_NON_MESH_TAG_HASH -1) 
+        
+        echo 最新的非mesh标签为：$LAST_NON_MESH_TAG
+        echo 对应的commit为：$LAST_NON_MESH_TAG_HASH
+        echo 对应的日期为：$LAST_NON_MESH_TAG_DATE
         echo 当前的日期为：$(date +"%Y-%m-%d %H:%M:%S")
+
+        cd ../${{ env.CKOUTPATH }}
+        LAST_FILE="./${{ env.REPO_TYPE }}/last-check-${{ github.workflow }}"        
+        [[ -f $LAST_FILE ]] && LAST_CHECK=$(tail -n 1 $LAST_FILE) && echo 上次更新为：$LAST_CHECK || echo 首次运行
+        # 判断更新
+        if [[ -z "${LAST_CHECK}" ]] || [[ "${LAST_NON_MESH_TAG}" != "${LAST_CHECK}" ]] ;
+        then
+           echo  $LAST_NON_MESH_TAG >> $LAST_FILE ; (echo 发现更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) ; (git add -A && git commit -m "$LAST_NON_MESH_TAG_DATE" &&  git push)
+        else
+           echo 没有更新，退出
+        fi        
 
         # 选取非mesh的COMMIT
         #if [ -z $LAST_TAG_COMMIT ]
@@ -57,11 +82,11 @@ jobs:
         #LAST_TAG=$(git tag --points-at $NON_MESH_COMMIT)
 
         #echo 最新的非mesh的TAG为$LAST_TAG，对应的COMMIT为$NON_MESH_COMMIT
-        echo "BRANCH=$NON_MESH_TAG" >> $GITHUB_OUTPUT
+        echo "BRANCH=$LAST_NON_MESH_TAG" >> $GITHUB_OUTPUT
 
         #echo 判断是否24小时内更新
         #LAST_TAG_HASH=$(git rev-list --tags --max-count=1)         
-        [[ `expr $(($(date +%s) - $(date +%s -d "$LAST_TAG_DATE")))` -lt 129600 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
+        #[[ `expr $(($(date +%s) - $(date +%s -d "$LAST_TAG_DATE")))` -lt 129600 ]] && (echo 24小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出     
       
   build:
     needs: check
@@ -79,8 +104,8 @@ jobs:
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
            COMPILE_CONFIG: common.cust.package-4-nss
            IMAGEBUILDER: y
-           REPO_TYPE: zhKong
-           OP_REPO: AgustinLorenzo/openwrt
-           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
+           REPO_TYPE: ${{ env.REPO_TYPE }}
+           OP_REPO: ${{ env.OP_REPO }}
+           # CUSTOM_FEEDS_SH: 
            CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
            token: ${{ secrets.GITHUB_TOKEN }} 
