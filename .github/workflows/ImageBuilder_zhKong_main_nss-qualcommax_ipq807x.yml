@@ -11,18 +11,22 @@ jobs:
     - name: Initialization
       uses: thinkcyy/Action_Initialization@main
                    
-    - name: Prepare
-      uses: thinkcyy/Action_OpenWrt_composite@prepare
+    - name: Compile
+      uses: thinkcyy/Action_OpenWrt_composite@compile
       with:           
-           REPO_BRANCH: ipq807x-nsswifi-2025-07-08-2202
+           # RELEASE_PREFIX: ""
+           REPO_BRANCH: ipq807x-nsswifi-2025-08-01-0156
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
-           #COMPILE_CONFIG_AUTOMERGE: common.cust.package
+           # COMPILE_CONFIG_AUTOMERGE: common.cust.package
            COMPILE_CONFIG: common.cust.package-4-nss
+           CONFIG_TO_ADD: "CONFIG_ALL_KMODS=y"
+           # CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
            OP_REPO: AgustinLorenzo/openwrt
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
+           token: ${{ secrets.GITHUB_TOKEN }} 
            
     - name: Modify config
       uses: thinkcyy/Action_OpenWrt_composite@config_add
