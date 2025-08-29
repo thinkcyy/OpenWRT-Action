@@ -76,7 +76,7 @@ jobs:
            # COMPILE_CONFIG_AUTOMERGE: common.cust.package
            COMPILE_CONFIG: common.cust.package-4-nss
            # CONFIG_TO_ADD: "CONFIG_ALL_KMODS=y"
-           CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"           
+           # CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"           
            IMAGEBUILDER: y
            REPO_TYPE: ${{ env.REPO_TYPE }}
            OP_REPO: ${{ env.OP_REPO }}
