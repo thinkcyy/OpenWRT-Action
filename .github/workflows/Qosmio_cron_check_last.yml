@@ -1,4 +1,4 @@
-name: Qosmio-cron
+name: Qosmio-main-nss-cron
 
 on:
    workflow_dispatch:
