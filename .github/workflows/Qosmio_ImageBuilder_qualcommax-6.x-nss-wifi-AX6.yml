@@ -1,4 +1,4 @@
-name: Qosmio-24.10.nss-ipq807x
+name: Qosmio-main-nss-ipq807x
 
 on:
    workflow_dispatch:
