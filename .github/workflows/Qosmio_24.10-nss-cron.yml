@@ -1,0 +1,84 @@
+name: Qosmio-24.10-nss-cron
+
+on:
+   workflow_dispatch:
+   schedule:
+    - cron: '0 23 * * *'
+    
+env:
+  OP_REPO: qosmio/openwrt-ipq
+  REPO_BRANCH: 24.10-nss
+  REPO_TYPE: Qosmio
+  CKOUTPATH: ckout
+  
+jobs:
+  check:
+    outputs:
+      CONTINUE: ${{ steps.check.outputs.CONTINUE }}
+    runs-on: ubuntu-22.04
+    steps:   
+
+    
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+         path: "${{ env.CKOUTPATH }}"
+      
+    - id: check
+      name: Check for OP repo update
+      env:
+        OP_REPO: ${{ env.OP_REPO }}
+        REPO_BRANCH: ${{ env.REPO_BRANCH }}
+      run: | 
+        # echo 当前目录：$(pwd)
+        # ls -la
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        git config --global log.date iso-local
+        git config --global user.email "action@github.com"
+        git config --global user.name "action"
+        echo 下载源仓库
+        git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  openwrt
+        cd openwrt
+        echo 最新提交为：$(git log -1 --oneline)
+        # LAST=$(git log -1 --format="%cd" --date=format:"%Y-%m-%d %H:%M:%S")
+        LAST_DTE=$(git log -1 --format="%cd")
+        LAST_UPDATE=$(git log -1 --format="%h %cd")
+        echo 对应日期为：$LAST_DTE
+        echo 当前日期为：$(date +"%Y-%m-%d %H:%M:%S")
+        # 判断是否更新
+        #[[ `expr $(($(date +%s) - $(date +%s -d "$LAST_DTE")))` -lt 129600 ]] && (echo 36小时内有更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || echo 24小时内无更新，退出  
+        
+        cd ../${{ env.CKOUTPATH }}
+        LAST_FILE="./${{ env.REPO_TYPE }}/last-check-${{ github.workflow }}"
+        #[ ! -f $LAST_FILE ] && echo $LAST_UPDATE > $LAST_FILE && (echo 首次运行，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) || \        
+        [[ -f $LAST_FILE ]] && LAST_CHECK=$(tail -n 1 $LAST_FILE) && echo 上次更新为：$LAST_CHECK || echo 首次运行
+        # 判断更新        
+        if [[ -z "${LAST_CHECK}" ]] || [[ "${LAST_UPDATE}" != "${LAST_CHECK}" ]] ;
+        then
+           echo  $LAST_UPDATE >> $LAST_FILE ; (echo 发现更新，继续 ; echo "CONTINUE=YES" >> $GITHUB_OUTPUT ) ; (git add -A && git commit -m "$LAST_DTE" &&  git push)
+        else
+           echo 没有更新，退出
+        fi
+     
+        
+  build:
+    needs: check
+    if: needs.check.outputs.CONTINUE == 'YES'
+    runs-on: ubuntu-22.04
+    steps:
+        
+    - name: compile
+      uses: thinkcyy/Action_OpenWrt_composite@compile
+      with:           
+           RELEASE_PREFIX: "[Cron]"
+           COMPILE_CONFIG_BASE: Qosmio-qualcommax_ipq807x
+           COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
+           # COMPILE_CONFIG_AUTOMERGE: common.cust.package
+           COMPILE_CONFIG: common.cust.package-4-nss
+           CONFIG_TO_ADD: "CONFIG_ALL_KMODS=y"
+           # CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"           
+           IMAGEBUILDER: y
+           REPO_TYPE: ${{ env.REPO_TYPE }}
+           OP_REPO: ${{ env.OP_REPO }}
+           REPO_BRANCH: ${{ env.REPO_BRANCH}}
+           token: ${{ secrets.GITHUB_TOKEN }} 
