@@ -3,6 +3,12 @@ name: zhKong-main.nss-ipq807x
 on:
    workflow_dispatch:
 
+env:
+  OP_REPO: AgustinLorenzo/openwrt
+  REPO_BRANCH: main_nss
+  REPO_TYPE: zhKong
+  CKOUTPATH: ckout
+
 jobs:
   check:
     outputs:
