@@ -57,6 +57,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@compile
       with:           
            # RELEASE_PREFIX: ""
+           # 不指定，默认使用最新的tag（env.LAST_TAG）
            # REPO_BRANCH: ipq807x-nsswifi-2025-08-01-0156
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
