@@ -4,6 +4,45 @@ on:
    workflow_dispatch:
 
 jobs:
+  check:
+    outputs:
+      CONTINUE: ${{ steps.check.outputs.CONTINUE }}
+      BRANCH: ${{ steps.check.outputs.BRANCH }}
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+         path: "${{ env.CKOUTPATH }}"
+         
+    - id: check
+      name: Check for OP repo update
+      env:
+        OP_REPO: ${{ env.OP_REPO }}
+        REPO_BRANCH: ${{ env.REPO_BRANCH }}
+      run: | 
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        git config --global log.date iso-local
+        git config --global user.email "action@github.com"
+        git config --global user.name "action"
+        echo 下载源仓库
+        git clone https://github.com/$OP_REPO $([[ $REPO_BRANCH != 'n' ]] && echo "-b $REPO_BRANCH --single-branch")  ./openwrt
+        #echo 获取最新提交日期
+        cd ./openwrt
+
+        # 获取最新的非mesh的tag
+        LAST_NON_MESH_TAG=$(git tag -l --sort=-creatordate | grep -v mesh | head -n 1)
+        LAST_NON_MESH_TAG_HASH=$(git show-ref --tags $LAST_NON_MESH_TAG --hash)
+        LAST_NON_MESH_TAG_DATE=$(git log --pretty=format:"%cd" --date=format:"%Y-%m-%d %H:%M:%S" $LAST_NON_MESH_TAG_HASH -1) 
+        
+        echo 最新的非mesh标签为：$LAST_NON_MESH_TAG
+        echo 对应的commit为：$LAST_NON_MESH_TAG_HASH
+        echo 对应的日期为：$LAST_NON_MESH_TAG_DATE
+        echo 当前的日期为：$(date +"%Y-%m-%d %H:%M:%S")
+
+        echo "LAST_TAG=$LAST_NON_MESH_TAG" >> $GITHUB_ENV
+
   build:
     runs-on: ubuntu-22.04
     steps:
@@ -12,7 +51,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@compile
       with:           
            # RELEASE_PREFIX: ""
-           REPO_BRANCH: ipq807x-nsswifi-2025-08-01-0156
+           # REPO_BRANCH: ipq807x-nsswifi-2025-08-01-0156
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
            # COMPILE_CONFIG_AUTOMERGE: common.cust.package
