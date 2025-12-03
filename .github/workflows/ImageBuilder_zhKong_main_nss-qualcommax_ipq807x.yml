@@ -57,7 +57,7 @@ jobs:
       uses: thinkcyy/Action_OpenWrt_composite@compile
       with:           
            # RELEASE_PREFIX: ""
-           REPO_BRANCH: ${{needs.job1.outputs.LAST_TAG}}
+           REPO_BRANCH: ${{needs.check.outputs.LAST_TAG}}
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
            # COMPILE_CONFIG_AUTOMERGE: common.cust.package
