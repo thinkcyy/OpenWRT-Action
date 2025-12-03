@@ -47,18 +47,19 @@ jobs:
         echo 对应的日期为：$LAST_NON_MESH_TAG_DATE
         echo 当前的日期为：$(date +"%Y-%m-%d %H:%M:%S")
 
-        echo "LAST_TAG=$LAST_NON_MESH_TAG" >> $GITHUB_ENV
+        # echo "LAST_TAG=$LAST_NON_MESH_TAG" >> $GITHUB_ENV
+        echo "LAST_TAG=$LAST_NON_MESH_TAG" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-22.04
+    needs: check
     steps:
                    
     - name: Compile
       uses: thinkcyy/Action_OpenWrt_composite@compile
       with:           
            # RELEASE_PREFIX: ""
-           # 不指定，默认使用最新的tag（env.LAST_TAG）
-           # REPO_BRANCH: ipq807x-nsswifi-2025-08-01-0156
+           REPO_BRANCH: needs.check.outputs.LAST_TAG
            COMPILE_CONFIG_BASE: qualcommax_ipq807x-202506
            COMPILE_CONFIG_DIFF: "common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter"
            # COMPILE_CONFIG_AUTOMERGE: common.cust.package
