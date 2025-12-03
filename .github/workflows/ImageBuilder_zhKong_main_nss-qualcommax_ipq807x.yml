@@ -11,9 +11,8 @@ env:
 
 jobs:
   check:
-    outputs:
-      CONTINUE: ${{ steps.check.outputs.CONTINUE }}
-      BRANCH: ${{ steps.check.outputs.BRANCH }}
+    outputs:      
+      LAST_TAG: ${{ steps.check.outputs.LAST_TAG }}
     runs-on: ubuntu-22.04
     steps:
 
@@ -47,7 +46,6 @@ jobs:
         echo 对应的日期为：$LAST_NON_MESH_TAG_DATE
         echo 当前的日期为：$(date +"%Y-%m-%d %H:%M:%S")
 
-        # echo "LAST_TAG=$LAST_NON_MESH_TAG" >> $GITHUB_ENV
         echo "LAST_TAG=$LAST_NON_MESH_TAG" >> $GITHUB_OUTPUT
 
   build:
