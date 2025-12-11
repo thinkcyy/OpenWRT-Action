@@ -1,1 +1,48 @@
+#!/bin/sh
+# Post-installation script for luci-app-thinkcy
 
+[ -n "${IPKG_INSTROOT}" ] && exit 0
+
+# 检查是否为升级安装
+if [ "$1" = "upgrade" ]; then
+    echo "Upgrading luci-app-thinkcy..."
+    /etc/init.d/thinkcy restart >/dev/null 2>&1
+fi
+
+# 启用服务
+if [ ! -e "/etc/rc.d/S99thinkcy" ]; then
+    echo "Enabling ThinkCy service..."
+    /etc/init.d/thinkcy enable
+fi
+
+# 启动服务
+if ! /etc/init.d/thinkcy running >/dev/null 2>&1; then
+    echo "Starting ThinkCy service..."
+    /etc/init.d/thinkcy start
+fi
+
+# 重新加载 RPC
+if [ -x "/etc/init.d/rpcd" ]; then
+    echo "Reloading RPC configuration..."
+    /etc/init.d/rpcd reload >/dev/null 2>&1 || /etc/init.d/rpcd restart >/dev/null 2>&1
+fi
+
+# 重新加载 uhttpd 以更新 LuCI
+if [ -x "/etc/init.d/uhttpd" ]; then
+    echo "Reloading uHTTPd for LuCI..."
+    /etc/init.d/uhttpd reload >/dev/null 2>&1 || /etc/init.d/uhttpd restart >/dev/null 2>&1
+fi
+
+# 创建日志目录
+mkdir -p /var/log
+touch /var/log/thinkcy.log
+chmod 0644 /var/log/thinkcy.log
+
+# 设置初始权限
+chmod 0755 /usr/bin/thinkcy-status
+chmod 0755 /etc/init.d/thinkcy
+
+echo "ThinkCy LuCI application installed successfully!"
+echo "Access via: System -> ThinkCy Settings"
+
+exit 0
