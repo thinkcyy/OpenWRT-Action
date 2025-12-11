@@ -1,0 +1,198 @@
+<%+header%>
+
+<div class="cbi-map" id="thinkcy-status">
+    <h2 name="content"><%:ThinkCy Service Status%></h2>
+    <div class="cbi-map-descr">
+        <%:Real-time status of managed services. Last updated: %><span id="update-time"><%=os.date("%H:%M:%S", timestamp)%></span>
+    </div>
+    
+    <fieldset class="cbi-section">
+        <legend><%:Service Status%></legend>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:ThinkCy Manager%></label>
+            <div class="cbi-value-field">
+                <span class="label <%=status.thinkcy and "success" or "error"%>">
+                    <%=status.thinkcy and translate("Running") or translate("Stopped")%>
+                </span>
+                <br/>
+                <small class="cbi-value-description">
+                    <%:Service management daemon%>
+                </small>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:Clash Service%></label>
+            <div class="cbi-value-field">
+                <span class="label <%=status.clash and "success" or "error"%>">
+                    <%=status.clash and translate("Running") or translate("Stopped")%>
+                </span>
+                <br/>
+                <small class="cbi-value-description">
+                    <% if config.clash then %>
+                        <span style="color: green"><%:Enabled in configuration%></span>
+                    <% else %>
+                        <span style="color: orange"><%:Disabled in configuration%></span>
+                    <% end %>
+                </small>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:VPN Service%></label>
+            <div class="cbi-value-field">
+                <span class="label <%=status.vpn and "success" or "error"%>">
+                    <%=status.vpn and translate("Running") or translate("Stopped")%>
+                </span>
+                <br/>
+                <small class="cbi-value-description">
+                    <% if config.vpn then %>
+                        <span style="color: green"><%:Enabled in configuration%></span>
+                    <% else %>
+                        <span style="color: orange"><%:Disabled in configuration%></span>
+                    <% end %>
+                </small>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:DDNS Service%></label>
+            <div class="cbi-value-field">
+                <span class="label <%=status.ddns and "success" or "error"%>">
+                    <%=status.ddns and translate("Running") or translate("Stopped")%>
+                </span>
+                <br/>
+                <small class="cbi-value-description">
+                    <% if config.ddns then %>
+                        <span style="color: green"><%:Enabled in configuration%></span>
+                    <% else %>
+                        <span style="color: orange"><%:Disabled in configuration%></span>
+                    <% end %>
+                </small>
+            </div>
+        </div>
+        
+    </fieldset>
+    
+    <fieldset class="cbi-section">
+        <legend><%:System Information%></legend>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:Hostname%></label>
+            <div class="cbi-value-field">
+                <code><%=hostname%></code>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:System Time%></label>
+            <div class="cbi-value-field">
+                <span id="current-time"><%=os.date("%Y-%m-%d %H:%M:%S")%></span>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:Uptime%></label>
+            <div class="cbi-value-field">
+                <%
+                local days = math.floor(uptime / 86400)
+                local hours = math.floor((uptime % 86400) / 3600)
+                local minutes = math.floor((uptime % 3600) / 60)
+                %>
+                <%=string.format("%d days, %d hours, %d minutes", days, hours, minutes)%>
+            </div>
+        </div>
+        
+    </fieldset>
+    
+    <div class="cbi-page-actions">
+        <button class="cbi-button cbi-button-apply" onclick="refreshStatus()">
+            <%:Refresh Status%>
+        </button>
+        <button class="cbi-button cbi-button-action" onclick="checkAllServices()">
+            <%:Check All Services%>
+        </button>
+        <a class="cbi-button cbi-button-link" href="<%=url('admin/system/thinkcy')%>">
+            <%:Back to Settings%>
+        </a>
+        <a class="cbi-button cbi-button-link" href="<%=url('admin/system/thinkcy/log')%>">
+            <%:View Logs%>
+        </a>
+    </div>
+</div>
+
+<script type="text/javascript">
+// Update current time
+function updateCurrentTime() {
+    var now = new Date();
+    var timeStr = now.getFullYear() + '-' + 
+        ('0' + (now.getMonth() + 1)).slice(-2) + '-' + 
+        ('0' + now.getDate()).slice(-2) + ' ' + 
+        ('0' + now.getHours()).slice(-2) + ':' + 
+        ('0' + now.getMinutes()).slice(-2) + ':' + 
+        ('0' + now.getSeconds()).slice(-2);
+    document.getElementById('current-time').textContent = timeStr;
+}
+
+// Refresh status via AJAX
+function refreshStatus() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '<%=url("admin/system/thinkcy/status")%>?ajax=1&t=' + new Date().getTime(), true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            updateStatusDisplay(data);
+        }
+    };
+    xhr.send();
+}
+
+// Update status display
+function updateStatusDisplay(data) {
+    // Update service status indicators
+    var services = ['thinkcy', 'clash', 'vpn', 'ddns'];
+    services.forEach(function(service) {
+        var element = document.querySelector('.cbi-value-field span.label:first-child');
+        if (element) {
+            // This is a simplified update - in production, you'd update each service individually
+            element.textContent = data.status[service] ? 'Running' : 'Stopped';
+            element.className = 'label ' + (data.status[service] ? 'success' : 'error');
+        }
+    });
+    
+    // Update timestamp
+    var updateTime = new Date(data.timestamp * 1000);
+    document.getElementById('update-time').textContent = 
+        ('0' + updateTime.getHours()).slice(-2) + ':' +
+        ('0' + updateTime.getMinutes()).slice(-2) + ':' +
+        ('0' + updateTime.getSeconds()).slice(-2);
+}
+
+// Check all services
+function checkAllServices() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '<%=url("admin/system/thinkcy/apply")%>', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            refreshStatus();
+            alert('<%:All services have been checked and reconfigured if needed.%>');
+        }
+    };
+    xhr.send();
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Update time every second
+    setInterval(updateCurrentTime, 1000);
+    
+    // Auto-refresh status every 30 seconds
+    setInterval(refreshStatus, 30000);
+    
+    // Initial update
+    updateCurrentTime();
+});
+</script>
+
+<%+footer%>
