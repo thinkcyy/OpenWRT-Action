@@ -1,0 +1,21 @@
+{
+    "luci-app-thinkcy": {
+        "description": "Grants access to ThinkCy LuCI application",
+        "read": {
+            "ubus": {
+                "luci": ["*"],
+                "file": ["list", "read", "stat"],
+                "service": ["list", "get"]
+            },
+            "uci": ["thinkcy", "system", "network"]
+        },
+        "write": {
+            "ubus": {
+                "luci": ["*"],
+                "file": ["write", "exec"],
+                "service": ["set", "add", "delete", "start", "stop", "restart"]
+            },
+            "uci": ["thinkcy", "system", "network"]
+        }
+    }
+}
