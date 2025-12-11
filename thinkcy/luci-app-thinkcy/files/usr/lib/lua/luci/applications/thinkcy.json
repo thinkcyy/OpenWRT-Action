@@ -1,0 +1,55 @@
+{
+    "id": "thinkcy",
+    "name": "ThinkCy",
+    "description": "Service Management for Clash, VPN and DDNS",
+    "version": "1.0.0",
+    "maintainer": "ThinkCy Team <team@thinkcy.org>",
+    "support": "https://github.com/thinkcy/luci-app-thinkcy",
+    "depends": {
+        "luci-base": "*",
+        "luci-compat": "*"
+    },
+    "provides": ["luci-app-thinkcy"],
+    "licenses": ["GPL-3.0-only"],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thinkcy/luci-app-thinkcy.git",
+        "branch": "main"
+    },
+    "actions": {
+        "config": {
+            "title": "ThinkCy Settings",
+            "href": "admin/system/thinkcy",
+            "order": 60
+        },
+        "status": {
+            "title": "Service Status",
+            "href": "admin/system/thinkcy/status",
+            "order": 61
+        },
+        "log": {
+            "title": "View Logs",
+            "href": "admin/system/thinkcy/log",
+            "order": 62
+        }
+    },
+    "requirements": {
+        "uci": {
+            "thinkcy": {}
+        },
+        "fs": {
+            "exec": ["/usr/bin/thinkcy-status", "/etc/init.d/thinkcy"]
+        }
+    },
+    "tags": ["system", "services", "clash", "vpn", "ddns", "management"],
+    "screenshots": [
+        {
+            "title": "Settings Page",
+            "description": "Main configuration page with service toggles"
+        },
+        {
+            "title": "Status Page",
+            "description": "Real-time service status monitoring"
+        }
+    ]
+}
