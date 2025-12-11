@@ -1,1 +1,7 @@
+# ThinkCy Configuration
+# This file is managed by LuCI web interface
 
+config thinkcy 'config'
+    option clash_enable '0'
+    option vpn_enable '0'
+    option ddns_enable '0'
