@@ -1,1 +1,59 @@
+#!/bin/sh
+# Pre-removal script for luci-app-thinkcy
 
+[ -n "${IPKG_INSTROOT}" ] && exit 0
+
+# 停止服务
+if /etc/init.d/thinkcy running >/dev/null 2>&1; then
+    echo "Stopping ThinkCy service..."
+    /etc/init.d/thinkcy stop
+fi
+
+# 禁用服务
+if [ -e "/etc/rc.d/S99thinkcy" ]; then
+    echo "Disabling ThinkCy service..."
+    /etc/init.d/thinkcy disable
+fi
+
+# 清理状态文件
+rm -f /var/run/thinkcy.pid /var/state/thinkcy
+
+# 询问是否保留配置
+if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+    echo ""
+    echo "Do you want to remove the configuration file? [y/N]"
+    echo "  /etc/config/thinkcy"
+    echo ""
+    echo "If you choose 'N', the configuration will be kept for future reinstall."
+    echo -n "Your choice: "
+    read -r choice
+    
+    case "$choice" in
+        [Yy]*|[Yy][Ee][Ss])
+            echo "Removing configuration file..."
+            rm -f /etc/config/thinkcy
+            ;;
+        *)
+            echo "Keeping configuration file..."
+            ;;
+    esac
+    
+    # 询问是否保留日志
+    echo ""
+    echo "Do you want to remove the log file? [y/N]"
+    echo "  /var/log/thinkcy.log"
+    echo -n "Your choice: "
+    read -r choice
+    
+    case "$choice" in
+        [Yy]*|[Yy][Ee][Ss])
+            echo "Removing log file..."
+            rm -f /var/log/thinkcy.log
+            ;;
+        *)
+            echo "Keeping log file..."
+            ;;
+    esac
+fi
+
+exit 0
