@@ -1,0 +1,144 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2024 ThinkCy Team
+# LuCI application for managing Clash, VPN and DDNS services
+
+USE_PROCD=1
+START=99
+STOP=10
+
+SERVICE_NAME="thinkcy"
+CONFIG_FILE="thinkcy"
+LOGFILE="/var/log/thinkcy.log"
+
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOGFILE"
+}
+
+get_config_value() {
+    local section="$1"
+    local option="$2"
+    local default="$3"
+    
+    uci -q get "$CONFIG_FILE.$section.$option" || echo "$default"
+}
+
+check_service_exists() {
+    local service="$1"
+    [ -x "/etc/init.d/$service" ] && return 0 || return 1
+}
+
+manage_service() {
+    local service="$1"
+    local action="$2"
+    local enabled="$3"
+    
+    if check_service_exists "$service"; then
+        case "$action" in
+            "enable")
+                if [ "$enabled" = "1" ]; then
+                    /etc/init.d/$service enable >> "$LOGFILE" 2>&1
+                    log_message "Enabled $service service"
+                else
+                    /etc/init.d/$service disable >> "$LOGFILE" 2>&1
+                    log_message "Disabled $service service"
+                fi
+                ;;
+            "start")
+                if [ "$enabled" = "1" ]; then
+                    if ! /etc/init.d/$service running; then
+                        /etc/init.d/$service start >> "$LOGFILE" 2>&1
+                        log_message "Started $service service"
+                    fi
+                else
+                    if /etc/init.d/$service running; then
+                        /etc/init.d/$service stop >> "$LOGFILE" 2>&1
+                        log_message "Stopped $service service"
+                    fi
+                fi
+                ;;
+        esac
+    else
+        log_message "Warning: Service $service not found"
+    fi
+}
+
+start_service() {
+    log_message "Starting ThinkCy service manager"
+    
+    # Create pidfile directory if it doesn't exist
+    mkdir -p /var/run
+    
+    # Start the monitoring daemon
+    procd_open_instance
+    procd_set_param command /bin/sh -c "while true; do sleep 60; done"
+    procd_set_param respawn 3600 5 0
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_set_param pidfile "/var/run/thinkcy.pid"
+    procd_close_instance
+    
+    # Read configuration
+    config_load "$CONFIG_FILE"
+    local clash_enabled vpn_enabled ddns_enabled
+    
+    config_get clash_enabled "config" "clash_enable" "0"
+    config_get vpn_enabled "config" "vpn_enable" "0"
+    config_get ddns_enabled "config" "ddns_enable" "0"
+    
+    # Enable/disable services based on configuration
+    manage_service "clash" "enable" "$clash_enabled"
+    manage_service "openvpn" "enable" "$vpn_enabled"
+    manage_service "ddns" "enable" "$ddns_enabled"
+    
+    # Start/stop services based on configuration
+    manage_service "clash" "start" "$clash_enabled"
+    manage_service "openvpn" "start" "$vpn_enabled"
+    manage_service "ddns" "start" "$ddns_enabled"
+    
+    log_message "ThinkCy service started with config: Clash=$clash_enabled, VPN=$vpn_enabled, DDNS=$ddns_enabled"
+}
+
+stop_service() {
+    log_message "Stopping ThinkCy service manager"
+    
+    # Note: We don't stop the managed services here
+    # because they might be used by other applications
+    
+    # Remove pidfile
+    rm -f /var/run/thinkcy.pid
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+reload() {
+    # Reload configuration
+    log_message "Reloading ThinkCy configuration"
+    
+    config_load "$CONFIG_FILE"
+    local clash_enabled vpn_enabled ddns_enabled
+    
+    config_get clash_enabled "config" "clash_enable" "0"
+    config_get vpn_enabled "config" "vpn_enable" "0"
+    config_get ddns_enabled "config" "ddns_enable" "0"
+    
+    # Apply new configuration
+    manage_service "clash" "start" "$clash_enabled"
+    manage_service "openvpn" "start" "$vpn_enabled"
+    manage_service "ddns" "start" "$ddns_enabled"
+}
+
+status() {
+    if [ -f "/var/run/thinkcy.pid" ]; then
+        local pid=$(cat /var/run/thinkcy.pid 2>/dev/null)
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            echo "running"
+            return 0
+        fi
+    fi
+    echo "stopped"
+    return 1
+}
