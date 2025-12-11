@@ -1,0 +1,162 @@
+<%+header%>
+
+<div class="cbi-map" id="thinkcy-log">
+    <h2 name="content"><%:ThinkCy Log Viewer%></h2>
+    <div class="cbi-map-descr">
+        <%:View log entries from ThinkCy service. Log file: %><code><%=logfile%></code>
+    </div>
+    
+    <fieldset class="cbi-section">
+        <legend><%:Log Controls%></legend>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title" for="log-lines"><%:Number of Lines%></label>
+            <div class="cbi-value-field">
+                <select id="log-lines" class="cbi-input-select">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                </select>
+                <button class="cbi-button cbi-button-action" onclick="loadLog()">
+                    <%:Load Log%>
+                </button>
+                <button class="cbi-button cbi-button-reset" onclick="clearLog()">
+                    <%:Clear Log%>
+                </button>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <label class="cbi-value-title"><%:Auto-refresh%></label>
+            <div class="cbi-value-field">
+                <input type="checkbox" id="auto-refresh" onchange="toggleAutoRefresh()" />
+                <label for="auto-refresh"><%:Enable auto-refresh every 10 seconds%></label>
+            </div>
+        </div>
+        
+    </fieldset>
+    
+    <fieldset class="cbi-section">
+        <legend><%:Log Content%></legend>
+        
+        <div class="cbi-value">
+            <div class="cbi-value-field">
+                <textarea id="log-content" class="cbi-input-textarea" 
+                    rows="20" readonly="readonly" style="width: 100%; font-family: monospace; font-size: 12px;">
+                    <%:Loading log content...%>
+                </textarea>
+            </div>
+        </div>
+        
+        <div class="cbi-value">
+            <div class="cbi-value-field">
+                <small class="cbi-value-description">
+                    <%:Last updated: %><span id="log-update-time">--:--:--</span>
+                    | <%:Total lines: %><span id="log-line-count">0</span>
+                </small>
+            </div>
+        </div>
+        
+    </fieldset>
+    
+    <div class="cbi-page-actions">
+        <button class="cbi-button cbi-button-download" onclick="downloadLog()">
+            <%:Download Log%>
+        </button>
+        <button class="cbi-button cbi-button-apply" onclick="loadLog()">
+            <%:Refresh Now%>
+        </button>
+        <a class="cbi-button cbi-button-link" href="<%=url('admin/system/thinkcy/status')%>">
+            <%:View Status%>
+        </a>
+        <a class="cbi-button cbi-button-link" href="<%=url('admin/system/thinkcy')%>">
+            <%:Back to Settings%>
+        </a>
+    </div>
+</div>
+
+<script type="text/javascript">
+var autoRefreshInterval = null;
+
+// Load log content
+function loadLog() {
+    var lines = document.getElementById('log-lines').value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '<%=url("admin/system/thinkcy/log")%>?ajax=1&lines=' + lines + '&t=' + new Date().getTime(), true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var content = xhr.responseText;
+            document.getElementById('log-content').value = content;
+            
+            // Update info
+            document.getElementById('log-update-time').textContent = 
+                new Date().toLocaleTimeString();
+            
+            var lineCount = content.split('\n').length;
+            document.getElementById('log-line-count').textContent = lineCount;
+        }
+    };
+    xhr.send();
+}
+
+// Clear log content
+function clearLog() {
+    if (confirm('<%:Are you sure you want to clear the log file? This cannot be undone.%>')) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '<%=url("admin/system/thinkcy/log")%>', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                loadLog();
+                alert('<%:Log file has been cleared.%>');
+            }
+        };
+        xhr.send('action=clear');
+    }
+}
+
+// Download log file
+function downloadLog() {
+    var lines = document.getElementById('log-lines').value;
+    var url = '<%=url("admin/system/thinkcy/log")%>?ajax=1&lines=' + lines + '&download=1';
+    window.open(url, '_blank');
+}
+
+// Toggle auto-refresh
+function toggleAutoRefresh() {
+    var enabled = document.getElementById('auto-refresh').checked;
+    
+    if (enabled) {
+        autoRefreshInterval = setInterval(loadLog, 10000);
+        loadLog(); // Load immediately
+    } else {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default lines
+    document.getElementById('log-lines').value = '<%=default_lines%>';
+    
+    // Load initial log
+    loadLog();
+    
+    // Update time every second
+    setInterval(function() {
+        if (document.getElementById('auto-refresh').checked) {
+            var timeElement = document.getElementById('log-update-time');
+            var now = new Date();
+            timeElement.textContent = now.toLocaleTimeString();
+        }
+    }, 1000);
+});
+</script>
+
+<%+footer%>
