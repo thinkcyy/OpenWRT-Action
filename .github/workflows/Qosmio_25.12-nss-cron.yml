@@ -1,9 +1,9 @@
-name: Qosmio-24.10-nss-cron
+name: Qosmio-25.12-nss-cron
 
 on:
    workflow_dispatch:
    schedule:
-    - cron: '0 23 * * *'
+    - cron: '0 3 * * *'
     
 env:
   OP_REPO: qosmio/openwrt-ipq
