@@ -7,7 +7,7 @@ on:
     
 env:
   OP_REPO: qosmio/openwrt-ipq
-  REPO_BRANCH: 24.10-nss
+  REPO_BRANCH: 25.12-nss
   REPO_TYPE: Qosmio
   CKOUTPATH: ckout
   
