@@ -20,7 +20,7 @@ jobs:
            #COMPILE_CONFIG_AUTOMERGE: common.cust.package
            COMPILE_CONFIG: common.cust.package-4-nss           
            IMAGEBUILDER: y
-           CUSTOM_FEEDS_SH: custom_feeds-Qosmio
+           #CUSTOM_FEEDS_SH: custom_feeds-Qosmio
            REPO_TYPE: Qosmio
            OP_REPO: qosmio/openwrt-ipq
 
