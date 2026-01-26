@@ -4,3 +4,5 @@ echo "-当前执行步骤：添加通用软件包"
 # git clone https://github.com/izilzty/luci-app-temp-status ./package/thinkcy/luci-app-temp-status
 cp -r ../thinkcy ./package/
 cp -r ../thinkcy-settings ./package/thinkcy/ 
+
+echo "src-git qosmio https://github.com/qosmio/packages-extra" >> feeds.conf
