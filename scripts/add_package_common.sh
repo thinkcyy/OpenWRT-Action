@@ -5,4 +5,4 @@ echo "-当前执行步骤：添加通用软件包"
 cp -r ../thinkcy ./package/
 cp -r ../thinkcy-settings ./package/thinkcy/ 
 
-echo "src-git qosmio https://github.com/qosmio/packages-extra" >> feeds.conf
+echo "src-git qosmioextra https://github.com/qosmio/packages-extra" >> feeds.conf
