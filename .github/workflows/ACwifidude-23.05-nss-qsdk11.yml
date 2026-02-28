@@ -7,9 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-        
-    - name: Initialization
-      uses: thinkcyy/Action_Initialization@main
       
     - name: compile
       uses: thinkcyy/Action_OpenWrt_composite@compile
