@@ -12,7 +12,6 @@ git clone https://github.com/immortalwrt/luci immortal_luci
 git clone https://github.com/immortalwrt/packages immortal_package
 git clone https://github.com/immortalwrt/immortalwrt immortal_immortalwrt
 git clone https://github.com/coolsnowwolf/lede lede
-git clone https://github.com/mwarning/zerotier-openwrt.git zerotier-openwrt
 
 : <<'COMMENT'
 # 锁定日期
