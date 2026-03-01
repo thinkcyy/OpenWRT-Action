@@ -14,10 +14,10 @@ jobs:
            # RELEASE_PREFIX: "[Cron]"
            ROUTER_MODEL: EA8500
            COMPILE_CONFIG_BASE: ACwifidude-ipq806x
-           COMPILE_CONFIG_DIFF: "common.cust.package.diff common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter common.cust.package-4-nss"
+           COMPILE_CONFIG_DIFF: "common.cust.package.diff common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter common.cust.package-4-nss common.cust.package-4-nss-extra-1-ipq806x"
            COMPILE_CONFIG: common.usb.diff
-           # CONFIG_TO_ADD: "CONFIG_ALL_KMODS=y"
-           CONFIG_TO_DEL: "CONFIG_PACKAGE_bc"
+           # CONFIG_TO_ADD: "CONFIG_PACKAGE_kmod-qca-nss-cfi-cryptoapi=m CONFIG_PACKAGE_kmod-qca-nss-drv-netlink=m"
+           # CONFIG_TO_DEL: "CONFIG_PACKAGE_bc"
            REPLACE_IB: y
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
