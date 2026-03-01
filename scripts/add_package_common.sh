@@ -6,4 +6,4 @@ cp -r ../thinkcy ./package/
 cp -r ../thinkcy-settings ./package/thinkcy/ 
 
 echo "src-git qosmioextra https://github.com/qosmio/packages-extra" >> feeds.conf
-echo "src-git zerotier-openwrt https://github.com/mwarning/zerotier-openwrt.git" >> feeds.conf
+echo "src-git zerotier https://github.com/mwarning/zerotier-openwrt.git" >> feeds.conf
