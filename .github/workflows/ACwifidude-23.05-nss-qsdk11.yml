@@ -18,6 +18,7 @@ jobs:
            COMPILE_CONFIG: common.usb.diff
            # CONFIG_TO_ADD: "CONFIG_PACKAGE_kmod-qca-nss-cfi-cryptoapi=m CONFIG_PACKAGE_kmod-qca-nss-drv-netlink=m"
            # CONFIG_TO_DEL: "CONFIG_PACKAGE_bc"
+           EXTRA_FEEDS: add_feeds.sh
            REPLACE_IB: y
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
