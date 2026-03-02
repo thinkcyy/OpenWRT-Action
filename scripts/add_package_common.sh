@@ -5,5 +5,5 @@ echo "-当前执行步骤：添加通用软件包"
 cp -r ../thinkcy ./package/
 
 
-echo "src-git qosmioextra https://github.com/qosmio/packages-extra" >> feeds.conf
-echo "src-git zerotier https://github.com/mwarning/zerotier-openwrt.git" >> feeds.conf
+echo "src-git thinkcy_qosmio https://github.com/qosmio/packages-extra" >> feeds.conf
+echo "src-git thinkcy_mwarning https://github.com/mwarning/zerotier-openwrt.git" >> feeds.conf
