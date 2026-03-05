@@ -22,8 +22,8 @@ jobs:
            REPLACE_IB: y
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
-           OP_REPO: ACwifidude/openwrt
-           REPO_BRANCH: openwrt-23.05-nss-qsdk11
+           OP_REPO: asvio/R7800-nss
+           REPO_BRANCH: r7800-24.10-nss
            CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
            # CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
            token: ${{ secrets.GITHUB_TOKEN }} 
