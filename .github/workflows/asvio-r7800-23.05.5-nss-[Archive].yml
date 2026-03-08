@@ -19,6 +19,8 @@ jobs:
            # CONFIG_TO_ADD: "CONFIG_PACKAGE_kmod-qca-nss-cfi-cryptoapi=m CONFIG_PACKAGE_kmod-qca-nss-drv-netlink=m"
            # CONFIG_TO_DEL: "CONFIG_PACKAGE_bc"
            # EXTRA_FEEDS: add_feeds.sh 默认运行add_feeds.sh
+           REPO_DATE: '2026-03-08T23:59:59+08:00'
+           FEEDS_DATE: '2026-03-08T23:59:59+08:00'
            REPLACE_IB: y
            IMAGEBUILDER: y
            REPO_TYPE: zhKong
