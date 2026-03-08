@@ -1,0 +1,29 @@
+name: asvio-r7800-23.05.5-nss-[Archive]
+
+on:
+   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      
+    - name: compile
+      uses: thinkcyy/Action_OpenWrt_composite@compile
+      with:           
+           # RELEASE_PREFIX: "[Cron]"
+           ROUTER_MODEL: EA8500
+           COMPILE_CONFIG_BASE: ACwifidude-ipq806x
+           COMPILE_CONFIG_DIFF: "common.cust.package.diff common.cust.package-1-OpenWrt_Component common.cust.package-2-luci_app common.cust.package-3-netfilter common.cust.package-4-nss common.cust.package-4-nss-extra-1-ipq806x"
+           COMPILE_CONFIG: common.usb.diff
+           # CONFIG_TO_ADD: "CONFIG_PACKAGE_kmod-qca-nss-cfi-cryptoapi=m CONFIG_PACKAGE_kmod-qca-nss-drv-netlink=m"
+           # CONFIG_TO_DEL: "CONFIG_PACKAGE_bc"
+           # EXTRA_FEEDS: add_feeds.sh 默认运行add_feeds.sh
+           REPLACE_IB: y
+           IMAGEBUILDER: y
+           REPO_TYPE: zhKong
+           OP_REPO: asvio/R7800-nss
+           REPO_BRANCH: r7800-23.05.5-nss
+           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
+           # CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
+           token: ${{ secrets.GITHUB_TOKEN }} 
