@@ -69,8 +69,15 @@ echo '-步骤：custom_feed-添加zhKong的ddns-scripts_aliyun包'
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
 cp -r ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
 
+echo '-步骤：custom_feed-替换tinc为1.0.37版本'  
+sed -i 's/PKG_VERSION:=.*/PKG_VERSION:=1.0.37/' feeds/routing/tinc/Makefile
+sed -i 's/PKG_RELEASE:=.*/PKG_RELEASE:=1/' feeds/routing/tinc/Makefile
+sed -i 's/PKG_HASH:=.*/PKG_HASH:=f789511110534da25fc13b48f95c4709403ec3fa250800b46ebaa3469a8f4c2e/' feeds/routing/tinc/Makefile
+rm -rf feeds/routing/tinc/patches/*
+
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
 sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
+
 
 #echo '-步骤：custom_feed-替换为openwrt/openwrt的main分支的imagebuilder源代码'             
 #git clone  https://github.com/openwrt/openwrt -b main --single-branch ./main
