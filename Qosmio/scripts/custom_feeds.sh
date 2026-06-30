@@ -72,7 +72,7 @@ cp -r ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy/
 echo '-步骤：custom_feed-替换tinc为1.0.37版本'  
 sed -i 's/PKG_VERSION:=.*/PKG_VERSION:=1.0.37/' feeds/packages/net/tinc/Makefile
 sed -i 's/PKG_RELEASE:=.*/PKG_RELEASE:=1/' feeds/packages/net/tinc/Makefile
-sed -i 's/PKG_HASH:=.*/PKG_HASH:=f789511110534da25fc13b48f95c4709403ec3fa250800b46ebaa3469a8f4c2e/' feeds/packages/net/tinc/Makefile
+sed -i 's/PKG_HASH:=.*/PKG_HASH:=f63b7e21c32c4c637576d85f36bdd28ea678b5aa17fad02427645dea30e52ac7/' feeds/packages/net/tinc/Makefile
 rm -rf feeds/packages/net/tinc/patches/*
 
 echo '-步骤：custom_feed-向后调整tinc服务启动次序'             
