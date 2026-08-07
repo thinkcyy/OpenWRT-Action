@@ -14,28 +14,15 @@ git clone https://github.com/immortalwrt/packages immortal_package
 git clone https://github.com/immortalwrt/immortalwrt immortal_immortalwrt
 git clone https://github.com/coolsnowwolf/lede lede
 
-: <<'COMMENT'
-# 锁定日期
-cd immortal_luci
-../../scripts/select_dir_commit.sh
-
-cd ../immortal_package
-../../scripts/select_dir_commit.sh
-
-cd ../immortal_immortalwrt
-../../scripts/select_dir_commit.sh
-
-cd ../lede
-../../scripts/select_dir_commit.sh
-
-cd ..
-COMMENT
-
 echo '-步骤：custom_feed-替换自带luci-base、luci-mod-status'
 rm -rf feeds/luci/modules/luci-base
 rm -rf feeds/luci/modules/luci-mod-status
 cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
 cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
+
+# 来自https://github.com/tingalvin/r7800
+echo '-步骤：enable VHT mode on 2.4g and show NSS load in status'
+cp -r ../thinkcy/patch/feeds/ ./
 
 echo '-步骤：custom_feed-替换自带default-settings'
 cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
