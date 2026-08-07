@@ -51,6 +51,12 @@ else
 
     sed 's/^src-git[^[:space:]]*/src-git-full/' feeds.conf.default > feeds.conf
 
+    # 删除 branch 标记（如 ;openwrt-25.05）
+    sed -i 's/;.*$//' feeds.conf
+    
+    # 删除已有 ^hash
+    sed -i 's/\^[0-9a-f]\{40\}$//' feeds.conf
+
     ./scripts/feeds update -a || exit 1
 fi
 
