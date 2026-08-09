@@ -23,6 +23,9 @@ cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 # 来自https://github.com/tingalvin/r7800
 echo '-步骤：enable VHT mode on 2.4g and show NSS load in status'
 cp -r ../thinkcy/patch/feeds/ ./
+echo 当前文件
+ls -lh feeds/luci/modules/luci-mod-network/patches
+ls -lh feeds/luci/modules/luci-mod-status/patches
 
 echo '-步骤：custom_feed-替换自带default-settings'
 cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
