@@ -1,9 +1,4 @@
-echo "--当前执行步骤：添加通用软件包-add_package_common.sh"
-
-echo '---添加thinkcy目录'
-# [[ -d "package/thinkcy" ]] && mkdir -p package/thinkcy
-# git clone https://github.com/izilzty/luci-app-temp-status ./package/thinkcy/luci-app-temp-status
-cp -r ../thinkcy/thinkcy_package ./package/
+echo "--当前执行步骤：添加通用软件包-调整feeds-add_package_part1_before_feeds_update-add_feeds.sh"
 
 echo '---添加额外feed源'
 # luci-mod-status-nss
