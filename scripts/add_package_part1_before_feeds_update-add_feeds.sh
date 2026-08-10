@@ -1,6 +1,5 @@
-echo "--当前执行步骤：添加通用软件包-调整feeds-add_package_part1_before_feeds_update-add_feeds.sh"
+echo "--当前执行步骤：custom_feeds自定义软件包-1-通用软件包-1.1-调整订阅$(basename "$0")"
 
-echo '---添加额外feed源'
 # luci-mod-status-nss
 echo "src-git thinkcy_qosmio https://github.com/qosmio/packages-extra" | cat - feeds.conf.default                                                     > feeds.conf.add
 # zerotier
