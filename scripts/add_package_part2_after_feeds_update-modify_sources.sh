@@ -26,8 +26,10 @@ cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 #git clone https://github.com/coolsnowwolf/luci cus_lean_luci
 #cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
 
-echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.5-添加z自带源码thinkcy_package'
+echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.5-添加自带源码thinkcy_package'
 cp -r ../thinkcy/thinkcy_package ./package/
+git clone  https://github.com/superzjg/luci-app-frpc_frps superzjg
+cp -r superzjg/luci-app-frpc ./package/thinkcy_package/
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.6-修改默认语言'
 sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-base/root/etc/config/luci
