@@ -24,6 +24,6 @@ jobs:
            REPO_TYPE: zhKong
            OP_REPO: ACwifidude/openwrt
            REPO_BRANCH: openwrt-23.05-nss-qsdk11
-           CUSTOM_FEEDS_SH: custom_feeds-AgustinLorenzo
+           CUSTOM_FEEDS_SH: custom_feeds-tingalvin
            # CONFIG_TO_DEL: "CONFIG_PACKAGE_kmod-nft-netdev CONFIG_PACKAGE_kmod-macvlan"
            token: ${{ secrets.GITHUB_TOKEN }} 
