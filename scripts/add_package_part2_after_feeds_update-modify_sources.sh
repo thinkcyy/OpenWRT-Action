@@ -9,10 +9,10 @@ git clone https://github.com/immortalwrt/immortalwrt immortal_immortalwrt
 git clone https://github.com/coolsnowwolf/lede lede
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.2-替换自带luci-base、luci-mod-status'
-rm -rf feeds/luci/modules/luci-base
-rm -rf feeds/luci/modules/luci-mod-status
-cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
-cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
+# rm -rf feeds/luci/modules/luci-base
+# rm -rf feeds/luci/modules/luci-mod-status
+# cp -r ./immortal_luci/modules/luci-base feeds/luci/modules/
+# cp -r ./immortal_luci/modules/luci-mod-status feeds/luci/modules/
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.3-打补丁'
 # 来自https://github.com/tingalvin/r7800
@@ -27,9 +27,10 @@ cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 #cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.5-添加自带源码thinkcy_package'
-cp -r ../thinkcy/thinkcy_package ./package/
+cp -r ../thinkcy/thinkcy_package ./feeds/
 git clone  https://github.com/superzjg/luci-app-frpc_frps superzjg
-cp -r superzjg/luci-app-frpc ./package/thinkcy_package/
+rm -rf ./feeds/luci/applications/luci-app-frpc
+cp -r ./superzjg/luci-app-frpc ./feeds/thinkcy_package/
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.6-修改默认语言'
 sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-base/root/etc/config/luci
