@@ -23,3 +23,5 @@ cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
 
 echo '-步骤：custom_feed-初始化编译配置defconfig'
 make defconfig
+
+tree -L 3 ./feeds/ > tree_feeds.txt
