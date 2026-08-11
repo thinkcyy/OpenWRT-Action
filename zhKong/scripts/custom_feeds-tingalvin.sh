@@ -25,5 +25,7 @@ echo '-步骤：custom_feed-初始化编译配置defconfig'
 make defconfig
 
 tree -L 3 ./feeds/
+tree -L 3 ./package/
 
 tree -L 3 ./feeds/ > tree_feeds.txt
+tree -L 3 ./package/ > tree_package.txt
