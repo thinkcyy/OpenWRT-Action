@@ -45,6 +45,4 @@ echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-
 git clone --depth 1 https://github.com/thinkcyy/AX3600-OpenWrt  zhKong_OpenWrt
 cp -r ./zhKong_OpenWrt/package/ddns-scripts_aliyun  package/thinkcy_package/
 
-echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.8-替换tinc为1.0.37'             
-# sed -i 's|START=42|START=99|g' ./feeds/packages/net/tinc/files/tinc.init
-cp -r ../thinkcy/thinkcy_package/tinc  ./feeds/packages/net/
+# echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.8-'
