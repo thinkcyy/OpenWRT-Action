@@ -7,7 +7,7 @@ PKG_NAME:=luci-app-frpc
 # 高版本24.10.4的sdk会增加依赖luci-lua-runtime导致低版本系统装不上ipk，建议22.03.7
 LUCI_TITLE:=LuCI support for Frpc
 LUCI_DEPENDS:=+libc-LUCI_DEPENDS:=+libc
-+LUCI_DEPENDS:=+libc +luci-compat +luci-lua-runtime
+LUCI_DEPENDS:=+libc +luci-compat +luci-lua-runtime
 LUCI_PKGARCH:=all
 
 define Package/$(PKG_NAME)/conffiles
