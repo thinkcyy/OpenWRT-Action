@@ -26,9 +26,9 @@ cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
 #cp -r ./cus_lean_luci/applications/luci-app-turboacc package/thinkcy/
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.5-添加自带源码thinkcy_package'
-# 替换feeds同名软件包（替换tinc为1.0.37版本、替换luci-app-frpc为superzjg的toml版本）
+# 替换feeds同名软件包（替换tinc为1.0.37版本、替换luci-app-frpc为superzjg的toml版本、ddns-scripts_aliyun）
 cp -r ../thinkcy/package ./
-# 添加thinkcy自带软件包（thinkcy-settings、luci-app-temp-status）
+# 添加thinkcy自带软件包（luci-app-thinkcy、thinkcy-settings、luci-app-temp-status）
 cp -r ../thinkcy/thinkcy_package ./package/
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.6-修改默认语言'
