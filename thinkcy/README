@@ -1,2 +1,4 @@
-thinkcy_package目录为拷贝至编译目录下package的软件包
+package目录下各文件夹拷贝至编译根目录package下，覆盖feeds自带同名包
+patch目录下为覆盖至feeds的补丁
+thinkcy_package整体拷贝至package
 其余为素材，不用于feeds编译
