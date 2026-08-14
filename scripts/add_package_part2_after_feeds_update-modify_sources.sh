@@ -16,7 +16,7 @@ echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.3-打补丁'
 # 来自https://github.com/tingalvin/r7800 enable VHT mode on 2.4g and show NSS load in status'
-cp -r ../thinkcy/patch/feeds/ ./
+[[ -d ../thinkcy/patch/feeds ]] && cp -r ../thinkcy/patch/feeds/ ./
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.1-通用源码-2.1.4-替换自带default-settings'
 cp -r ./immortal_immortalwrt/package/emortal/default-settings package/immortal/
