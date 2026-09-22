@@ -2,7 +2,7 @@
 # patch-sax1v1k-pwm.sh
 set -e
 
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(pwd)"
 
 echo "OpenWrt source: $ROOT"
 
