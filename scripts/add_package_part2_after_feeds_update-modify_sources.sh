@@ -39,7 +39,8 @@ sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./fee
 
 echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.2-特定源码'
 list=$(find ../$REPO_TYPE/ -type f -name "add_package_part3*")
-if [[ ! -z $list ]] ; then
+if [[ ! -z "$list" ]] ; then
+  echo 源码调整脚本为$list
   for f in $list
   do
     sh $f
