@@ -77,7 +77,7 @@
 	/* 风扇：先按 gpio32=pwm3 写；如无效改 <&pwm 2 40000>（gpio27=pwm2） */
 	fan: pwm-fan {
 		compatible = "pwm-fan";
-		pwms = <&pwm 3 40000>;		/* 25kHz 标准 4 线风扇 PWM */
+		pwms = <&pwm 2 40000>;		/* 25kHz 标准 4 线风扇 PWM */
 		cooling-min-state = <0>;
 		cooling-max-state = <4>;
 		#cooling-cells = <2>;
@@ -103,8 +103,8 @@
 	};
   	/* 对应 stock dts 的 pwm_pinmux mux_4 */
 	  fan_pwm_pins: fan-pwm-pins {
-		pins = "gpio32";
-		function = "pwm3";		/* 若上游 pinctrl-ipq8074 无此功能名见补丁 3 */
+		pins = "gpio27";
+		function = "pwm2";		/* 若上游 pinctrl-ipq8074 无此功能名见补丁 3 */
 		drive-strength = <8>;
 	};
 
