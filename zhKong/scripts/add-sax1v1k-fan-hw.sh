@@ -40,7 +40,7 @@
 #   关3: /sys/class/pwm/pwmchip0 出现但风扇不动
 #         -> 通道号不对, 脚本末尾有逐个通道试的验收命令
 # ============================================================================
-set -euo pipefail
+set -e
 
 ROOT="."; CHANNEL=3; PIN=32; PWM_BASE="0x194b000"; FREQ=25000
 THERMAL=0; PROPER=0
