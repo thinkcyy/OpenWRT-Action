@@ -42,32 +42,29 @@ else
 
     cat >> "$DTS" <<'EOT'
 
-/*
- * Factory PWM controller
- *
- * Original Askey RT5010W-D187-REV6:
- *
- *   GPIO25 -> pwm02
- *   GPIO26 -> pwm12
- *   GPIO27 -> pwm22
- *   GPIO32 -> pwm33
- *
- * GPIO27 / PWM22 has been experimentally confirmed
- * to control the fan.
- */
-&pwm {
-    compatible = "qca,ipq4019-pwm";
-    clocks = <&gcc 0xf0>;
-    clock-names = "core";
 
-    pwm-base-index = <0>;
-    used-pwm-indices = <1 1 1 1>;
+	/* PWM 控制器：IPQ807x TCSR 区（stock dts 的 qca,ipq4019-pwm 同硬件块）
+	 * reg 基址候选 0x194b000（QSDK ipq4019 系），需按第 5 节验证 */
+	pwm: pwm@194b000 {
+		compatible = "qcom,ipq8074-pwm";
+		reg = <0x194b000 0x20>;		/* 4 通道 × 8 字节 */
+		clocks = <&gcc GCC_APSS_PWM_CLK>;
+		assigned-clocks = <&gcc GCC_APSS_PWM_CLK>;
+		assigned-clock-rates = <100000000>;
+		#pwm-cells = <2>;
+	};
 
-    pinctrl-0 = <&pwm_pinmux>;
-    pinctrl-names = "default";
-
-    status = "okay";
+	/* 风扇：先按 gpio32=pwm3 写；如无效改 <&pwm 2 40000>（gpio27=pwm2） */
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		pwms = <&pwm 2 40000>;		/* 25kHz 标准 4 线风扇 PWM */
+		cooling-min-state = <0>;
+		cooling-max-state = <4>;
+		#cooling-cells = <2>;
+	};
 };
+
+
 EOT
 
     echo "  PWM controller 已添加。"
