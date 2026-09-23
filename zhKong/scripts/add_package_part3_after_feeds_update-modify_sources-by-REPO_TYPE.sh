@@ -7,4 +7,4 @@
 #echo dts文件内容为
 #cat ./target/linux/qualcommax/dts/ipq8072-sax1v1k.dts
 
-sh ../$REPO_TYPE/scripts/add-sax1v1k-fan-hw.sh --channel2 --proper
+bash ../$REPO_TYPE/scripts/add-sax1v1k-fan-hw.sh --channel2 --proper
