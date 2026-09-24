@@ -1,5 +1,0 @@
---- a/drivers/pwm/pwm-ipq.c
-+++ b/drivers/pwm/pwm-ipq.c
-@@ -xxx,x +xxx,x @@ static const struct of_device_id ipq_pwm_of_match[] = {
-+	{ .compatible = "qcom,ipq8074-pwm" },
- 	{ .compatible = "qcom,ipq6018-pwm" },
