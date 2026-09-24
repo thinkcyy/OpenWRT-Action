@@ -164,7 +164,7 @@ PERIOD_NS=$((1000000000 / FREQ))
 # 路径
 # ---------------------------------------------------------------------------
 
-DTS="$ROOT/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq8072-sax1v1k.dts"
+DTS="$ROOT/target/linux/qualcommax/dts/ipq8072-sax1v1k.dts"
 
 CFG="$ROOT/target/linux/qualcommax/config-6.12"
 
