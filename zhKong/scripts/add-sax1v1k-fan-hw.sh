@@ -1,837 +1,430 @@
-#!/bin/bash
-# ============================================================================
-# add-sax1v1k-fan-hw.sh
+#!/usr/bin/env bash
 #
-# SAX1V1K / IPQ8074 硬件 PWM 风扇控制
+# sax1v1k-pwm-fan.sh
 #
-# 当前方案：
-#   GPIO32 -> PWM3
-#   PWM 基址默认：0x1941010
-#   PWM 时钟默认：GCC_ADSS_PWM_CLK
-#   PWM 频率默认：25kHz
+# Adds PWM fan control for the Spectrum SAX1V1K (Askey RT5010W-D187 REV6)
+# to the AgustinLorenzo/openwrt tree: gpio27 -> PWM channel 2 -> pwm-fan,
+# hooked into the cluster thermal zone.
 #
-# 重要：
-#   0x1941010 是目前根据 IPQ6018/IPQ9574 同类 PWM block 得出的
-#   最佳候选地址，但尚无公开 IPQ8074 DTS 明确确认。
+# Run it from the repository root BEFORE building:
 #
-#   IPQ8074 pinctrl 已原生支持：
-#       GPIO32 -> PWM3
+#     bash sax1v1k-pwm-fan.sh                 # repo root = current directory
+#     bash sax1v1k-pwm-fan.sh /path/to/openwrt
 #
-#   不再修改 pinctrl-ipq8074.c。
+# Changes made (the script is idempotent):
+#   1. new kernel patch  target/linux/qualcommax/patches-6.12/NNNN-clk-qcom-gcc-ipq8074-add-ADSS-PWM-clock.patch
+#      Generated from the kernel tarball in dl/ (with the repo's earlier patches
+#      for the same two files applied first) so the context always matches.
+#   2. target/linux/qualcommax/ipq807x/config-default   PWM options
+#   3. target/linux/qualcommax/image/ipq807x.mk         kmod-hwmon-pwmfan for spectrum_sax1v1k
+#   4. target/linux/qualcommax/files/.../ipq8072-sax1v1k.dts  pwm, pinctrl, pwm-fan, thermal
+#   5. only if required: "FEATURES += pwm" in target/linux/qualcommax/Makefile
 #
-# 功能：
-#   1. CONFIG_PWM_IPQ=y
-#   2. 自动确保 kmod-hwmon-pwmfan
-#   3. 在 SAX1V1K DTS 添加 PWM controller
-#   4. 添加 pwm-fan
-#   5. GPIO32 -> PWM3 pinctrl
-#   6. 正确绑定 pinctrl-0
-#   7. 如果当前 pwm-ipq 驱动仍存在 25kHz period bug，
-#      自动生成修复 patch
-#   8. 可选添加 cpu_thermal -> pwm-fan cooling map
-#
-# 用法：
-#
-#   ./add-sax1v1k-fan-hw.sh
-#
-#   自定义通道：
-#   ./add-sax1v1k-fan-hw.sh -c 2 -p 27
-#
-#   指定源码目录：
-#   ./add-sax1v1k-fan-hw.sh -r ~/openwrt
-#
-#   指定 PWM 基址：
-#   ./add-sax1v1k-fan-hw.sh -a 0x1941010
-#
-#   使用 XO 时钟：
-#   ./add-sax1v1k-fan-hw.sh --xo-clock
-#
-#   加入 CPU thermal 控制：
-#   ./add-sax1v1k-fan-hw.sh --thermal
-#
-# ============================================================================
+# NOT verified on hardware: the ADSS PWM clock offsets (0x1c008 / 0x1c020) are
+# taken from IPQ6018. Test an initramfs build first; do not flash eMMC until
+# dmesg shows no "stuck at 'off'" and clk_rate is 100000000.
 
 set -euo pipefail
 
-ROOT="."
-CHANNEL=3
-PIN=32
-PWM_BASE="0x1941010"
-FREQ=25000
-THERMAL=0
-XO_CLOCK=0
+say()  { printf '\033[1;32m==>\033[0m %s\n' "$*"; }
+warn() { printf '\033[1;33mwarn:\033[0m %s\n' "$*" >&2; }
+die()  { printf '\033[1;31merror:\033[0m %s\n' "$*" >&2; exit 1; }
 
-die()
-{
-	echo "[ERROR] $*" >&2
-	exit 1
-}
+ROOT="${1:-$PWD}"
+cd "$ROOT" || die "cannot cd to $ROOT"
 
-info()
-{
-	echo "[INFO]  $*"
-}
+QC=target/linux/qualcommax
+PDIR=$QC/patches-6.12
+DTS=$QC/files/arch/arm64/boot/dts/qcom/ipq8072-sax1v1k.dts
+MK=$QC/image/ipq807x.mk
+CFG=$QC/ipq807x/config-default
+PATCH_SUFFIX=clk-qcom-gcc-ipq8074-add-ADSS-PWM-clock.patch
 
-warn()
-{
-	echo "[WARN]  $*" >&2
-}
+# ---------------------------------------------------------------- sanity ----
+[ -d "$PDIR" ] || die "$PDIR not found - run from the openwrt repo root"
+[ -f "$DTS" ]  || die "$DTS not found"
+[ -f "$MK" ]   || die "$MK not found"
+command -v python3 >/dev/null || die "python3 is required"
+command -v patch   >/dev/null || die "patch is required"
+command -v tar     >/dev/null || die "tar is required"
 
-usage()
-{
-	sed -n '2,75p' "$0"
-	exit 0
-}
+DRV_PATCH=$(grep -l '^+++ b/drivers/pwm/pwm-ipq.c' "$PDIR"/*.patch 2>/dev/null | head -n1 || true)
+[ -n "$DRV_PATCH" ] || die "no patch in $PDIR adds drivers/pwm/pwm-ipq.c (expected 0141-*.patch)"
+COMPAT=$(grep -o 'compatible = "qcom,[a-z0-9]*-pwm"' "$DRV_PATCH" | head -n1 | sed 's/.*"\(.*\)"/\1/' || true)
+COMPAT=${COMPAT:-qcom,ipq6018-pwm}
+say "PWM driver patch: $(basename "$DRV_PATCH") (compatible $COMPAT)"
 
-# ---------------------------------------------------------------------------
-# 参数
-# ---------------------------------------------------------------------------
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
 
-while [[ $# -gt 0 ]]; do
-	case "$1" in
-		-r)
-			[[ $# -ge 2 ]] || die "-r 缺少参数"
-			ROOT="$2"
-			shift 2
-			;;
+# ------------------------------------------------- 1. GCC clock patch --------
+existing=$(ls "$PDIR"/*-"$PATCH_SUFFIX" 2>/dev/null | head -n1 || true)
+if [ -n "$existing" ]; then
+	say "kernel clock patch already present: $(basename "$existing") - skipping"
+else
+	TAR=$(ls dl/linux-6.12*.tar.xz 2>/dev/null | sort -V | tail -n1 || true)
+	[ -n "$TAR" ] || die "kernel tarball dl/linux-6.12*.tar.xz not found (run: make target/linux/download V=s)"
+	say "generating clock patch from $TAR"
 
-		-c)
-			[[ $# -ge 2 ]] || die "-c 缺少参数"
-			CHANNEL="$2"
-			shift 2
-			;;
+	prior=()
+	for d in target/linux/generic/backport-6.12 target/linux/generic/pending-6.12 \
+	         target/linux/generic/hack-6.12 "$PDIR"; do
+		[ -d "$d" ] || continue
+		while IFS= read -r f; do prior+=("$f"); done < <(ls "$d"/*.patch 2>/dev/null | sort)
+	done
 
-		-p)
-			[[ $# -ge 2 ]] || die "-p 缺少参数"
-			PIN="$2"
-			shift 2
-			;;
+	cat > "$WORK/gen.py" <<'PYEOF'
+import difflib, os, re, shutil, subprocess, sys
 
-		-a)
-			[[ $# -ge 2 ]] || die "-a 缺少参数"
-			PWM_BASE="$2"
-			shift 2
-			;;
+tarball, work, out, pdir = sys.argv[1:5]
+priors = sys.argv[5:]
 
-		-f)
-			[[ $# -ge 2 ]] || die "-f 缺少参数"
-			FREQ="$2"
-			shift 2
-			;;
+GCC_C = "drivers/clk/qcom/gcc-ipq8074.c"
+GCC_H = "include/dt-bindings/clock/qcom,gcc-ipq8074.h"
+FILES = (GCC_C, GCC_H)
+pdir = os.path.abspath(pdir)
+a = os.path.abspath(os.path.join(work, "a"))
+b = os.path.abspath(os.path.join(work, "b"))
 
-		-t|--thermal)
-			THERMAL=1
-			shift
-			;;
 
-		--xo-clock)
-			XO_CLOCK=1
-			shift
-			;;
+def die(msg, code=2):
+    sys.stderr.write("gen: " + msg + "\n")
+    sys.exit(code)
 
-		-h|--help)
-			usage
-			;;
 
-		*)
-			die "未知参数: $1"
-			;;
-	esac
+def run(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
+os.makedirs(a, exist_ok=True)
+r = run(["tar", "-xJf", tarball, "-C", a, "--strip-components=1",
+         "--wildcards"] + ["*/" + f for f in FILES])
+if r.returncode:
+    die("cannot extract from %s: %s" % (tarball, r.stderr.strip()))
+for f in FILES:
+    if not os.path.isfile(os.path.join(a, f)):
+        die("%s not found in tarball" % f)
+
+
+def sections(text):
+    parts = re.split(r'(?m)^(?=diff --git )', text)
+    if len(parts) == 1:
+        parts = re.split(r'(?m)^(?=--- )', text)
+    return parts
+
+
+def touches(chunk):
+    m = re.search(r'(?m)^\+\+\+ (?:b/)?(\S+)', chunk)
+    return bool(m) and m.group(1) in FILES
+
+
+# Bring the two files to the state they have when our patch is applied.
+maxtouch = 0
+touching = []
+tmp = os.path.join(work, "prior.diff")
+for p in priors:
+    with open(p, encoding="utf-8", errors="replace") as fh:
+        text = fh.read()
+    chunks = [c for c in sections(text) if touches(c)]
+    if not chunks:
+        continue
+    with open(tmp, "w", encoding="utf-8") as fh:
+        fh.write("".join(chunks))
+    r = run(["patch", "-p1", "-d", a, "--no-backup-if-mismatch", "-s", "-i", tmp])
+    if r.returncode:
+        die("prior patch %s does not apply to the pristine files:\n%s%s"
+            % (p, r.stdout, r.stderr))
+    touching.append(os.path.basename(p))
+    if os.path.dirname(os.path.abspath(p)) == pdir:
+        m = re.match(r'(\d+)-', os.path.basename(p))
+        if m:
+            maxtouch = max(maxtouch, int(m.group(1)))
+
+shutil.copytree(a, b)
+
+# ---- header: two new clock ids after the highest existing id ----------------
+hp = os.path.join(b, GCC_H)
+with open(hp, encoding="utf-8") as fh:
+    h = fh.read()
+if "GCC_ADSS_PWM_CLK" in h:
+    sys.stderr.write("gen: GCC_ADSS_PWM_CLK already defined in the kernel header\n")
+    sys.exit(3)
+nums = [int(n) for n in re.findall(r'(?m)^#define\s+\w+\s+(\d+)\b', h)]
+if not nums:
+    die("no numeric #define found in " + GCC_H)
+mx = max(nums)
+m = re.search(r'(?m)^#define(\s+)(\S+)(\s+)%d\b[^\n]*\n' % mx, h)
+if not m:
+    die("cannot locate the define with the highest id (%d)" % mx)
+width = len(m.group(2)) + len(m.group(3))
+
+
+def define(name, val):
+    return "#define %s%s\n" % (name.ljust(max(width, len(name) + 1)), val)
+
+
+new_defs = define("GCC_ADSS_PWM_CLK_SRC", mx + 1) + define("GCC_ADSS_PWM_CLK", mx + 2)
+h = h[:m.end()] + new_defs + h[m.end():]
+with open(hp, "w", encoding="utf-8") as fh:
+    fh.write(h)
+
+# ---- driver -----------------------------------------------------------------
+cp = os.path.join(b, GCC_C)
+with open(cp, encoding="utf-8") as fh:
+    c = fh.read()
+if "adss_pwm_clk_src" in c:
+    sys.stderr.write("gen: adss_pwm_clk_src already present in gcc-ipq8074.c\n")
+    sys.exit(3)
+
+BLOCK = '''
+static const struct freq_tbl ftbl_adss_pwm_clk_src[] = {
+	F(24000000, P_XO, 1, 0, 0),
+	F(100000000, P_GPLL0, 8, 0, 0),
+	{ }
+};
+
+static struct clk_rcg2 adss_pwm_clk_src = {
+	.cmd_rcgr = 0x1c008,
+	.freq_tbl = ftbl_adss_pwm_clk_src,
+	.hid_width = 5,
+	.parent_map = gcc_xo_gpll0_map,
+	.clkr.hw.init = &(struct clk_init_data){
+		.name = "adss_pwm_clk_src",
+		.parent_data = gcc_xo_gpll0,
+		.num_parents = ARRAY_SIZE(gcc_xo_gpll0),
+		.ops = &clk_rcg2_ops,
+	},
+};
+
+static struct clk_branch gcc_adss_pwm_clk = {
+	.halt_reg = 0x1c020,
+	.clkr = {
+		.enable_reg = 0x1c020,
+		.enable_mask = BIT(0),
+		.hw.init = &(struct clk_init_data){
+			.name = "gcc_adss_pwm_clk",
+			.parent_hws = (const struct clk_hw *[]){
+				&adss_pwm_clk_src.clkr.hw },
+			.num_parents = 1,
+			.flags = CLK_SET_RATE_PARENT,
+			.ops = &clk_branch2_ops,
+		},
+	},
+};
+'''
+
+m1 = re.search(r'static const struct parent_map gcc_xo_gpll0_map\[\] = \{.*?\n\};\n', c, re.S)
+if not m1:
+    die("anchor 'gcc_xo_gpll0_map' not found in gcc-ipq8074.c")
+c = c[:m1.end()] + BLOCK + c[m1.end():]
+
+m2 = re.search(r'(static struct clk_regmap \*gcc_ipq8074_clks\[\] = \{.*?)(\n\};\n)', c, re.S)
+if not m2:
+    die("anchor 'gcc_ipq8074_clks[]' not found in gcc-ipq8074.c")
+entries = ("\n\t[GCC_ADSS_PWM_CLK_SRC] = &adss_pwm_clk_src.clkr,"
+           "\n\t[GCC_ADSS_PWM_CLK] = &gcc_adss_pwm_clk.clkr,")
+c = c[:m2.end(1)] + entries + c[m2.end(1):]
+with open(cp, "w", encoding="utf-8") as fh:
+    fh.write(c)
+
+
+def mkdiff(path):
+    with open(os.path.join(a, path), encoding="utf-8") as fa, \
+         open(os.path.join(b, path), encoding="utf-8") as fb:
+        A, B = fa.readlines(), fb.readlines()
+    d = "".join(difflib.unified_diff(A, B, "a/" + path, "b/" + path))
+    return "diff --git a/%s b/%s\n%s" % (path, path, d)
+
+
+HEADER = """From: sax1v1k-pwm-fan.sh <noreply@invalid>
+Subject: [PATCH] clk: qcom: gcc-ipq8074: add ADSS PWM clock
+
+Add the ADSS PWM clock source and branch clock to the IPQ8074 GCC.
+Register layout and frequency table follow gcc-ipq6018.c; the PWM block
+of the SAX1V1K needs a 100 MHz clock (GPLL0 / 8) on this SoC.
+---
+"""
+with open(out, "w", encoding="utf-8") as fh:
+    fh.write(HEADER + mkdiff(GCC_H) + mkdiff(GCC_C))
+
+r = run(["patch", "-p1", "--dry-run", "-d", a, "-i", os.path.abspath(out)])
+if r.returncode:
+    die("generated patch does not apply to its own base:\n%s%s" % (r.stdout, r.stderr))
+
+print("MAXTOUCH=%d" % maxtouch)
+print("TOUCHING=%s" % ",".join(touching))
+print("IDS=%d,%d" % (mx + 1, mx + 2))
+PYEOF
+
+	rc=0
+	python3 "$WORK/gen.py" "$TAR" "$WORK/t" "$WORK/gen.patch" "$PDIR" "${prior[@]}" \
+		> "$WORK/gen.out" || rc=$?
+	if [ "$rc" -eq 3 ]; then
+		warn "the kernel already defines the ADSS PWM clock - no clock patch needed"
+	elif [ "$rc" -ne 0 ]; then
+		die "clock patch generation failed (see message above)"
+	else
+		MAXTOUCH=$(sed -n 's/^MAXTOUCH=//p' "$WORK/gen.out")
+		TOUCHING=$(sed -n 's/^TOUCHING=//p' "$WORK/gen.out")
+		IDS=$(sed -n 's/^IDS=//p' "$WORK/gen.out")
+		[ -z "$TOUCHING" ] || say "other patches touching the same files (applied first): $TOUCHING"
+
+		n=$(( 10#${MAXTOUCH:-0} ))
+		[ "$n" -lt 141 ] && n=141
+		n=$((n + 1))
+		while ls "$PDIR"/"$(printf '%04d' "$n")"-* >/dev/null 2>&1; do n=$((n + 1)); done
+		OUT="$PDIR/$(printf '%04d' "$n")-$PATCH_SUFFIX"
+		cp "$WORK/gen.patch" "$OUT"
+		say "wrote $OUT (clock ids $IDS)"
+	fi
+fi
+
+# --------------------------------------------------- 2. kernel config --------
+mkdir -p "$(dirname "$CFG")"
+touch "$CFG"
+[ -z "$(tail -c1 "$CFG")" ] || echo >> "$CFG"
+for opt in CONFIG_PWM=y CONFIG_PWM_IPQ=y CONFIG_PWM_SYSFS=y; do
+	key=${opt%%=*}
+	if grep -q "^${key}=" "$CFG"; then
+		say "$CFG already sets $key"
+	else
+		echo "$opt" >> "$CFG"
+		say "$CFG: added $opt"
+	fi
 done
 
-# ---------------------------------------------------------------------------
-# 参数检查
-# ---------------------------------------------------------------------------
-
-[[ "$CHANNEL" =~ ^[0-3]$ ]] ||
-	die "PWM channel 必须为 0~3"
-
-[[ "$PIN" =~ ^[0-9]+$ ]] ||
-	die "GPIO 必须为数字"
-
-[[ "$FREQ" =~ ^[0-9]+$ ]] ||
-	die "频率必须为数字"
-
-(( FREQ > 0 )) ||
-	die "频率必须 > 0"
-
-PERIOD_NS=$((1000000000 / FREQ))
-
-(( PERIOD_NS > 0 )) ||
-	die "PWM 频率过高"
-
-# ---------------------------------------------------------------------------
-# 路径
-# ---------------------------------------------------------------------------
-
-DTS="$ROOT/target/linux/qualcommax/dts/ipq8072-sax1v1k.dts"
-
-CFG="$ROOT/target/linux/qualcommax/config-6.12"
-
-PATCH_DIR="$ROOT/target/linux/qualcommax/patches-6.12"
-
-PWM_DRIVER_PATCH="$PATCH_DIR/0141-pwm-driver-for-qualcomm-ipq6018-pwm-block.patch"
-
-PERIOD_FIX_PATCH="$PATCH_DIR/0307-pwm-ipq-fix-period-calculation.patch"
-
-[[ -f "$DTS" ]] ||
-	die "找不到 SAX1V1K DTS:
-$DTS"
-
-[[ -f "$CFG" ]] ||
-	die "找不到:
-$CFG"
-
-[[ -d "$PATCH_DIR" ]] ||
-	die "找不到:
-$PATCH_DIR"
-
-[[ -f "$PWM_DRIVER_PATCH" ]] ||
-	die "找不到 pwm-ipq 驱动 patch:
-$PWM_DRIVER_PATCH"
-
-info "源码目录：$ROOT"
-info "DTS：$DTS"
-info "PWM：channel=$CHANNEL GPIO=$PIN"
-info "PWM base：$PWM_BASE"
-info "PWM frequency：${FREQ}Hz"
-info "PWM period：${PERIOD_NS}ns"
-
-if [[ "$PWM_BASE" == "0x1941010" ]]; then
-	warn "0x1941010 是目前基于同系列 Qualcomm PWM block 得出的最佳候选地址"
-	warn "目前没有公开 IPQ8074 DTS 明确确认该地址，上板前仍应通过原厂 DTB/寄存器进一步验证"
-fi
-
-# ---------------------------------------------------------------------------
-# GPIO / PWM 对照提示
-# ---------------------------------------------------------------------------
-
-case "$CHANNEL:$PIN" in
-	3:32)
-		info "确认使用 IPQ8074 原生 GPIO32 -> PWM3"
-		;;
-
-	2:27)
-		info "使用 IPQ8074 原生 GPIO27 -> PWM2"
-		;;
-
-	0:18|0:21|0:25|0:29|0:63)
-		info "GPIO$PIN 属于 IPQ8074 PWM0 复用组"
-		;;
-
-	1:19|1:22|1:26|1:30|1:64)
-		info "GPIO$PIN 属于 IPQ8074 PWM1 复用组"
-		;;
-
-	2:20|2:23|2:27|2:31|2:66)
-		info "GPIO$PIN 属于 IPQ8074 PWM2 复用组"
-		;;
-
-	3:24|3:28|3:32|3:67)
-		info "GPIO$PIN 属于 IPQ8074 PWM3 复用组"
-		;;
-
-	*)
-		warn "没有对 GPIO$PIN / PWM$CHANNEL 做内置复用检查"
-		;;
-esac
-
-# ---------------------------------------------------------------------------
-# 备份
-#
-# 不重复覆盖最初备份，避免第二次执行脚本以后无法回滚到原始文件。
-# ---------------------------------------------------------------------------
-
-if [[ ! -f "$DTS.bak-fan" ]]; then
-	cp -a "$DTS" "$DTS.bak-fan"
-	info "已备份 DTS：$DTS.bak-fan"
+# ------------------------------------------------ 3. device packages ---------
+if sed -n '/^define Device\/spectrum_sax1v1k/,/^endef/p' "$MK" | grep -q 'kmod-hwmon-pwmfan'; then
+	say "$MK already lists kmod-hwmon-pwmfan"
 else
-	info "保留已有 DTS 备份：$DTS.bak-fan"
+	sed -i '/^define Device\/spectrum_sax1v1k/,/^endef/ s/^\(\s*DEVICE_PACKAGES := \)/\1kmod-hwmon-pwmfan /' "$MK"
+	sed -n '/^define Device\/spectrum_sax1v1k/,/^endef/p' "$MK" | grep -q 'kmod-hwmon-pwmfan' \
+		|| die "could not add kmod-hwmon-pwmfan to spectrum_sax1v1k in $MK (edit DEVICE_PACKAGES by hand)"
+	say "$MK: added kmod-hwmon-pwmfan"
 fi
 
-if [[ ! -f "$CFG.bak-fan" ]]; then
-	cp -a "$CFG" "$CFG.bak-fan"
-	info "已备份 config：$CFG.bak-fan"
-else
-	info "保留已有 config 备份：$CFG.bak-fan"
-fi
-
-# ---------------------------------------------------------------------------
-# 工具函数：删除本脚本之前生成的标记块
-# ---------------------------------------------------------------------------
-
-remove_marker_block()
-{
-	local file="$1"
-	local begin="$2"
-	local end="$3"
-
-	[[ -f "$file" ]] || return 0
-
-	awk -v begin="$begin" -v end="$end" '
-		index($0, begin) {
-			skip=1
-			next
-		}
-
-		index($0, end) {
-			skip=0
-			next
-		}
-
-		!skip {
-			print
-		}
-	' "$file" > "$file.tmp"
-
-	mv "$file.tmp" "$file"
-}
-
-# ---------------------------------------------------------------------------
-# [1] CONFIG_PWM_IPQ=y
-# ---------------------------------------------------------------------------
-
-if grep -q '^CONFIG_PWM_IPQ=' "$CFG"; then
-
-	sed -i \
-		's/^CONFIG_PWM_IPQ=.*/CONFIG_PWM_IPQ=y/' \
-		"$CFG"
-
-else
-
-	cat >> "$CFG" <<'EOF'
-
-#
-# SAX1V1K hardware PWM fan
-#
-CONFIG_PWM_IPQ=y
-EOF
-
-fi
-
-grep -q '^CONFIG_PWM_IPQ=y$' "$CFG" ||
-	die "CONFIG_PWM_IPQ=y 写入失败"
-
-info "CONFIG_PWM_IPQ=y"
-
-# ---------------------------------------------------------------------------
-# [2] OpenWrt package
-#
-# pwm-fan 是 hwmon 下的 pwmfan 驱动。
-# ---------------------------------------------------------------------------
-
-if [[ -f "$ROOT/.config" ]]; then
-
-	if grep -q '^CONFIG_PACKAGE_kmod-hwmon-pwmfan=' "$ROOT/.config"; then
-		sed -i \
-			's/^CONFIG_PACKAGE_kmod-hwmon-pwmfan=.*/CONFIG_PACKAGE_kmod-hwmon-pwmfan=y/' \
-			"$ROOT/.config"
+# ----------------------------------------- 4. target feature (if needed) -----
+HWMON_MK=package/kernel/linux/modules/hwmon.mk
+if [ -f "$HWMON_MK" ] \
+   && awk '/define KernelPackage\/hwmon-pwmfan/,/^endef/' "$HWMON_MK" | grep -q 'PWM_SUPPORT' \
+   && ! grep -Eq '(^|[[:space:]])pwm([[:space:]]|$)' "$QC/Makefile"; then
+	if grep -q '^include \$(INCLUDE_DIR)/target.mk' "$QC/Makefile"; then
+		sed -i '0,/^include \$(INCLUDE_DIR)\/target.mk/ s//FEATURES += pwm\n\n&/' "$QC/Makefile"
+		say "$QC/Makefile: added FEATURES += pwm (kmod-hwmon-pwmfan depends on PWM_SUPPORT)"
 	else
-		echo 'CONFIG_PACKAGE_kmod-hwmon-pwmfan=y' >> "$ROOT/.config"
+		warn "kmod-hwmon-pwmfan needs the 'pwm' target feature; add 'FEATURES += pwm' to $QC/Makefile by hand"
 	fi
-
-	if grep -q '^CONFIG_PACKAGE_kmod-hwmon-core=' "$ROOT/.config"; then
-		sed -i \
-			's/^CONFIG_PACKAGE_kmod-hwmon-core=.*/CONFIG_PACKAGE_kmod-hwmon-core=y/' \
-			"$ROOT/.config"
-	else
-		echo 'CONFIG_PACKAGE_kmod-hwmon-core=y' >> "$ROOT/.config"
-	fi
-
-	info ".config: kmod-hwmon-pwmfan=y"
-
-else
-
-	warn "没有找到 .config，跳过 kmod-hwmon-pwmfan 配置"
-	warn "编译前请确认：CONFIG_PACKAGE_kmod-hwmon-pwmfan=y"
-
 fi
 
-# ---------------------------------------------------------------------------
-# [3] 修复 pwm-ipq 的 25kHz period calculation
-#
-# 原版驱动把 pwm_div 固定在最大值附近：
-#
-#     pwm_div = 65534
-#
-# 100MHz / 25kHz = 4000 clocks
-#
-# 因此原算法会计算出 pre_div=0，并返回 -ERANGE。
-#
-# Linux 2026-08 已经有对应修复：
-# 根据 period 搜索合适的 pre_div / pwm_div。
-#
-# 如果当前 0141 已经包含 best_pre_div，则认为已经修复。
-# ---------------------------------------------------------------------------
-
-if grep -q 'best_pre_div' "$PWM_DRIVER_PATCH"; then
-
-	info "0141 pwm-ipq 已包含 period calculation 修复"
-	rm -f "$PERIOD_FIX_PATCH"
-
+# ------------------------------------------------------- 5. device tree ------
+if grep -q 'pwm_pins:' "$DTS"; then
+	say "$DTS already contains the PWM fan nodes - skipping"
 else
+	[ -z "$(tail -c1 "$DTS")" ] || echo >> "$DTS"
+	cat >> "$DTS" <<EOF
 
-	info "0141 pwm-ipq 仍是旧 period calculation"
-	info "生成 0307-pwm-ipq-fix-period-calculation.patch"
+/*
+ * PWM fan (added by sax1v1k-pwm-fan.sh)
+ * The fan is switched by gpio27: high = on. gpio27 muxes to PWM channel 2.
+ * Trip temperatures are starting values, tune them after measuring.
+ */
+&tcsr {
+	compatible = "qcom,tcsr-ipq8074", "syscon", "simple-mfd";
+	ranges = <0x0 0x01937000 0x21000>;
+	#address-cells = <1>;
+	#size-cells = <1>;
 
-	cat > "$PERIOD_FIX_PATCH" <<'EOF'
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: SAX1V1K fan patch <local>
-Subject: [PATCH] pwm: ipq: fix short period calculation for 25kHz fans
-
-The original IPQ PWM driver fixes pwm_div close to its maximum.
-This makes short periods such as 25kHz unusable.
-
-Search for a representable (pre_div, pwm_div) pair instead.
-
----
- drivers/pwm/pwm-ipq.c | 91 ++++++++++++++++++++++++++++++-------------
- 1 file changed, 65 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/pwm/pwm-ipq.c b/drivers/pwm/pwm-ipq.c
---- a/drivers/pwm/pwm-ipq.c
-+++ b/drivers/pwm/pwm-ipq.c
-@@ -89,10 +89,10 @@ static int ipq_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	struct ipq_pwm_chip *ipq_chip = ipq_pwm_from_chip(chip);
--	unsigned int pre_div, pwm_div;
--	u64 period_ns, duty_ns;
-+	unsigned int pre_div, pwm_div, best_pre_div, best_pwm_div;
-+	u64 period_ns, duty_ns, period_rate, min_diff;
- 	unsigned long val = 0;
--	unsigned long hi_dur;
-+	u64 hi_dur;
-
-@@ -112,35 +112,74 @@ static int ipq_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	period_ns = min(state->period, IPQ_PWM_MAX_PERIOD_NS);
- 	duty_ns = min(state->duty_cycle, period_ns);
-
--	/*
--	 * Pick the maximal value for PWM_DIV that still allows a
--	 * 100% relative duty cycle. This allows a fine grained
--	 * selection of duty cycles.
--	 */
--	pwm_div = IPQ_PWM_MAX_DIV - 1;
-+	period_rate = period_ns * ipq_chip->clk_rate;
-+
-+	best_pre_div = IPQ_PWM_MAX_DIV;
-+	best_pwm_div = IPQ_PWM_MAX_DIV;
-+	min_diff = period_rate;
- 
- 	/*
--	 * although mul_u64_u64_div_u64 returns a u64, in practice it
--	 * won't overflow due to above constraints. Take the max period
--	 * of 10^9 (NSEC_PER_SEC) and the pwm_div + 1 (IPQ_PWM_MAX_DIV)
--	 * 10^9 * 10^8
--	 * ------------- => which fits well into a 32-bit unsigned int.
--	 * 10^9 * 65,535
-+	 * Smaller pre_div than this cannot represent the period (pwm_div would
-+	 * have to exceed its field), so start the search there.
- 	 */
--	pre_div = mul_u64_u64_div_u64(period_ns, ipq_chip->clk_rate,
--				      (u64)NSEC_PER_SEC * (pwm_div + 1));
--
--	if (!pre_div)
--		return -ERANGE;
-+	pre_div = div64_u64(period_rate,
-+			    (u64)NSEC_PER_SEC * (IPQ_PWM_MAX_DIV + 1));
-+
-+	for (; pre_div <= IPQ_PWM_MAX_DIV; pre_div++) {
-+		u64 remainder;
-+
-+		pwm_div = div64_u64_rem(period_rate,
-+					(u64)NSEC_PER_SEC * (pre_div + 1),
-+					&remainder);
-+		pwm_div--;
-+
-+		if (pre_div > pwm_div)
-+			break;
-+
-+		if (pwm_div > IPQ_PWM_MAX_DIV - 1)
-+			continue;
-+
-+		if (remainder < min_diff) {
-+			best_pre_div = pre_div;
-+			best_pwm_div = pwm_div;
-+			min_diff = remainder;
-+
-+			if (min_diff == 0)
-+				break;
-+		}
-+	}
-+
-+	pre_div = best_pre_div;
-+	pwm_div = best_pwm_div;
-+
-+	if (pwm_div > IPQ_PWM_MAX_DIV - 1)
-+		pwm_div = IPQ_PWM_MAX_DIV - 1;
- 
--	pre_div -= 1;
--	if (pre_div > IPQ_PWM_MAX_DIV)
--		pre_div = IPQ_PWM_MAX_DIV;
--
--	/* pwm duty = HI_DUR * (PRE_DIV + 1) / clk_rate */
--	hi_dur = mul_u64_u64_div_u64(duty_ns, ipq_chip->clk_rate,
--				     (u64)NSEC_PER_SEC * (pre_div + 1));
-+	hi_dur = DIV64_U64_ROUND_CLOSEST(duty_ns * ipq_chip->clk_rate,
-+					 (u64)(pre_div + 1) * NSEC_PER_SEC);
-+	if (hi_dur > (u64)pwm_div + 1)
-+		hi_dur = (u64)pwm_div + 1;
-
- 	val = FIELD_PREP(IPQ_PWM_REG0_HI_DURATION, hi_dur) |
- 		FIELD_PREP(IPQ_PWM_REG0_PWM_DIV, pwm_div);
---
-2.39.5
-EOF
-
-fi
-
-# ---------------------------------------------------------------------------
-# [4] 删除旧的 DTS 片段
-# ---------------------------------------------------------------------------
-
-remove_marker_block \
-	"$DTS" \
-	"/* BEGIN SAX1V1K FAN PWM */" \
-	"/* END SAX1V1K FAN PWM */"
-
-remove_marker_block \
-	"$DTS" \
-	"/* BEGIN SAX1V1K FAN PINCTRL */" \
-	"/* END SAX1V1K FAN PINCTRL */"
-
-remove_marker_block \
-	"$DTS" \
-	"/* BEGIN SAX1V1K FAN THERMAL */" \
-	"/* END SAX1V1K FAN THERMAL */"
-
-# ---------------------------------------------------------------------------
-# [5] 时钟
-#
-# 默认使用 GCC_ADSS_PWM_CLK。
-#
-# 这是 IPQ PWM block 使用的标准 ADSS PWM clock 名称。
-#
-# --xo-clock 可用于硬件验证阶段：
-#
-#     clocks = <&xo_board_clk>;
-#
-# 这样可以绕过 GCC ADSS PWM clock 定义，方便排查时钟问题。
-# ---------------------------------------------------------------------------
-
-if [[ "$XO_CLOCK" -eq 1 ]]; then
-
-	CLOCK_BLOCK=$(cat <<'EOF'
-		clocks = <&xo_board_clk>;
-EOF
-)
-
-	info "PWM clock: xo_board_clk"
-
-else
-
-	CLOCK_BLOCK=$(cat <<'EOF'
+	pwm: pwm@a010 {
+		compatible = "$COMPAT";
+		reg = <0xa010 0x20>;
 		clocks = <&gcc GCC_ADSS_PWM_CLK>;
 		assigned-clocks = <&gcc GCC_ADSS_PWM_CLK>;
 		assigned-clock-rates = <100000000>;
-EOF
-)
-
-	info "PWM clock: GCC_ADSS_PWM_CLK @ 100MHz"
-
-fi
-
-# ---------------------------------------------------------------------------
-# [6] 生成 root 节点内容
-#
-# #pwm-cells 使用 3：
-#
-#   <channel period polarity>
-#
-# pwm-fan：
-#
-#   <&sax1v1k_pwm channel period 0>
-# ---------------------------------------------------------------------------
-
-ROOT_BLOCK="$(mktemp)"
-
-cat > "$ROOT_BLOCK" <<EOF
-	/* BEGIN SAX1V1K FAN PWM */
-
-	sax1v1k_pwm: pwm@$PWM_BASE {
-		/*
-		 * IPQ8074 本身已有 gpio32 -> pwm3。
-		 *
-		 * driver 当前只匹配 ipq6018-pwm，
-		 * 因此这里采用双 compatible：
-		 *
-		 *   第一优先：IPQ8074
-		 *   fallback ：IPQ6018
-		 *
-		 * 不需要修改 pwm-ipq driver 的 of_match。
-		 */
-		compatible = "qcom,ipq8074-pwm", "qcom,ipq6018-pwm";
-
-		reg = <$PWM_BASE 0x20>;
-
-$CLOCK_BLOCK
-
-		#pwm-cells = <3>;
-
+		#pwm-cells = <2>;
+		pinctrl-0 = <&pwm_pins>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&fan_pwm_pins>;
-
 		status = "okay";
-	};
-
-	sax1v1k_fan: pwm-fan {
-		compatible = "pwm-fan";
-
-		/*
-		 * 25kHz = 40000ns
-		 *
-		 * channel = $CHANNEL
-		 * polarity = normal
-		 */
-		pwms = <&sax1v1k_pwm $CHANNEL $PERIOD_NS 0>;
-
-		/*
-		 * 最低档不要设为 0%，避免四线风扇频繁停转/重启。
-		 *
-		 * 25% / 38% / 50% / 63% / 78% / 100%
-		 */
-		cooling-levels = <64 96 128 160 200 255>;
-
-		cooling-min-state = <0>;
-		cooling-max-state = <5>;
-
-		#cooling-cells = <2>;
-	};
-
-	/* END SAX1V1K FAN PWM */
-EOF
-
-# ---------------------------------------------------------------------------
-# 将 root block 插入 / { ... } 的最后
-# ---------------------------------------------------------------------------
-
-TMP_DTS="$(mktemp)"
-
-awk -v block="$ROOT_BLOCK" '
-BEGIN {
-	n = 0;
-	while ((getline line < block) > 0)
-		buf[++n] = line;
-	close(block);
-}
-
-/^\/[[:space:]]*\{/ {
-	in_root = 1;
-	depth = 0;
-}
-
-{
-	line = $0;
-
-	if (in_root) {
-		tmp = line;
-
-		open_count = gsub(/\{/, "{", tmp);
-		close_count = gsub(/\}/, "}", tmp);
-
-		depth += open_count - close_count;
-
-		if (depth == 0) {
-			for (i = 1; i <= n; i++)
-				print buf[i];
-
-			print line;
-
-			in_root = 0;
-			next;
-		}
-	}
-
-	print line;
-}
-' "$DTS" > "$TMP_DTS"
-
-mv "$TMP_DTS" "$DTS"
-
-rm -f "$ROOT_BLOCK"
-
-grep -q "sax1v1k_pwm: pwm@$PWM_BASE" "$DTS" ||
-	die "PWM controller 插入失败"
-
-grep -q "sax1v1k_fan: pwm-fan" "$DTS" ||
-	die "pwm-fan 插入失败"
-
-info "PWM controller + pwm-fan 已加入 DTS"
-
-# ---------------------------------------------------------------------------
-# [7] GPIO pinctrl
-#
-# IPQ8074 已经原生定义：
-#
-#   pwm3_groups = gpio24 gpio28 gpio32 gpio67
-#
-# 因此这里只添加 DTS，不修改 pinctrl-ipq8074.c。
-#
-# 采用单独的 &tlmm fragment，避免破坏原有 &tlmm 节点。
-# ---------------------------------------------------------------------------
-
-cat >> "$DTS" <<EOF
-
-	/* BEGIN SAX1V1K FAN PINCTRL */
-
-&tlmm {
-	fan_pwm_pins: fan-pwm-pins {
-		pins = "gpio$PIN";
-		function = "pwm$CHANNEL";
-		drive-strength = <8>;
-		bias-disable;
 	};
 };
 
-	/* END SAX1V1K FAN PINCTRL */
-EOF
+&tlmm {
+	pwm_pins: pwm-state {
+		fan-pwm {
+			pins = "gpio27";
+			function = "pwm2";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+};
 
-grep -q "fan_pwm_pins: fan-pwm-pins" "$DTS" ||
-	die "pinctrl 插入失败"
+/ {
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		pwms = <&pwm 2 40000>;
+		cooling-levels = <0 90 150 210 255>;
+		#cooling-cells = <2>;
+	};
+};
 
-info "GPIO$PIN -> PWM$CHANNEL pinctrl 已加入"
-
-# ---------------------------------------------------------------------------
-# [8] 可选 thermal
-#
-# 不直接假定 cpu_thermal 一定存在。
-#
-# 必须能在现有源码中找到：
-#
-#     cpu_thermal:
-#
-# 才自动加入。
-# ---------------------------------------------------------------------------
-
-if [[ "$THERMAL" -eq 1 ]]; then
-
-	CPU_THERMAL_FOUND=0
-
-	if grep -Rqs \
-		'cpu_thermal:[[:space:]]*cpu-thermal' \
-		"$ROOT/target/linux/qualcommax" \
-		"$ROOT/build_dir" 2>/dev/null; then
-
-		CPU_THERMAL_FOUND=1
-
-	fi
-
-	if [[ "$CPU_THERMAL_FOUND" -eq 0 ]]; then
-
-		warn "没有找到带 label 的 cpu_thermal:"
-		warn "跳过 thermal cooling-map"
-		warn "PWM 风扇本身仍会正常注册"
-
-	else
-
-		cat >> "$DTS" <<'EOF'
-
-	/* BEGIN SAX1V1K FAN THERMAL */
-
-&cpu_thermal {
+&cluster_thermal {
 	trips {
-		sax1v1k_fan_trip: sax1v1k-fan-trip {
-			temperature = <65000>;
-			hysteresis = <5000>;
+		fan_low: fan-low {
+			temperature = <60000>;
+			hysteresis = <3000>;
+			type = "active";
+		};
+
+		fan_mid: fan-mid {
+			temperature = <70000>;
+			hysteresis = <3000>;
+			type = "active";
+		};
+
+		fan_high: fan-high {
+			temperature = <80000>;
+			hysteresis = <3000>;
 			type = "active";
 		};
 	};
 
 	cooling-maps {
-		sax1v1k_fan_map {
-			trip = <&sax1v1k_fan_trip>;
-			cooling-device = <&sax1v1k_fan 0 5>;
+		map-fan-low {
+			trip = <&fan_low>;
+			cooling-device = <&fan 1 1>;
+		};
+
+		map-fan-mid {
+			trip = <&fan_mid>;
+			cooling-device = <&fan 2 2>;
+		};
+
+		map-fan-high {
+			trip = <&fan_high>;
+			cooling-device = <&fan 3 4>;
 		};
 	};
 };
-
-	/* END SAX1V1K FAN THERMAL */
 EOF
-
-		info "已加入 CPU 65°C -> PWM fan thermal cooling-map"
-
-	fi
+	say "$DTS: appended PWM fan nodes"
 fi
 
-# ---------------------------------------------------------------------------
-# [9] 最终检查
-# ---------------------------------------------------------------------------
-
+# ----------------------------------------------------------------- done ------
 echo
-echo "============================================================"
-echo " SAX1V1K PWM FAN PATCH SUMMARY"
-echo "============================================================"
-echo
-echo "DTS:"
-echo "  $DTS"
-echo
-echo "PWM:"
-echo "  base      = $PWM_BASE"
-echo "  channel   = $CHANNEL"
-echo "  GPIO      = $PIN"
-echo "  frequency = ${FREQ} Hz"
-echo "  period    = ${PERIOD_NS} ns"
-echo
-
-grep -n \
-	-E 'sax1v1k_pwm:|sax1v1k_fan:|fan_pwm_pins:' \
-	"$DTS" || true
-
-echo
-echo "Kernel config:"
-grep -E '^CONFIG_PWM_IPQ=' "$CFG" || true
-
-if [[ -f "$ROOT/.config" ]]; then
-	echo
-	echo "Package config:"
-	grep -E '^CONFIG_PACKAGE_kmod-hwmon-(core|pwmfan)=' \
-		"$ROOT/.config" || true
+say "done. Review the changes:"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+	git status --short
+else
+	echo "(not a git checkout - no status available)"
 fi
+cat <<'EOT'
 
-echo
-echo "PWM driver patch:"
-echo "  $PWM_DRIVER_PATCH"
-
-if [[ -f "$PERIOD_FIX_PATCH" ]]; then
-	echo
-	echo "25kHz period fix:"
-	echo "  $PERIOD_FIX_PATCH"
-fi
-
-echo
-echo "============================================================"
-echo " 编译前建议执行："
-echo
-echo "  make defconfig"
-echo
-echo "然后检查："
-echo
-echo "  grep -E 'CONFIG_PWM_IPQ|CONFIG_PACKAGE_kmod-hwmon-pwmfan' .config"
-echo
-echo "============================================================"
-echo
-echo "烧录后第一阶段检查："
-echo
-echo "  dmesg | grep -iE 'pwm|fan'"
-echo
-echo "  ls -l /sys/class/pwm/"
-echo
-echo "  ls -l /sys/class/hwmon/"
-echo
-echo "============================================================"
-echo
-echo "回滚："
-echo
-echo "  cp -a \"$DTS.bak-fan\" \"$DTS\""
-echo "  cp -a \"$CFG.bak-fan\" \"$CFG\""
-echo
-echo "============================================================"
+Next steps:
+  1. make target/linux/{clean,prepare} V=s      # every patch must apply
+  2. build an initramfs image, boot it over serial - do NOT flash eMMC yet
+  3. on the device:
+       dmesg | grep -iE 'adss|pwm|stuck|gcc'
+       cat /sys/kernel/debug/clk/gcc_adss_pwm_clk/clk_rate     # 100000000
+       ls /sys/class/pwm/ /sys/class/hwmon/*/pwm1
+     then lower the duty by hand and check the fan really follows it.
+EOT
