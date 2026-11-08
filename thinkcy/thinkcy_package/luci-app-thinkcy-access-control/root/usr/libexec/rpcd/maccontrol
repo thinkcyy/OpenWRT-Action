@@ -1,0 +1,93 @@
+#!/bin/sh
+
+case "$1" in
+    list)
+        echo '{
+            "get_known_macs": {},
+            "list_blocked": {},
+            "temp_allow": { "mac": "str", "minutes": "int" },
+            "remove_block": { "mac": "str" },
+            "revoke_temp": { "mac": "str" },
+            "add_block": { "mac": "str" },
+            "add_schedule": { "mac": "str", "cron": "str", "minutes": "int", "remark": "str" },
+            "delete_schedule": { "section": "str" },
+            "toggle_schedule": { "section": "str", "enabled": "int" }
+        }'
+        ;;
+    call)
+        case "$2" in
+            get_known_macs)
+                echo '{"macs": ['
+                /usr/sbin/maccontrol-cli get_known_macs | awk -F'|' 'BEGIN{first=1} {if(!first) printf ","; printf "{"mac":"%s","info":"%s"}", $1, $2; first=0}'
+                echo ']}'
+                ;;
+            list_blocked)
+                echo '{"blocked": ['
+                /usr/sbin/maccontrol-cli list_blocked | awk -F'|' 'BEGIN{first=1} {if(!first) printf ","; printf "{"mac":"%s","enabled":"%s","expire":"%s"}", $1, $2, $3; first=0}'
+                echo ']}'
+                ;;
+            temp_allow)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                MINUTES=$(echo "$input" | jsonfilter -e '@.minutes')
+                /usr/sbin/maccontrol-cli temp_allow "$MAC" "$MINUTES"
+                echo '{"result": "success"}'
+                ;;
+            revoke_temp)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                /usr/sbin/maccontrol-cli revoke_temp "$MAC"
+                echo '{"result": "success"}'
+                ;;
+            remove_block)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                /usr/sbin/maccontrol-cli remove_block "$MAC"
+                echo '{"result": "success"}'
+                ;;
+            add_block)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                /usr/sbin/maccontrol-cli add_block "$MAC"
+                echo '{"result": "success"}'
+                ;;
+            add_schedule)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                CRON=$(echo "$input" | jsonfilter -e '@.cron')
+                MINUTES=$(echo "$input" | jsonfilter -e '@.minutes')
+                REMARK=$(echo "$input" | jsonfilter -e '@.remark')
+                
+                SEC_NAME="sched_$(date +%s)"
+                uci set maccontrol."$SEC_NAME"=schedule
+                uci set maccontrol."$SEC_NAME".mac="$MAC"
+                uci set maccontrol."$SEC_NAME".cron="$CRON"
+                uci set maccontrol."$SEC_NAME".minutes="$MINUTES"
+                uci set maccontrol."$SEC_NAME".remark="$REMARK"
+                uci set maccontrol."$SEC_NAME".enabled='1'
+                uci commit maccontrol
+                
+                /usr/sbin/maccontrol-cli add_block "$MAC"
+                /usr/sbin/maccontrol-cli cron_apply
+                echo '{"result": "success"}'
+                ;;
+            delete_schedule)
+                read -r input
+                SEC=$(echo "$input" | jsonfilter -e '@.section')
+                uci delete maccontrol."$SEC" 2>/dev/null
+                uci commit maccontrol
+                /usr/sbin/maccontrol-cli cron_apply
+                echo '{"result": "success"}'
+                ;;
+            toggle_schedule)
+                read -r input
+                SEC=$(echo "$input" | jsonfilter -e '@.section')
+                ENABLED=$(echo "$input" | jsonfilter -e '@.enabled')
+                uci set maccontrol."$SEC".enabled="$ENABLED"
+                uci commit maccontrol
+                /usr/sbin/maccontrol-cli cron_apply
+                echo '{"result": "success"}'
+                ;;
+        esac
+        ;;
+esac
