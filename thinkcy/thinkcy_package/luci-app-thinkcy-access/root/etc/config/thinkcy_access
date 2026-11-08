@@ -1,0 +1,7 @@
+config settings 'main'
+        option last_mac ''
+        option last_minutes '30'
+
+config device
+        option name ''
+        option mac ''

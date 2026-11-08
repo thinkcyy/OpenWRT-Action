@@ -1,0 +1,61 @@
+<%+header%>
+<%
+local uci = require "luci.model.uci".cursor()
+local jsonc = require "luci.jsonc"
+local sys = require "luci.sys"
+local last_mac = uci:get("thinkcy_access", "main", "last_mac") or ""
+local last_minutes = uci:get("thinkcy_access", "main", "last_minutes") or "30"
+local devices = {}
+uci:foreach("thinkcy_access", "device", function(s)
+        if s.mac and s.mac ~= "" then devices[#devices+1] = {mac=s.mac, name=s.name or ""} end
+end)
+local raw = sys.exec("ubus call dhcp ipv4leases '{}' 2>/dev/null")
+local obj = raw and jsonc.parse(raw)
+if obj and obj.leases then
+        for _, l in ipairs(obj.leases) do
+                if l.macaddr then
+                        local found = false
+                        for _, d in ipairs(devices) do if d.mac:lower() == l.macaddr:lower() then found=true end end
+                        if not found then devices[#devices+1] = {mac=l.macaddr, name=l.hostname or ""} end
+                end
+        end
+end
+%>
+<h2><%:Temporary WAN Access%></h2>
+<div class="cbi-section">
+ <p><%:Only registered MAC addresses are controlled. Other devices are unaffected.%></p>
+ <div class="cbi-value"><label class="cbi-value-title"><%:Device MAC address%></label><div class="cbi-value-field">
+ <select id="mac" class="cbi-input-select">
+ <% for _, d in ipairs(devices) do %><option value="<%=pcdata(d.mac)%>" <%=d.mac:lower()==last_mac:lower() and "selected" or ""%>><%=pcdata(d.name ~= "" and (d.name .. " — " .. d.mac) or d.mac)%></option><% end %>
+ </select></div></div>
+ <div class="cbi-value"><label class="cbi-value-title"><%:Allow access for (minutes)%></label><div class="cbi-value-field"><input id="minutes" type="number" min="1" max="10080" value="<%=pcdata(last_minutes)%>" class="cbi-input-text" /></div></div>
+ <div class="cbi-value"><div class="cbi-value-field"><button class="btn cbi-button cbi-button-apply" onclick="submitAction('grant')"><%:Confirm / Start timer%></button></div></div>
+</div>
+<h3><%:Managed devices%></h3>
+<table class="table"><tr><th><%:Name%></th><th><%:MAC address%></th><th><%:Action%></th></tr>
+<% for _, d in ipairs(devices) do %><tr><td><%=pcdata(d.name)%></td><td><%=pcdata(d.mac)%></td><td><button class="btn cbi-button-remove" onclick="removeDevice('<%=pcdata(d.mac)%>')"><%:Remove%></button></td></tr><% end %>
+</table>
+<h3><%:Add a MAC address manually%></h3>
+<div class="cbi-section">
+ <div class="cbi-value"><label class="cbi-value-title"><%:Device name (optional)%></label><div class="cbi-value-field"><input id="newname" class="cbi-input-text" /></div></div>
+ <div class="cbi-value"><label class="cbi-value-title"><%:MAC address%></label><div class="cbi-value-field"><input id="newmac" class="cbi-input-text" placeholder="AA:BB:CC:DD:EE:FF" /></div></div>
+ <div class="cbi-value"><div class="cbi-value-field"><button class="btn cbi-button-add" onclick="submitAction('add')"><%:Add device%></button></div></div>
+</div>
+<div id="result" class="alert-message" style="display:none"></div>
+<script type="text/javascript">
+(function() {
+ var endpoint = '<%=luci.dispatcher.build_url("admin/network/thinkcy-access/action")%>';
+ window.submitAction = function(op) {
+  var data = new URLSearchParams(); data.set('op',op);
+  if(op==='grant'){data.set('mac',document.getElementById('mac').value);data.set('minutes',document.getElementById('minutes').value);}
+  else {data.set('mac',document.getElementById('newmac').value);data.set('name',document.getElementById('newname').value);}
+  fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data.toString()}).then(r=>r.json()).then(showResult).catch(e=>showResult({ok:false,output:String(e)}));
+ };
+ window.removeDevice = function(mac) {
+  var data=new URLSearchParams({op:'delete',mac:mac});
+  fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data.toString()}).then(r=>r.json()).then(function(r){showResult(r);if(r.ok)location.reload();});
+ };
+ function showResult(r){var el=document.getElementById('result');el.style.display='block';el.className='alert-message '+(r.ok?'success':'warning');el.textContent=(r.ok?'Operation successful. ':'Operation failed. ')+(r.output||'');if(r.ok)setTimeout(function(){location.reload()},900);}
+})();
+</script>
+<%+footer%>

@@ -1,0 +1,7 @@
+{
+ "luci-app-thinkcy-access": {
+  "description": "Temporary WAN access control by MAC",
+  "read": {"ubus": {}, "uci": ["thinkcy_access"]},
+  "write": {"uci": ["thinkcy_access"]}
+ }
+}
