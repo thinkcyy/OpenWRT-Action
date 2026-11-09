@@ -1,7 +1,17 @@
 {
-  "luci-app-thinkcy-access": {
-    "description": "Thinkcy temporary and scheduled MAC WAN access",
-    "read": { "ubus": { "thinkcy_access": [ "status", "leases", "list_schedules" ] } },
-    "write": { "ubus": { "thinkcy_access": [ "add_device", "remove_device", "grant", "save_schedule", "delete_schedule", "toggle_schedule" ] } }
-  }
+	"luci-app-thinkcy-access": {
+		"description": "Grant access to thinkcy-access RPC and UCI configuration",
+		"read": {
+			"ubus": {
+				"thinkcy_access": [ "get_known_macs", "list_blocked" ]
+			},
+			"uci": [ "thinkcy-access", "firewall" ]
+		},
+		"write": {
+			"ubus": {
+				"thinkcy_access": [ "temp_allow", "revoke_temp", "remove_block", "add_block", "add_schedule", "delete_schedule", "toggle_schedule" ]
+			},
+			"uci": [ "thinkcy-access", "firewall" ]
+		}
+	}
 }

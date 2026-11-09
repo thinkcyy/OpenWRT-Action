@@ -1,8 +1,12 @@
 {
-  "admin/network/thinkcy-access": {
-    "title": "MAC 临时外网授权",
-    "order": 89,
-    "action": { "type": "view", "path": "thinkcy-access/main" },
-    "depends": { "acl": [ "luci-app-thinkcy-access" ] }
-  }
+	"admin/network/thinkcy-access": {
+		"title": "上网管控",
+		"action": {
+			"type": "view",
+			"path": "thinkcy-access/main"
+		},
+		"requires": {
+			"uci": [ "thinkcy-access", "firewall" ]
+		}
+	}
 }

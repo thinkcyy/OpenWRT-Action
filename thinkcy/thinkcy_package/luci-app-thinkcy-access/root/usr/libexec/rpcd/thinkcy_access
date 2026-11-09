@@ -1,46 +1,110 @@
 #!/bin/sh
-. /usr/lib/thinkcy-access/common.sh
-. /usr/share/libubox/jshn.sh
-if [ "$1" = list ]; then
-cat <<'EOF'
-{"status":{},"leases":{},"list_schedules":{},"add_device":{"mac":""},"remove_device":{"mac":""},"grant":{"mac":"","minutes":0},"save_schedule":{"id":"","name":"","mac":"","month":"","day":"","weekday":"","hour":"","minute":"","duration":0,"enabled":true},"delete_schedule":{"id":""},"toggle_schedule":{"id":"","enabled":true}}
-EOF
-exit 0
-fi
-[ "$1" = call ] || exit 1
-method="$2"; input="/tmp/thinkcy-access-rpc.$$"; umask 077; cat > "$input"
-getv() { jsonfilter -i "$input" -e "@.$1" 2>/dev/null | head -n1; }
-mac="$(getv mac)"; minutes="$(getv minutes)"; id="$(getv id)"; name="$(getv name)"
-month="$(getv month)"; day="$(getv day)"; weekday="$(getv weekday)"; hour="$(getv hour)"; minute="$(getv minute)"; duration="$(getv duration)"; enabled="$(getv enabled)"
-rm -f "$input"
-case "$method" in
-status)
- json_init; json_add_string last_mac "$(uci -q get "$CFG.@settings[0].last_mac")"; json_add_string last_minutes "$(uci -q get "$CFG.@settings[0].last_minutes")"
- json_add_array devices; i=0; while uci -q get "$CFG.@device[$i]" >/dev/null 2>&1; do json_add_string "" "$(uci -q get "$CFG.@device[$i].mac")"; i=$((i+1)); done; json_close_array; json_dump;;
-leases)
- json_init; json_add_array leases
- [ -r /tmp/dhcp.leases ] && while read -r exp m ip host cid; do valid_mac "$m" || continue; json_add_object; json_add_string mac "$(norm_mac "$m")"; json_add_string ip "$ip"; json_add_string hostname "$host"; json_close_object; done < /tmp/dhcp.leases
- json_close_array; json_dump;;
-add_device) add_device "$mac" && echo '{"ok":true}' || echo '{"ok":false,"error":"Invalid MAC"}';;
-remove_device) remove_device "$mac" && echo '{"ok":true}' || echo '{"ok":false,"error":"Invalid MAC"}';;
-grant) grant_mac "$mac" "$minutes" && echo '{"ok":true}' || echo '{"ok":false,"error":"Invalid MAC or duration"}';;
-list_schedules)
- json_init; json_add_array tasks; i=0
- while uci -q get "$CFG.@schedule[$i]" >/dev/null 2>&1; do
-  json_add_object; json_add_string id "$(uci -q get "$CFG.@schedule[$i]")"
-  for k in name mac month day weekday hour minute duration; do json_add_string "$k" "$(uci -q get "$CFG.@schedule[$i].$k")"; done
-  en="$(uci -q get "$CFG.@schedule[$i].enabled")"; [ "$en" = 1 ] && b=1 || b=0; json_add_boolean enabled "$b"; json_close_object; i=$((i+1))
- done
- json_close_array; json_dump;;
-save_schedule)
- mac="$(norm_mac "$mac")"; valid_mac "$mac" && cron_valid "$month" 1 12 && cron_valid "$day" 1 31 && cron_valid "$weekday" 0 7 && cron_valid "$hour" 0 23 && cron_valid "$minute" 0 59 && uint "$duration" 1 10080 || { echo '{"ok":false,"error":"Invalid task fields"}'; exit 0; }
- if [ -n "$id" ]; then case "$id" in task_*) section="$id";; *) echo '{"ok":false,"error":"Invalid id"}'; exit 0;; esac
- else section="$(uci add "$CFG" schedule)" || exit 1; id="task_$(date +%s)_$$"; uci rename "$CFG.$section=$id"; section="$id"; fi
- uci set "$CFG.$section.name=$name"; uci set "$CFG.$section.mac=$mac"
- for k in month day weekday hour minute duration; do eval "v=\\$$k"; uci set "$CFG.$section.$k=$v"; done
- [ "$enabled" = true ] || [ "$enabled" = 1 ] && en=1 || en=0
- uci set "$CFG.$section.enabled=$en"; uci commit "$CFG"; echo '{"ok":true}';;
-delete_schedule) case "$id" in task_*) uci delete "$CFG.$id" && uci commit "$CFG" && echo '{"ok":true}' || echo '{"ok":false}';; *) echo '{"ok":false}';; esac;;
-toggle_schedule) case "$id" in task_*) [ "$enabled" = true ] || [ "$enabled" = 1 ] && en=1 || en=0; uci set "$CFG.$id.enabled=$en" && uci commit "$CFG" && echo '{"ok":true}' || echo '{"ok":false}';; *) echo '{"ok":false}';; esac;;
-*) echo '{"ok":false,"error":"Unknown method"}';;
+
+case "$1" in
+    list)
+        echo '{
+            "get_known_macs": {},
+            "list_blocked": {},
+            "temp_allow": { "mac": "str", "minutes": "int" },
+            "remove_block": { "mac": "str" },
+            "revoke_temp": { "mac": "str" },
+            "add_block": { "mac": "str" },
+            "add_schedule": { "mac": "str", "cron": "str", "minutes": "int", "remark": "str" },
+            "delete_schedule": { "section": "str" },
+            "toggle_schedule": { "section": "str", "enabled": "int" }
+        }'
+        ;;
+    call)
+        case "$2" in
+            get_known_macs)
+                echo '{"macs": ['
+                /usr/sbin/thinkcy-access-refresh get_known_macs | awk -F'|' 'BEGIN{first=1} {
+                    if($1 != "") {
+                        if(!first) printf ","; 
+                        printf "{\"mac\":\"%s\",\"info\":\"%s\"}", $1, $2; 
+                        first=0;
+                    }
+                }'
+                echo ']}'
+                ;;
+            list_blocked)
+                echo '{"blocked": ['
+                /usr/sbin/thinkcy-access-refresh list_blocked | awk -F'|' 'BEGIN{first=1} {
+                    if($1 != "") {
+                        if(!first) printf ","; 
+                        printf "{\"mac\":\"%s\",\"enabled\":\"%s\",\"expire\":\"%s\"}", $1, $2, $3; 
+                        first=0;
+                    }
+                }'
+                echo ']}'
+                ;;
+            temp_allow)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                MINUTES=$(echo "$input" | jsonfilter -e '@.minutes')
+                /usr/sbin/thinkcy-access-refresh temp_allow "$MAC" "$MINUTES"
+                echo '{"result": "success"}'
+                ;;
+            revoke_temp)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                /usr/sbin/thinkcy-access-refresh revoke_temp "$MAC"
+                echo '{"result": "success"}'
+                ;;
+            remove_block)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                /usr/sbin/thinkcy-access-refresh remove_block "$MAC"
+                echo '{"result": "success"}'
+                ;;
+            add_block)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                /usr/sbin/thinkcy-access-refresh add_block "$MAC"
+                echo '{"result": "success"}'
+                ;;
+            add_schedule)
+                read -r input
+                MAC=$(echo "$input" | jsonfilter -e '@.mac')
+                CRON=$(echo "$input" | jsonfilter -e '@.cron')
+                MINUTES=$(echo "$input" | jsonfilter -e '@.minutes')
+                REMARK=$(echo "$input" | jsonfilter -e '@.remark')
+                
+                SEC_NAME="sched_$(date +%s)"
+                uci set thinkcy-access."$SEC_NAME"=schedule
+                uci set thinkcy-access."$SEC_NAME".mac="$MAC"
+                uci set thinkcy-access."$SEC_NAME".cron="$CRON"
+                uci set thinkcy-access."$SEC_NAME".minutes="$MINUTES"
+                uci set thinkcy-access."$SEC_NAME".remark="$REMARK"
+                uci set thinkcy-access."$SEC_NAME".enabled='1'
+                uci commit thinkcy-access
+                
+                /usr/sbin/thinkcy-access-refresh add_block "$MAC"
+                /usr/sbin/thinkcy-access-refresh cron_apply
+                echo '{"result": "success"}'
+                ;;
+            delete_schedule)
+                read -r input
+                SEC=$(echo "$input" | jsonfilter -e '@.section')
+                [ -n "$SEC" ] && {
+                    uci delete thinkcy-access."$SEC" 2>/dev/null
+                    uci commit thinkcy-access
+                    /usr/sbin/thinkcy-access-refresh cron_apply
+                }
+                echo '{"result": "success"}'
+                ;;
+            toggle_schedule)
+                read -r input
+                SEC=$(echo "$input" | jsonfilter -e '@.section')
+                ENABLED=$(echo "$input" | jsonfilter -e '@.enabled')
+                [ -n "$SEC" ] && {
+                    uci set thinkcy-access."$SEC".enabled="$ENABLED"
+                    uci commit thinkcy-access
+                    /usr/sbin/thinkcy-access-refresh cron_apply
+                }
+                echo '{"result": "success"}'
+                ;;
+        esac
+        ;;
 esac
+

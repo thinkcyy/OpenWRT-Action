@@ -1,74 +1,336 @@
 'use strict';
 'require view';
 'require rpc';
+'require uci';
 'require ui';
 
-var status = rpc.declare({ object: 'thinkcy_access', method: 'status', expect: {} });
-var leases = rpc.declare({ object: 'thinkcy_access', method: 'leases', expect: {} });
-var tasks = rpc.declare({ object: 'thinkcy_access', method: 'list_schedules', expect: {} });
-var add = rpc.declare({ object: 'thinkcy_access', method: 'add_device', params: [ 'mac' ], expect: {} });
-var remove = rpc.declare({ object: 'thinkcy_access', method: 'remove_device', params: [ 'mac' ], expect: {} });
-var grant = rpc.declare({ object: 'thinkcy_access', method: 'grant', params: [ 'mac', 'minutes' ], expect: {} });
-var save = rpc.declare({ object: 'thinkcy_access', method: 'save_schedule', params: [ 'id','name','mac','month','day','weekday','hour','minute','duration','enabled' ], expect: {} });
-var del = rpc.declare({ object: 'thinkcy_access', method: 'delete_schedule', params: [ 'id' ], expect: {} });
-var toggle = rpc.declare({ object: 'thinkcy_access', method: 'toggle_schedule', params: [ 'id','enabled' ], expect: {} });
+var callGetKnownMacs = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'get_known_macs',
+	expect: { macs: [] }
+});
 
-function inp(v, ph) { return E('input', { type:'text', class:'cbi-input-text', value:v || '', placeholder:ph || '' }); }
-function reload() { window.location.reload(); }
-function editTask(t) {
-	var name=inp(t ? t.name : '', 'Task name'), mac=inp(t ? t.mac : '', 'aa:bb:cc:dd:ee:ff');
-	var month=inp(t ? t.month : '*','1-12 or *'), day=inp(t ? t.day : '*','1-31 or *');
-	var weekday=inp(t ? t.weekday : '*','0-7 or *'), hour=inp(t ? t.hour : '8','0-23');
-	var minute=inp(t ? t.minute : '0','0-59'), duration=inp(t ? t.duration : '30','minutes');
-	var enabled=E('input',{type:'checkbox',checked:t ? !!t.enabled : true});
-	ui.showModal(t ? _('Edit scheduled task') : _('Add scheduled task'), [
-		E('div',{},[
-			E('label',{},[_('Name'),name]), E('label',{},[_('Target MAC'),mac]),
-			E('label',{},[_('Month'),month]), E('label',{},[_('Day'),day]),
-			E('label',{},[_('Weekday'),weekday]), E('label',{},[_('Hour'),hour]),
-			E('label',{},[_('Minute'),minute]), E('label',{},[_('Grant duration (minutes)'),duration]),
-			E('label',{},[enabled,_('Enabled')])
-		]),
-		E('div',{class:'right'},[
-			E('button',{class:'btn',click:ui.hideModal},[_('Cancel')]),' ',
-			E('button',{class:'btn cbi-button-positive',click:function(){
-				save(t ? t.id : '',name.value,mac.value,month.value,day.value,weekday.value,hour.value,minute.value,parseInt(duration.value,10),enabled.checked)
-				.then(function(r){if(!r.ok) throw new Error(r.error || 'Save failed'); ui.hideModal(); reload();})
-				.catch(function(e){ui.addNotification(null,E('p',{},[e.message]));});
-			}},[_('Save')])
-		])
-	]);
-}
+var callListBlocked = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'list_blocked',
+	expect: { blocked: [] }
+});
+
+var callTempAllow = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'temp_allow',
+	params: [ 'mac', 'minutes' ]
+});
+
+var callRevokeTemp = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'revoke_temp',
+	params: [ 'mac' ]
+});
+
+var callRemoveBlock = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'remove_block',
+	params: [ 'mac' ]
+});
+
+var callAddSchedule = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'add_schedule',
+	params: [ 'mac', 'cron', 'minutes', 'remark' ]
+});
+
+var callDeleteSchedule = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'delete_schedule',
+	params: [ 'section' ]
+});
+
+var callToggleSchedule = rpc.declare({
+	object: 'thinkcy_access',
+	method: 'toggle_schedule',
+	params: [ 'section', 'enabled' ]
+});
+
 return view.extend({
-	load:function(){return Promise.all([status(),leases(),tasks()]);},
-	render:function(d){
-		var s=d[0], l=d[1].leases || [], ts=d[2].tasks || [], root=E('div',{class:'cbi-map'});
-		root.appendChild(E('h2',{},[_('MAC Temporary WAN Access')]));
-		root.appendChild(E('p',{},[_('Only registered MAC addresses are controlled. Router-local and internal-network traffic is not targeted.')]));
-		var mac=inp(s.last_mac,'MAC address'), mins=inp(s.last_minutes || '30','minutes');
-		var sel=E('select',{class:'cbi-input-select'}); sel.appendChild(E('option',{value:''},[_('Select DHCP client')]));
-		l.forEach(function(x){sel.appendChild(E('option',{value:x.mac},[x.mac+' '+(x.ip||'')+' '+(x.hostname||'') ]));});
-		sel.addEventListener('change',function(){mac.value=sel.value;});
-		root.appendChild(E('h3',{},[_('Manual grant / managed MAC')]));
-		root.appendChild(E('div',{},[sel,mac,mins,
-			E('button',{class:'btn cbi-button-positive',click:function(){add(mac.value).then(reload);}},[_('Add managed MAC')]),' ',
-			E('button',{class:'btn cbi-button-action',click:function(){grant(mac.value,parseInt(mins.value,10)).then(function(r){if(!r.ok) throw new Error(r.error); ui.addNotification(null,E('p',{},[_('Temporary grant submitted')]));}).catch(function(e){ui.addNotification(null,E('p',{},[e.message]));});}},[_('Grant temporary access')])
-		]));
-		var dt=E('table',{class:'table'}); dt.appendChild(E('tr',{},[E('th',{},[_('Managed MAC')]),E('th',{},[_('Action')])]));
-		(s.devices||[]).forEach(function(m){dt.appendChild(E('tr',{},[E('td',{},[m]),E('td',{},[E('button',{class:'btn cbi-button-negative',click:function(){if(confirm(_('Remove management?'))) remove(m).then(reload);}},[_('Revoke default control')])])]));});
-		root.appendChild(E('h3',{},[_('Managed devices')])); root.appendChild(dt);
-		root.appendChild(E('h3',{},[_('Scheduled grants')]));
-		root.appendChild(E('button',{class:'btn cbi-button-positive',click:function(){editTask(null);}},[_('Add scheduled task')]));
-		var tt=E('table',{class:'table'}); tt.appendChild(E('tr',{},['Name','MAC','Minute Hour Day Month Weekday','Duration','Status','Actions'].map(function(x){return E('th',{},[_ (x)]);})));
-		ts.forEach(function(t){tt.appendChild(E('tr',{},[
-			E('td',{},[t.name]),E('td',{},[t.mac]),E('td',{},[t.minute+' '+t.hour+' '+t.day+' '+t.month+' '+t.weekday]),
-			E('td',{},[t.duration+' min']),E('td',{},[t.enabled ? _('Enabled') : _('Disabled')]),
-			E('td',{},[
-				E('button',{class:'btn',click:function(){editTask(t);}},[_('Edit')]),' ',
-				E('button',{class:'btn',click:function(){toggle(t.id,!t.enabled).then(reload);}},[t.enabled ? _('Disable') : _('Enable')]),' ',
-				E('button',{class:'btn cbi-button-negative',click:function(){if(confirm(_('Delete task?'))) del(t.id).then(reload);}},[_('Delete')])
+	load: function() {
+		return Promise.all([
+			callGetKnownMacs(),
+			callListBlocked(),
+			uci.load('thinkcy-access')
+		]);
+	},
+
+	render: function(data) {
+		var knownMacs = data[0] || [];
+		var blockedList = data[1] || [];
+		var self = this;
+
+		var body = E('div', { 'class': 'cbi-map' }, [
+			E('h2', {}, _('上网管控 (v2.20)')),
+			E('div', { 'class': 'cbi-map-descr' }, _('基于 firewall4 与 nftables timeout 的内核级精确上网管控平台。'))
+		]);
+
+		// === 1. 手动临时放行模块 ===
+		var secControl = E('div', { 'class': 'cbi-section' }, [
+			E('h3', {}, _('手动临时放行')),
+			E('div', { 'class': 'cbi-section-node' }, [
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }, _('选择 MAC 地址')),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('select', { 'id': 'select_mac', 'class': 'cbi-input-select' }, 
+							knownMacs.map(function(item) {
+								return E('option', { 'value': item.mac }, item.mac + ' - ' + item.info);
+							})
+						)
+					])
+				]),
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }, _('放行时长（分钟）')),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('input', {
+							'type': 'number',
+							'id': 'input_minutes',
+							'class': 'cbi-input-text',
+							'min': '1',
+							'value': '30'
+						})
+					])
+				]),
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('button', {
+							'class': 'btn cbi-button-action',
+							'click': ui.createHandlerFn(this, 'handleTempAllow')
+						}, _('确定放行'))
+					])
+				])
 			])
-		]));});
-		root.appendChild(tt); return root;
-	}
+		]);
+
+		// === 2. 添加定时开放计划 ===
+		var secAddSchedule = E('div', { 'class': 'cbi-section' }, [
+			E('h3', {}, _('添加定时开放计划')),
+			E('div', { 'class': 'cbi-section-node' }, [
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }, _('目标 MAC 地址')),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('select', { 'id': 'sched_mac', 'class': 'cbi-input-select' }, 
+							knownMacs.map(function(item) {
+								return E('option', { 'value': item.mac }, item.mac + ' - ' + item.info);
+							})
+						)
+					])
+				]),
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }, _('Crontab 表达式')),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('input', {
+							'type': 'text',
+							'id': 'sched_cron',
+							'class': 'cbi-input-text',
+							'placeholder': '例如：0 20 * * * (每天 20:00)'
+						}),
+						E('br'),
+						E('small', { 'class': 'cbi-value-description' }, _('格式: 分 时 日 月 周 (例: "30 18 * * 1-5" 工作日 18:30)'))
+					])
+				]),
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }, _('定时放行时长（分钟）')),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('input', {
+							'type': 'number',
+							'id': 'sched_minutes',
+							'class': 'cbi-input-text',
+							'min': '1',
+							'value': '60'
+						})
+					])
+				]),
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }, _('计划备注')),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('input', {
+							'type': 'text',
+							'id': 'sched_remark',
+							'class': 'cbi-input-text',
+							'placeholder': '例如：晚间定时上网'
+						})
+					])
+				]),
+				E('div', { 'class': 'cbi-value' }, [
+					E('label', { 'class': 'cbi-value-title' }),
+					E('div', { 'class': 'cbi-value-field' }, [
+						E('button', {
+							'class': 'btn cbi-button-add',
+							'click': ui.createHandlerFn(this, 'handleAddSchedule')
+						}, _('保存定时计划'))
+					])
+				])
+			])
+		]);
+
+		// === 3. 查询与管理已设置的定时计划列表 ===
+		var sections = uci.sections('thinkcy-access', 'schedule');
+		var schedTableRows = sections.map(function(s) {
+			var isEnabled = (s.enabled === '1');
+			var sectionName = s['.name'];
+
+			return E('tr', { 'class': 'cbi-section-table-row' }, [
+				E('td', { 'class': 'cbi-section-table-cell' }, s.remark || _('无备注')),
+				E('td', { 'class': 'cbi-section-table-cell' }, s.mac),
+				E('td', { 'class': 'cbi-section-table-cell' }, E('code', {}, s.cron)),
+				E('td', { 'class': 'cbi-section-table-cell' }, s.minutes + _(' 分钟')),
+				E('td', { 'class': 'cbi-section-table-cell' }, [
+					E('span', { 'class': isEnabled ? 'label notice' : 'label warning' }, 
+						isEnabled ? _('已启用') : _('已禁用')
+					)
+				]),
+				E('td', { 'class': 'cbi-section-table-cell' }, [
+					E('button', {
+						'class': 'btn cbi-button-neutral',
+						'style': 'margin-right: 5px;',
+						'click': ui.createHandlerFn(self, 'handleToggleSchedule', sectionName, isEnabled ? 0 : 1)
+					}, isEnabled ? _('禁用') : _('启用')),
+					E('button', {
+						'class': 'btn cbi-button-remove',
+						'click': ui.createHandlerFn(self, 'handleDeleteSchedule', sectionName)
+					}, _('删除'))
+				])
+			]);
+		});
+
+		var secSchedList = E('div', { 'class': 'cbi-section' }, [
+			E('h3', {}, _('当前已配置的定时计划列表')),
+			E('table', { 'class': 'table cbi-section-table' }, [
+				E('tbody', {}, [
+					E('tr', { 'class': 'cbi-section-table-titles' }, [
+						E('th', { 'class': 'cbi-section-table-cell' }, _('备注')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('目标 MAC')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('Cron 表达式')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('放行时长')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('状态')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('操作'))
+					])
+				].concat(schedTableRows.length > 0 ? schedTableRows : [
+					E('tr', {}, [
+						E('td', { 'colspan': 6, 'class': 'cbi-section-table-cell center' }, _('暂无定时开放计划'))
+					])
+				]))
+			])
+		]);
+
+		// === 4. 受默认管控的 MAC 清单 ===
+		var blockedTableRows = blockedList.map(function(item) {
+			var isTempAllow = (item.enabled === '0');
+			var statusText = isTempAllow ? _('临时放行中') : _('默认封禁中');
+			var statusClass = isTempAllow ? 'label notice' : 'label warning';
+			
+			var actions = [
+				E('button', {
+					'class': 'btn cbi-button-remove',
+					'click': ui.createHandlerFn(self, 'handleRemoveBlock', item.mac)
+				}, _('撤销默认管控'))
+			];
+
+			if (isTempAllow) {
+				actions.unshift(E('button', {
+					'class': 'btn cbi-button-neutral',
+					'style': 'margin-right: 5px;',
+					'click': ui.createHandlerFn(self, 'handleRevokeTemp', item.mac)
+				}, _('提前恢复封禁')));
+			}
+
+			return E('tr', { 'class': 'cbi-section-table-row' }, [
+				E('td', { 'class': 'cbi-section-table-cell' }, item.mac),
+				E('td', { 'class': 'cbi-section-table-cell' }, [
+					E('span', { 'class': statusClass }, statusText)
+				]),
+				E('td', { 'class': 'cbi-section-table-cell' }, 
+					isTempAllow ? _('nftables 剩余倒计时: ') + item.expire : '-'
+				),
+				E('td', { 'class': 'cbi-section-table-cell' }, actions)
+			]);
+		});
+
+		var secList = E('div', { 'class': 'cbi-section' }, [
+			E('h3', {}, _('受默认管控的 MAC 清单及当前放行状态')),
+			E('table', { 'class': 'table cbi-section-table' }, [
+				E('tbody', {}, [
+					E('tr', { 'class': 'cbi-section-table-titles' }, [
+						E('th', { 'class': 'cbi-section-table-cell' }, _('MAC 地址')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('当前状态')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('动态超时状态')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('操作'))
+					])
+				].concat(blockedTableRows.length > 0 ? blockedTableRows : [
+					E('tr', {}, [
+						E('td', { 'colspan': 4, 'class': 'cbi-section-table-cell center' }, _('暂无受管控的 MAC 地址'))
+					])
+				]))
+			])
+		]);
+
+		body.appendChild(secControl);
+		body.appendChild(secAddSchedule);
+		body.appendChild(secSchedList);
+		body.appendChild(secList);
+
+		return body;
+	},
+
+	handleTempAllow: function(ev) {
+		var mac = document.getElementById('select_mac').value;
+		var minutes = parseInt(document.getElementById('input_minutes').value, 10);
+		if (!mac || isNaN(minutes) || minutes <= 0) return;
+
+		return callTempAllow(mac, minutes).then(function() {
+			window.location.reload();
+		});
+	},
+
+	handleAddSchedule: function(ev) {
+		var mac = document.getElementById('sched_mac').value;
+		var cron = document.getElementById('sched_cron').value.trim();
+		var minutes = parseInt(document.getElementById('sched_minutes').value, 10);
+		var remark = document.getElementById('sched_remark').value.trim();
+
+		if (!mac || !cron || isNaN(minutes) || minutes <= 0) {
+			ui.addNotification(null, E('p', {}, _('请填写完整有效的定时参数。')), 'error');
+			return;
+		}
+
+		return callAddSchedule(mac, cron, minutes, remark).then(function() {
+			window.location.reload();
+		});
+	},
+
+	handleDeleteSchedule: function(sec, ev) {
+		return callDeleteSchedule(sec).then(function() {
+			window.location.reload();
+		});
+	},
+
+	handleToggleSchedule: function(sec, enabled, ev) {
+		return callToggleSchedule(sec, enabled).then(function() {
+			window.location.reload();
+		});
+	},
+
+	handleRevokeTemp: function(mac, ev) {
+		return callRevokeTemp(mac).then(function() {
+			window.location.reload();
+		});
+	},
+
+	handleRemoveBlock: function(mac, ev) {
+		return callRemoveBlock(mac).then(function() {
+			window.location.reload();
+		});
+	},
+
+	handleSaveApply: null,
+	handleSave: null,
+	handleReset: null
 });

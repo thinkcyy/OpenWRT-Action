@@ -1,3 +1,105 @@
 #!/bin/sh
+
 . /usr/lib/thinkcy-access/common.sh
-sync_managed
+
+case "$1" in
+    init_nft)
+        init_nft_set
+        ;;
+
+    get_known_macs)
+        cat /tmp/dhcp.leases 2>/dev/null | while read -r ts mac ip name clid; do
+            [ -z "$mac" ] && continue
+            [ "$name" = "*" ] || [ -z "$name" ] && name="Unknown"
+            echo "$mac|$name ($ip)"
+        done | sort -u
+        ;;
+
+    add_block)
+        MAC=$(echo "$2" | tr '[:lower:]' '[:upper:]')
+        [ -z "$MAC" ] && exit 1
+        SECTION_NAME="macblock_$(clean_mac "$MAC")"
+
+        if ! uci get firewall."$SECTION_NAME" >/dev/null 2>&1; then
+            uci set firewall."$SECTION_NAME"=rule
+            uci set firewall."$SECTION_NAME".name="Thinkcy_Block_$MAC"
+            uci set firewall."$SECTION_NAME".src='lan'
+            uci set firewall."$SECTION_NAME".dest='wan'
+            uci set firewall."$SECTION_NAME".src_mac="$MAC"
+            uci set firewall."$SECTION_NAME".target='DROP'
+            uci set firewall."$SECTION_NAME".enabled='1'
+            uci commit firewall
+            fw4 reload >/dev/null 2>&1
+        fi
+        ;;
+
+    remove_block)
+        MAC=$(echo "$2" | tr '[:lower:]' '[:upper:]')
+        [ -z "$MAC" ] && exit 1
+        SECTION_NAME="macblock_$(clean_mac "$MAC")"
+
+        if uci get firewall."$SECTION_NAME" >/dev/null 2>&1; then
+            uci delete firewall."$SECTION_NAME"
+            uci commit firewall
+            fw4 reload >/dev/null 2>&1
+        fi
+
+        init_nft_set
+        nft delete element $TABLE $SET_NAME "{ $MAC }" 2>/dev/null
+        ;;
+
+    list_blocked)
+        init_nft_set
+        uci show firewall | grep -E "name='?Thinkcy_Block_" | while read -r line; do
+            SEC=$(echo "$line" | cut -d'.' -f2 | cut -d'=' -f1)
+            [ -z "$SEC" ] && continue
+
+            MAC=$(uci get firewall."$SEC".src_mac 2>/dev/null | tr '[:lower:]' '[:upper:]')
+            [ -z "$MAC" ] && continue
+            
+            EXPIRES=$(nft list set $TABLE $SET_NAME 2>/dev/null | grep -i "$MAC" | grep -o 'expires [0-9a-z]*' | awk '{print $2}')
+            
+            if [ -n "$EXPIRES" ]; then
+                echo "$MAC|0|$EXPIRES"
+            else
+                echo "$MAC|1|-"
+            fi
+        done | sort -u
+        ;;
+
+    temp_allow)
+        MAC=$(echo "$2" | tr '[:lower:]' '[:upper:]')
+        MINUTES="$3"
+        [ -z "$MAC" ] || [ -z "$MINUTES" ] && exit 1
+
+        $0 add_block "$MAC"
+        init_nft_set
+        nft add element $TABLE $SET_NAME "{ $MAC timeout ${MINUTES}m }"
+        ;;
+
+    revoke_temp)
+        MAC=$(echo "$2" | tr '[:lower:]' '[:upper:]')
+        [ -z "$MAC" ] && exit 1
+
+        init_nft_set
+        nft delete element $TABLE $SET_NAME "{ $MAC }" 2>/dev/null
+        ;;
+
+    cron_apply)
+        sed -i '/# THINKCY_ACCESS_SCHEDULE_/d' /etc/crontabs/root 2>/dev/null
+        uci show thinkcy-access | grep "=schedule" | while read -r line; do
+            SEC=$(echo "$line" | cut -d'.' -f2 | cut -d'=' -f1)
+            ENABLED=$(uci get thinkcy-access."$SEC".enabled 2>/dev/null)
+            [ "$ENABLED" = "1" ] || continue
+            
+            CRON_EXPR=$(uci get thinkcy-access."$SEC".cron 2>/dev/null)
+            MAC=$(uci get thinkcy-access."$SEC".mac 2>/dev/null)
+            MINUTES=$(uci get thinkcy-access."$SEC".minutes 2>/dev/null)
+            
+            if [ -n "$CRON_EXPR" ] && [ -n "$MAC" ] && [ -n "$MINUTES" ]; then
+                echo "$CRON_EXPR /usr/sbin/thinkcy-access-refresh temp_allow $MAC $MINUTES # THINKCY_ACCESS_SCHEDULE_$SEC" >> /etc/crontabs/root
+            fi
+        done
+        /etc/init.d/cron restart >/dev/null 2>&1
+        ;;
+esac

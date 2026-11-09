@@ -1,4 +1,2 @@
-config settings 'main'
-	option wan_zone 'wan'
-	option last_mac ''
-	option last_minutes '30'
+config global 'config'
+	option enabled '1'
