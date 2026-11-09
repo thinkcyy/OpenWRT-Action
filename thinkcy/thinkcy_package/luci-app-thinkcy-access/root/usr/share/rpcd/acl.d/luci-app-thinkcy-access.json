@@ -1,7 +1,7 @@
 {
- "luci-app-thinkcy-access": {
-  "description": "Temporary WAN access control by MAC",
-  "read": {"ubus": {}, "uci": ["thinkcy_access"]},
-  "write": {"uci": ["thinkcy_access"]}
- }
+  "luci-app-thinkcy-access": {
+    "description": "Thinkcy temporary and scheduled MAC WAN access",
+    "read": { "ubus": { "thinkcy_access": [ "status", "leases", "list_schedules" ] } },
+    "write": { "ubus": { "thinkcy_access": [ "add_device", "remove_device", "grant", "save_schedule", "delete_schedule", "toggle_schedule" ] } }
+  }
 }

@@ -1,0 +1,4 @@
+config settings 'main'
+	option wan_zone 'wan'
+	option last_mac ''
+	option last_minutes '30'

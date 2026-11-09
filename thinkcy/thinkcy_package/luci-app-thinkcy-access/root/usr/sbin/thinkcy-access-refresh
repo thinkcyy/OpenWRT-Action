@@ -1,0 +1,3 @@
+#!/bin/sh
+. /usr/lib/thinkcy-access/common.sh
+sync_managed

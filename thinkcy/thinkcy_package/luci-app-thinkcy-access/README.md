@@ -1,41 +1,12 @@
-# luci-app-thinkcy-access 1.0.0
+# luci-app-thinkcy-access 2.0.0
 
-LuCI application for OpenWrt 25.12 SDK.
+Lua-free LuCI application for OpenWrt 25.12. The frontend is a LuCI JavaScript view; backend RPC uses rpcd's documented executable-plugin interface (shell + jsonfilter/jshn), not Lua or ucode. This avoids the previously encountered ucode/Lua ABI issue.
 
-## Features
-- Only explicitly registered MAC addresses are controlled (方案 A); all other clients are unaffected.
-- Registered clients are denied routed traffic leaving `br-lan` unless temporarily authorized.
-- LAN-local traffic and traffic to the router itself are not blocked by the forward hook.
-- nftables timeout automatically expires each authorization.
-- DHCPv4 lease discovery plus manual MAC/name registration.
-- Last selected MAC and duration are stored and restored when the page is opened.
-- Duration range: 1 to 10080 minutes.
+Features: explicit MAC management; DHCP lease discovery; manual temporary grants; multiple cron-style scheduled grants; task listing/edit/enable/disable/delete; UCI persistence; temporary grants expire through nftables timeout sets; managed devices return to blocked state after reboot.
 
-## Build
-Copy this directory into the SDK tree, e.g. `package/luci-app-thinkcy-access/`, then run:
-```sh
-make package/luci-app-thinkcy-access/compile V=s
-```
-Ensure LuCI feeds are installed and package `luci-app-thinkcy-access` is selected if required.
+Build in OpenWrt 25.12 SDK after installing/updating the LuCI feed:
+`make package/feeds/luci/luci-app-thinkcy-access/compile V=s`
 
-## Install / activate
-Install the generated package, then:
-```sh
-/etc/init.d/firewall restart
-/etc/init.d/thinkcy-access enable
-/etc/init.d/thinkcy-access restart
-```
+No `luci-lua-runtime` or `ucode-mod-lua` dependency.
 
-## Important assumptions
-The first implementation treats `br-lan` as the LAN interface and any forwarded egress interface other than `br-lan` as external. If the router has routed internal VLANs or other internal L3 interfaces, adjust the `oifname != "br-lan"` condition to exclude them as well. For the common LAN -> PPPoE WAN path (e.g. `pppoe-CT`) this matches the WAN egress.
-
-The app discovers DHCPv4 leases via `ubus call dhcp ipv4leases`. DHCPv6-only or static devices can be entered manually. A device must be registered in the Managed devices list before it is restricted. Removing it immediately removes it from management.
-
-Test with one device first. Confirm actual interface names and nftables rule placement before deploying broadly:
-```sh
-nft list table inet fw4
-nft list set inet fw4 thinkcy_managed_macs
-nft list set inet fw4 thinkcy_allowed_macs
-```
-
-This is an initial source release. The page's action endpoint is protected by the LuCI admin route/session, but before production deployment verify the exact LuCI revision's CSRF handling and test with a non-admin session. On firewall reload, the persistent managed list is rebuilt; active temporary grants may be cleared and must be re-issued.
+Important: configure the firewall zone name in `/etc/config/thinkcy-access` (default `wan`). WAN devices are resolved from that zone's logical networks. Test carefully with flow offloading enabled; established offloaded flows may bypass ordinary forwarding hooks. The source is not represented as compiled or tested on your router.

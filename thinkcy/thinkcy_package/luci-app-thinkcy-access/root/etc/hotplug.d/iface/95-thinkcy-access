@@ -1,0 +1,2 @@
+#!/bin/sh
+case "$ACTION" in ifup|ifupdate) ( sleep 2; /usr/sbin/thinkcy-access-refresh ) &;; esac

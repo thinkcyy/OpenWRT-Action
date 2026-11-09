@@ -1,0 +1,28 @@
+#!/bin/sh
+. /usr/lib/thinkcy-access/common.sh
+while :; do
+  now="$(date '+%Y%m%d%H%M')"; mo="$(date '+%-m')"; dy="$(date '+%-d')"; wd="$(date '+%w')"; hr="$(date '+%-H')"; mi="$(date '+%-M')"
+  i=0
+  while uci -q get "$CFG.@schedule[$i]" >/dev/null 2>&1; do
+    [ "$(uci -q get "$CFG.@schedule[$i].enabled")" = 1 ] || { i=$((i+1)); continue; }
+    mf="$(uci -q get "$CFG.@schedule[$i].month")"; df="$(uci -q get "$CFG.@schedule[$i].day")"; wf="$(uci -q get "$CFG.@schedule[$i].weekday")"
+    hf="$(uci -q get "$CFG.@schedule[$i].hour")"; nf="$(uci -q get "$CFG.@schedule[$i].minute")"; last="$(uci -q get "$CFG.@schedule[$i].last_run")"
+    cron_match "$mo" "$mf" 1 12; a=$?; cron_match "$dy" "$df" 1 31; b=$?; cron_match "$wd" "$wf" 0 7; c=$?
+    if [ "$df" = '*' ] && [ "$wf" = '*' ]; then d=0
+    elif [ "$df" = '*' ]; then d=$c
+    elif [ "$wf" = '*' ]; then d=$b
+    elif [ "$b" -eq 0 ] || [ "$c" -eq 0 ]; then d=0
+    else d=1; fi
+    cron_match "$hr" "$hf" 0 23; e=$?; cron_match "$mi" "$nf" 0 59; f=$?
+    if [ "$a" -eq 0 ] && [ "$d" -eq 0 ] && [ "$e" -eq 0 ] && [ "$f" -eq 0 ] && [ "$last" != "$now" ]; then
+      mac="$(uci -q get "$CFG.@schedule[$i].mac")"; dur="$(uci -q get "$CFG.@schedule[$i].duration")"
+      if valid_mac "$mac" && uint "$dur" 1 10080; then
+        grant_mac "$mac" "$dur"
+        uci set "$CFG.@schedule[$i].last_run=$now"; uci commit "$CFG"
+      fi
+    fi
+    i=$((i+1))
+  done
+  sync_managed
+  sleep 60
+done
