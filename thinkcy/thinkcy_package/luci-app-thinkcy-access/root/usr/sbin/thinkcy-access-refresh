@@ -7,12 +7,53 @@ case "$1" in
         init_nft_set
         ;;
 
-    get_known_macs)
-        cat /tmp/dhcp.leases 2>/dev/null | while read -r ts mac ip name clid; do
-            [ -z "$mac" ] && continue
-            [ "$name" = "*" ] || [ -z "$name" ] && name="Unknown"
-            echo "$mac|$name ($ip)"
-        done | sort -u
+get_known_macs)
+        (
+            # 1. 收集动态 DHCP 租约设备 (格式: MAC|Name|IP)
+            cat /tmp/dhcp.leases 2>/dev/null | while read -r ts mac ip name clid; do
+                [ -z "$mac" ] && continue
+                [ -z "$ip" ] && continue
+                MAC=$(echo "$mac" | tr '[:lower:]' '[:upper:]')
+                [ "$name" = "*" ] || [ -z "$name" ] && name="Unknown"
+                echo "$MAC|$name|$ip"
+            done
+
+            # 2. 收集 UCI 静态 DHCP 分配 (格式: MAC|Name|IP)
+            uci show dhcp 2>/dev/null | grep "=host$" | while read -r line; do
+                SEC=$(echo "$line" | cut -d'.' -f2 | cut -d'=' -f1)
+                [ -z "$SEC" ] && continue
+                
+                MAC=$(uci get dhcp."$SEC".mac 2>/dev/null | tr '[:lower:]' '[:upper:]')
+                [ -z "$MAC" ] && continue
+                
+                NAME=$(uci get dhcp."$SEC".name 2>/dev/null)
+                [ -z "$NAME" ] && NAME="Static-Device"
+                
+                IP=$(uci get dhcp."$SEC".ip 2>/dev/null)
+                [ -z "$IP" ] && continue
+                
+                # 如果是静态绑定，可以在 name 或在前端拼接时体现，这里为了保留静态标识，可以让 name 带有标记或者由前端处理
+                echo "$MAC|$NAME (静态绑定)|$IP"
+            done
+        ) | awk -F'|' '{
+            mac = toupper($1);
+            name = $2;
+            ip = $3;
+            
+            # 优先级去重：优先保留包含“静态绑定”字样的记录
+            if (!(mac in seen) || index(name, "静态绑定") > 0) {
+                seen[mac] = name "|" ip;
+            }
+        }
+        END {
+            for (mac in seen) {
+                print mac "|" seen[mac];
+            }
+        }' | awk -F'|' '{
+            # IP 零填充，用于精确的数值升序排序
+            split($3, a, ".");
+            printf "%03d.%03d.%03d.%03d|%s|%s|%s\n", a[1], a[2], a[3], a[4], $1, $2, $3;
+        }' | sort -t'|' -k1,1 | awk -F'|' '{print $2 "|" $3 "|" $4}'
         ;;
 
     add_block)
