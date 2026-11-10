@@ -1,4 +1,0 @@
-#!/bin/sh
-if [ "$ACTION" = "ifup" ]; then
-    /usr/sbin/thinkcy-access-refresh init_nft
-fi
