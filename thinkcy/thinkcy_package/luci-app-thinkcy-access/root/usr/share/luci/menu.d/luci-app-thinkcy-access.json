@@ -1,0 +1,12 @@
+{
+	"admin/network/thinkcy-access": {
+		"title": "上网管控",
+		"action": {
+			"type": "view",
+			"path": "thinkcy-access/main"
+		},
+		"requires": {
+			"uci": [ "thinkcy-access", "firewall" ]
+		}
+	}
+}

@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/sbin/thinkcy-access-refresh cron_apply

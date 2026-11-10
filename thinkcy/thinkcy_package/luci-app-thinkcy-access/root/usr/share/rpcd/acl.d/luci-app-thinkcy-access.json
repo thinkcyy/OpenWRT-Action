@@ -1,0 +1,17 @@
+{
+	"luci-app-thinkcy-access": {
+		"description": "Grant access to thinkcy-access RPC and UCI configuration",
+		"read": {
+			"ubus": {
+				"thinkcy_access": [ "get_known_macs", "list_blocked" ]
+			},
+			"uci": [ "thinkcy-access", "firewall" ]
+		},
+		"write": {
+			"ubus": {
+				"thinkcy_access": [ "temp_allow", "revoke_temp", "remove_block", "add_block", "add_schedule", "delete_schedule", "toggle_schedule" ]
+			},
+			"uci": [ "thinkcy-access", "firewall" ]
+		}
+	}
+}
