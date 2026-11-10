@@ -67,22 +67,39 @@ return view.extend({
 		var self = this;
 
 		var body = E('div', { 'class': 'cbi-map' }, [
-			E('h2', {}, _('上网管控 (v2.20)')),
+			E('h2', {}, _('上网管控 (v2.22)')),
 			E('div', { 'class': 'cbi-map-descr' }, _('基于 firewall4 与 nftables timeout 的内核级精确上网管控平台。'))
 		]);
 
+		// 构建 MAC 映射字典，并即时拼接 info 信息供 datalist 使用
+		var macMap = {};
+		knownMacs.forEach(function(item) {
+			item.info = item.name + ' (' + item.ip + ')';
+			macMap[item.mac.toUpperCase()] = item;
+		});
+
+		// 公共的 datalist
+		var datalistEl = E('datalist', { 'id': 'known_macs_list' }, 
+			knownMacs.map(function(item) {
+				return E('option', { 'value': item.mac }, item.info);
+			})
+		);
+
 		// === 1. 手动临时放行模块 ===
 		var secControl = E('div', { 'class': 'cbi-section' }, [
-			E('h3', {}, _('手动临时放行')),
+			E('h3', {}, _('临时放行')),
 			E('div', { 'class': 'cbi-section-node' }, [
 				E('div', { 'class': 'cbi-value' }, [
 					E('label', { 'class': 'cbi-value-title' }, _('选择 MAC 地址')),
 					E('div', { 'class': 'cbi-value-field' }, [
-						E('select', { 'id': 'select_mac', 'class': 'cbi-input-select' }, 
-							knownMacs.map(function(item) {
-								return E('option', { 'value': item.mac }, item.mac + ' - ' + item.info);
-							})
-						)
+						E('input', {
+							'type': 'text',
+							'id': 'select_mac',
+							'class': 'cbi-input-text',
+							'list': 'known_macs_list',
+							'placeholder': _('输入或选择 MAC 地址 (如 AA:BB:CC:DD:EE:FF)')
+						}),
+						datalistEl
 					])
 				]),
 				E('div', { 'class': 'cbi-value' }, [
@@ -93,7 +110,7 @@ return view.extend({
 							'id': 'input_minutes',
 							'class': 'cbi-input-text',
 							'min': '1',
-							'value': '30'
+							'value': '15'
 						})
 					])
 				]),
@@ -110,18 +127,27 @@ return view.extend({
 		]);
 
 		// === 2. 添加定时开放计划 ===
+		var schedMacInput = E('input', {
+			'type': 'text',
+			'id': 'sched_mac',
+			'class': 'cbi-input-text',
+			'list': 'known_macs_list',
+			'placeholder': _('输入或选择 MAC 地址 (如 AA:BB:CC:DD:EE:FF)'),
+			'input': function(ev) {
+				var val = ev.target.value.toUpperCase().trim();
+				var remarkInput = document.getElementById('sched_remark');
+				if (macMap[val] && macMap[val].name && !remarkInput.value) {
+					remarkInput.value = macMap[val].name;
+				}
+			}
+		});
+
 		var secAddSchedule = E('div', { 'class': 'cbi-section' }, [
-			E('h3', {}, _('添加定时开放计划')),
+			E('h3', {}, _('定时开放')),
 			E('div', { 'class': 'cbi-section-node' }, [
 				E('div', { 'class': 'cbi-value' }, [
 					E('label', { 'class': 'cbi-value-title' }, _('目标 MAC 地址')),
-					E('div', { 'class': 'cbi-value-field' }, [
-						E('select', { 'id': 'sched_mac', 'class': 'cbi-input-select' }, 
-							knownMacs.map(function(item) {
-								return E('option', { 'value': item.mac }, item.mac + ' - ' + item.info);
-							})
-						)
-					])
+					E('div', { 'class': 'cbi-value-field' }, [ schedMacInput ])
 				]),
 				E('div', { 'class': 'cbi-value' }, [
 					E('label', { 'class': 'cbi-value-title' }, _('Crontab 表达式')),
@@ -155,7 +181,7 @@ return view.extend({
 							'type': 'text',
 							'id': 'sched_remark',
 							'class': 'cbi-input-text',
-							'placeholder': '例如：晚间定时上网'
+							'placeholder': '例如：晚间定时上网（选中 MAC 自动填入主机名）'
 						})
 					])
 				]),
@@ -202,7 +228,7 @@ return view.extend({
 		});
 
 		var secSchedList = E('div', { 'class': 'cbi-section' }, [
-			E('h3', {}, _('当前已配置的定时计划列表')),
+			E('h3', {}, _('定时列表')),
 			E('table', { 'class': 'table cbi-section-table' }, [
 				E('tbody', {}, [
 					E('tr', { 'class': 'cbi-section-table-titles' }, [
@@ -221,11 +247,14 @@ return view.extend({
 			])
 		]);
 
-		// === 4. 受默认管控的 MAC 清单 ===
+		// === 4. 受默认管控的 MAC 清单（增加“临时放行 20 分钟”快捷按钮） ===
 		var blockedTableRows = blockedList.map(function(item) {
 			var isTempAllow = (item.enabled === '0');
 			var statusText = isTempAllow ? _('临时放行中') : _('默认封禁中');
 			var statusClass = isTempAllow ? 'label notice' : 'label warning';
+			
+			var devInfo = macMap[item.mac.toUpperCase()];
+			var deviceName = (devInfo && devInfo.name) ? devInfo.name : _('未知设备');
 			
 			var actions = [
 				E('button', {
@@ -235,15 +264,27 @@ return view.extend({
 			];
 
 			if (isTempAllow) {
+				// 如果当前是临时放行中，显示“提前恢复封禁”
 				actions.unshift(E('button', {
 					'class': 'btn cbi-button-neutral',
 					'style': 'margin-right: 5px;',
 					'click': ui.createHandlerFn(self, 'handleRevokeTemp', item.mac)
 				}, _('提前恢复封禁')));
+			} else {
+				// 如果当前是默认封禁中，增加一个“临时放行 20 分钟”的快捷按钮
+				actions.unshift(E('button', {
+					'class': 'btn cbi-button-action',
+					'style': 'margin-right: 5px;',
+					'click': ui.createHandlerFn(self, 'handleQuickTempAllow20', item.mac)
+				}, _('一键临时放行')));
 			}
 
 			return E('tr', { 'class': 'cbi-section-table-row' }, [
-				E('td', { 'class': 'cbi-section-table-cell' }, item.mac),
+				E('td', { 'class': 'cbi-section-table-cell' }, [
+					E('strong', {}, item.mac),
+					E('br'),
+					E('small', { 'style': 'color: #666;' }, deviceName)
+				]),
 				E('td', { 'class': 'cbi-section-table-cell' }, [
 					E('span', { 'class': statusClass }, statusText)
 				]),
@@ -255,11 +296,11 @@ return view.extend({
 		});
 
 		var secList = E('div', { 'class': 'cbi-section' }, [
-			E('h3', {}, _('受默认管控的 MAC 清单及当前放行状态')),
+			E('h3', {}, _('管控清单')),
 			E('table', { 'class': 'table cbi-section-table' }, [
 				E('tbody', {}, [
 					E('tr', { 'class': 'cbi-section-table-titles' }, [
-						E('th', { 'class': 'cbi-section-table-cell' }, _('MAC 地址')),
+						E('th', { 'class': 'cbi-section-table-cell' }, _('MAC 地址 / 主机名')),
 						E('th', { 'class': 'cbi-section-table-cell' }, _('当前状态')),
 						E('th', { 'class': 'cbi-section-table-cell' }, _('动态超时状态')),
 						E('th', { 'class': 'cbi-section-table-cell' }, _('操作'))
@@ -286,6 +327,13 @@ return view.extend({
 		if (!mac || isNaN(minutes) || minutes <= 0) return;
 
 		return callTempAllow(mac, minutes).then(function() {
+			window.location.reload();
+		});
+	},
+
+	// 快捷临时放行 20 分钟处理函数
+	handleQuickTempAllow20: function(mac, ev) {
+		return callTempAllow(mac, 20).then(function() {
 			window.location.reload();
 		});
 	},
