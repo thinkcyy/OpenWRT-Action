@@ -5,7 +5,7 @@ LUCI_DEPENDS:=+firewall4 +rpcd +jsonfilter
 LUCI_PKGARCH:=all
 
 PKG_NAME:=luci-app-thinkcy-access
-PKG_VERSION:=2.20.0
+PKG_VERSION:=2.22.0
 PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/package.mk
