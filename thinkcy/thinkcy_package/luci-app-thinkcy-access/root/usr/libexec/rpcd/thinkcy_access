@@ -16,17 +16,17 @@ case "$1" in
         ;;
     call)
         case "$2" in
-            get_known_macs)
+				 get_known_macs)
                 echo '{"macs": ['
-                /usr/sbin/thinkcy-access-refresh get_known_macs | awk -F'|' 'BEGIN{first=1} {
-                    if($1 != "") {
-                        if(!first) printf ","; 
-                        printf "{\"mac\":\"%s\",\"info\":\"%s\"}", $1, $2; 
-                        first=0;
-                    }
-                }'
-                echo ']}'
-                ;;
+					/usr/sbin/thinkcy-access-refresh get_known_macs | awk -F'|' 'BEGIN{first=1} {
+						if($1 != "") {
+							if(!first) printf ","; 
+							printf "{\"mac\":\"%s\",\"name\":\"%s\",\"ip\":\"%s\"}", $1, $2, $3; 
+							first=0;
+						}
+					}'
+					echo ']}'
+					;;
             list_blocked)
                 echo '{"blocked": ['
                 /usr/sbin/thinkcy-access-refresh list_blocked | awk -F'|' 'BEGIN{first=1} {
