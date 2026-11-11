@@ -1,4 +1,4 @@
-name: AgustinLorenzo-cron
+name: JuliusBairaktaris-cron
 
 on:
    workflow_dispatch:
@@ -6,8 +6,8 @@ on:
     - cron: '0 20 * * *'
 
 env:
-  OP_REPO: AgustinLorenzo/openwrt
-  REPO_BRANCH: main_nss
+  OP_REPO: JuliusBairaktaris/openwrt-ppe-nss
+  REPO_BRANCH: ppe-nss
   REPO_TYPE: zhKong
   CKOUTPATH: ckout
   
