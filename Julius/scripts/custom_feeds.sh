@@ -1,4 +1,4 @@
-echo "-步骤：custom_feeds自定义软件包-0-$(basename "$0")"
+echo "-步骤：custom_feeds自定义软件包-0-$0"
 
 # 1-调整订阅-1.1-通用软件源
 ../scripts/add_package_part1_before_feeds_update-add_feeds.sh
@@ -20,12 +20,13 @@ echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
 echo '-步骤：custom_feed-导入编译配置'
 cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
+cat seeds/qualcommax-nss-wifi.seed >> .config
 
 echo '-步骤：custom_feed-初始化编译配置defconfig'
 make defconfig
 
-tree -L 3 ./feeds/
-tree -L 3 ./package/
+#tree -L 3 ./feeds/
+#tree -L 3 ./package/
 
-tree -L 3 ./feeds/ > tree_feeds.txt
-tree -L 3 ./package/ > tree_package.txt
+#tree -L 3 ./feeds/ > tree_feeds.txt
+#tree -L 3 ./package/ > tree_package.txt
