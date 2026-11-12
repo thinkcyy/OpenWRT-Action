@@ -3,7 +3,9 @@ echo "-步骤：custom_feeds自定义软件包-0-$0"
 # 1-调整订阅-1.1-通用软件源
 ../scripts/add_package_part1_before_feeds_update-add_feeds.sh
 
-# 1-调整订阅-1.2-特定软件源
+# 1-调整订阅-1.2-特定软件源(Julis软件源调整）
+
+
 
 echo '--当前执行步骤：custom_feeds自定义软件包-1-调整订阅-1.3-更新软件源索引信息'
 ./scripts/feeds update -a
@@ -16,6 +18,7 @@ echo '--当前执行步骤：custom_feeds自定义软件包-1-调整订阅-1.3-�
 ./scripts/feeds install -a
 
 # Julis特定调整
+
 git clone https://github.com/JuliusBairaktaris/Qualcommax_NSS_Builder ../builder
 patch -d feeds/packages -p1 < ../builder/patches/feeds/ppe-nss/packages/0001-*.patch   # hw_ppe.qos
 
