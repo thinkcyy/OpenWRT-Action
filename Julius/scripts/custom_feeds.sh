@@ -26,8 +26,11 @@ echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
 echo '-步骤：custom_feed-导入编译配置'
-cp ../$REPO_TYPE/config/config-${{ inputs.ROUTER_MODEL }}.config .config
-cat seeds/qualcommax-nss-wifi.seed >> .config
+cp ../$REPO_TYPE/config/config-${{ inputs.ROUTER_MODEL }}.config ./.config
+cat seeds/qualcommax-nss-wifi.seed >> ./.config
+
+echo '-步骤：custom_feed-显示defconfig前编译配置'
+cat ./.config
 
 echo '-步骤：custom_feed-初始化编译配置defconfig'
 make defconfig
