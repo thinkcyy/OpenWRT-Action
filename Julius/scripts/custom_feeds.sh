@@ -15,6 +15,10 @@ echo '--当前执行步骤：custom_feeds自定义软件包-1-调整订阅-1.3-�
 
 ./scripts/feeds install -a
 
+# Julis特定调整
+git clone https://github.com/JuliusBairaktaris/Qualcommax_NSS_Builder ../builder
+patch -d feeds/packages -p1 < ../builder/patches/feeds/ppe-nss/packages/0001-*.patch   # hw_ppe.qos
+
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
 echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
