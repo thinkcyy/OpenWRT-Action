@@ -4,8 +4,8 @@ echo "-步骤：custom_feeds自定义软件包-0-$0"
 ../scripts/add_package_part1_before_feeds_update-add_feeds.sh
 
 # 1-调整订阅-1.2-特定软件源(Julis软件源调整）
-echo "src-git nss https://github.com/JuliusBairaktaris/nss-packages.git;ppe-nss" >> feeds.conf.default
-sed -i 's|^src-git luci .*|src-git luci https://github.com/JuliusBairaktaris/luci.git;luci-app-ppe-qos|' feeds.conf.default
+echo "src-git nss https://github.com/JuliusBairaktaris/nss-packages.git;ppe-nss" >> feeds.conf
+sed -i 's|^src-git luci .*|src-git luci https://github.com/JuliusBairaktaris/luci.git;luci-app-ppe-qos|' feeds.conf
 
 echo '--当前执行步骤：custom_feeds自定义软件包-1-调整订阅-1.3-更新软件源索引信息'
 ./scripts/feeds update -a
