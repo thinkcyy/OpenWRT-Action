@@ -13,7 +13,7 @@ echo '--当前执行步骤：custom_feeds自定义软件包-1-调整订阅-1.3-�
 
 # 2-调整源码-2.2-特定软件源码
 # 规范化仓库名称（将斜杠转换为点）
-REPO_NAME=$(echo "${{ inputs.OP_REPO }}" | sed 's|/|.|g')
+REPO_NAME=$(echo "$OP_REPO" | sed 's|/|.|g')
 PATCH_DIR="../$REPO_TYPE/scripts"
 
 # 检查目录是否存在，并安全查找补丁文件
