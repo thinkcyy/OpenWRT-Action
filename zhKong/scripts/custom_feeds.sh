@@ -20,6 +20,8 @@ PATCH_DIR="../$REPO_TYPE/scripts"
 if [ -d "$PATCH_DIR" ]; then
   # 使用 find 替代 ls，配合 -print0 和 read 或直接安全遍历
   found_patches=0
+  echo 补丁目录为$PATCH_DIR
+  echo 所有文件：$(ls $PATCH_DIR)
   for patch in "$PATCH_DIR"/"$REPO_NAME".patch*.sh; do
     # 确保文件真实存在（防止没有匹配时通配符未被展开原样输出）
     [ -f "$patch" ] || continue
