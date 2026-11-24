@@ -47,7 +47,6 @@ fi
 ./scripts/feeds install -a
 
 echo "ROUTER_MODEL为： ${ROUTER_MODEL}"
-echo "INPUT_ROUTER_MODEL为： ${INPUT_ROUTER_MODEL}"
 
 echo '-步骤：custom_feed-导入编译配置'
 cp -v ../zhKong/config/config-${ROUTER_MODEL}.config .config
