@@ -64,7 +64,7 @@ if not patched.search(updated):
     sys.exit(3)
 
 path.write_text(updated, encoding="utf-8")
-print("PATCH APPLIED: %s" % path)
+print("补丁已打: %s" % path)
 print("host.duid now accepts a string or an array; non-string entries are skipped.")
 PY
 
