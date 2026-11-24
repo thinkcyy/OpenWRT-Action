@@ -37,7 +37,7 @@ sed -i "s|option lang auto|option lang \'zh_cn\'|g" ./feeds/luci/modules/luci-ba
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option en English' ./feeds/luci/modules/luci-base/root/etc/config/luci
 sed -i '/config internal languages/a \ \ \ \ \ \ \ \ option zh_cn chinese' ./feeds/luci/modules/luci-base/root/etc/config/luci
 
-echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.2-特定源码'
+echo '---当前执行步骤：custom_feeds自定义软件包-2-调整源码-2.2-REPO_TYPE特定源码add_package_part3*'
 list=$(find ../$REPO_TYPE/ -type f -name "add_package_part3*")
 if [[ ! -z "$list" ]] ; then
   echo 源码调整脚本为$list
