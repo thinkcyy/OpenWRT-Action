@@ -22,6 +22,8 @@ if [ -d "$PATCH_DIR" ]; then
   found_patches=0
   echo 补丁目录为$PATCH_DIR
   echo 所有文件：$(ls $PATCH_DIR)
+  echo REPO_NAME为：$REPO_NAME
+  echo env.OP_REPO为：${{ env.OP_REPO }}
   for patch in "$PATCH_DIR"/"$REPO_NAME".patch*.sh; do
     # 确保文件真实存在（防止没有匹配时通配符未被展开原样输出）
     [ -f "$patch" ] || continue
