@@ -13,17 +13,19 @@ echo '--当前执行步骤：custom_feeds自定义软件包-1-调整订阅-1.3-�
 
 # 2-调整源码-2.2-特定软件源码
 # 规范化仓库名称（将斜杠转换为点）
+echo OP_REPO为$OP_REPO
+
 REPO_NAME=$(echo "$OP_REPO" | sed 's|/|.|g')
 PATCH_DIR="../$REPO_TYPE/scripts"
+echo REPO_NAME为：$REPO_NAME
+echo 补丁目录为$PATCH_DIR
+echo 所有文件：$(ls $PATCH_DIR)
+
 
 # 检查目录是否存在，并安全查找补丁文件
 if [ -d "$PATCH_DIR" ]; then
   # 使用 find 替代 ls，配合 -print0 和 read 或直接安全遍历
   found_patches=0
-  echo 补丁目录为$PATCH_DIR
-  echo 所有文件：$(ls $PATCH_DIR)
-  echo REPO_NAME为：$REPO_NAME
-  echo env.OP_REPO为：${{ env.OP_REPO }}
   for patch in "$PATCH_DIR"/"$REPO_NAME".patch*.sh; do
     # 确保文件真实存在（防止没有匹配时通配符未被展开原样输出）
     [ -f "$patch" ] || continue
